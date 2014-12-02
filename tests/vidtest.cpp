@@ -15,7 +15,7 @@ int main(int argc, char* argv[]) {
     printf("\rWriting frame %d", frame + 1);
     fflush(0);
 
-    writer.write(img);
+    writer.write(img.toColor());
   }
   writer.close();
   printf("\nWrote test.avi\n");

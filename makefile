@@ -3,7 +3,7 @@ CFLAGS = -O3 -Wno-unused-result
 CFG_CFLAGS = `sdl2-config --cflags` `pkg-config opencv --cflags`
 CFG_LIBS = `sdl2-config --libs` `pkg-config opencv --libs`
 
-ifdef $(shell Magick++-config --version > /dev/null)
+ifneq (, $(shell Magick++-config --version))
 CFG_CFLAGS += `Magick++-config --cppflags --cxxflags`
 CFG_LIBS += `Magick++-config --libs`
 else

@@ -1,3 +1,4 @@
 *~
 *.o
 libbyteimage.a
+byteimage-config
