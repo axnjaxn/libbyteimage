@@ -12,8 +12,8 @@ endif
 
 CFLAGS += $(CFG_CFLAGS)
 
-BIN = byteimage.o byteimage_sdl2.o bytevideo.o quality.o kernel.o
-INC = byteimage.h byteimage_sdl2.h bytevideo.h quality.h kernel.h
+BIN = byteimage.o byteimage_sdl2.o bytevideo.o quality.o kernel.o template.o
+INC = byteimage.h byteimage_sdl2.h bytevideo.h quality.h kernel.h template.h
 
 all: byteimage-config libbyteimage.a
 
@@ -42,6 +42,9 @@ quality.o: byteimage.h quality.h quality.cpp
 kernel.o: byteimage.h kernel.h kernel.cpp
 	$(CXX) -c kernel.cpp $(CFLAGS) 
 
+template.o: byteimage.h template.h template.cpp
+	$(CXX) -c template.cpp $(CFLAGS) 
+
 clean: clean-tests
 	rm -f *~ $(BIN) libbyteimage.a byteimage-config
 
@@ -51,7 +54,7 @@ install: byteimage-config libbyteimage.a $(INC)
 	mkdir -p /usr/local/include/byteimage
 	cp $(INC) -t /usr/local/include/byteimage
 
-TESTS = tests/imgtest tests/sdl2test tests/vidtest tests/kerneltest
+TESTS = tests/imgtest tests/sdl2test tests/vidtest tests/kerneltest tests/templatetest
 
 tests: $(TESTS)
 
@@ -66,6 +69,9 @@ tests/vidtest: tests/vidtest.cpp
 
 tests/kerneltest: tests/kerneltest.cpp
 	$(CXX) tests/kerneltest.cpp -o tests/kerneltest `byteimage-config --cflags --libs`
+
+tests/templatetest: tests/templatetest.cpp
+	$(CXX) tests/templatetest.cpp -o tests/templatetest `byteimage-config --cflags --libs`
 
 clean-tests:
 	rm -f tests/*~ $(TESTS)
