@@ -1,7 +1,29 @@
-CFLAGS = -O3 -Wno-unused-result
+BIN = byteimage.o quality.o kernel.o template.o
+INC = byteimage.h quality.h kernel.h template.h
+TESTS = tests/imgtest
 
-CFG_CFLAGS = `sdl2-config --cflags` `pkg-config opencv --cflags`
-CFG_LIBS = `sdl2-config --libs` `pkg-config opencv --libs`
+CFG_CFLAGS =
+CFG_LIBS =
+
+ifneq (, $(shell sdl2-config --version))
+BIN += byteimage_sdl2.o
+INC += byteimage_sdl2.h
+CFG_CFLAGS += `sdl2-config --cflags`
+CFG_LIBS += `sdl2-config --libs`
+TESTS += tests/sdl2test tests/kerneltest tests/templatetest
+else
+CFG_CFLAGS += -D_BYTEIMAGE_NO_SDL2
+endif
+
+ifneq (, $(shell pkg-config opencv --modversion))
+BIN += bytevideo.o
+INC += bytevideo.h
+CFG_CFLAGS += `pkg-config opencv --cflags`
+CFG_LIBS += `pkg-config opencv --libs`
+TESTS += tests/vidtest
+else
+CFG_CFLAGS += -D_BYTEIMAGE_NO_OPENCV
+endif
 
 ifneq (, $(shell Magick++-config --version))
 CFG_CFLAGS += `Magick++-config --cppflags --cxxflags`
@@ -10,10 +32,7 @@ else
 CFG_CFLAGS += -D_BYTEIMAGE_NO_MAGICK
 endif
 
-CFLAGS += $(CFG_CFLAGS)
-
-BIN = byteimage.o byteimage_sdl2.o bytevideo.o quality.o kernel.o template.o
-INC = byteimage.h byteimage_sdl2.h bytevideo.h quality.h kernel.h template.h
+CFLAGS = -O3 -Wno-unused-result $(CFG_CFLAGS)
 
 all: byteimage-config libbyteimage.a
 
@@ -54,8 +73,6 @@ install: byteimage-config libbyteimage.a $(INC)
 	cp libbyteimage.a /usr/local/lib/libbyteimage.a
 	mkdir -p /usr/local/include/byteimage
 	cp $(INC) -t /usr/local/include/byteimage
-
-TESTS = tests/imgtest tests/sdl2test tests/vidtest tests/kerneltest tests/templatetest
 
 tests: $(TESTS)
 
