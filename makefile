@@ -1,5 +1,5 @@
-BIN = byteimage.o quality.o kernel.o template.o
-INC = byteimage.h quality.h kernel.h template.h
+BIN = byteimage.o matrix.o quality.o kernel.o template.o
+INC = byteimage.h matrix.h quality.h kernel.h template.h
 TESTS = tests/imgtest
 
 CFG_CFLAGS =
@@ -10,7 +10,7 @@ BIN += byteimage_sdl2.o
 INC += byteimage_sdl2.h
 CFG_CFLAGS += `sdl2-config --cflags`
 CFG_LIBS += `sdl2-config --libs`
-TESTS += tests/sdl2test tests/kerneltest tests/templatetest
+TESTS += tests/sdl2test tests/kerneltest tests/templatetest tests/matrixtest
 else
 CFG_CFLAGS += -D_BYTEIMAGE_NO_SDL2
 endif
@@ -56,6 +56,9 @@ byteimage_sdl2.o: byteimage.h byteimage_sdl2.h byteimage_sdl2.cpp
 bytevideo.o: byteimage.h bytevideo.h bytevideo.cpp
 	$(CXX) -c bytevideo.cpp $(CFLAGS)
 
+matrix.o: matrix.h matrix.cpp
+	$(CXX) -c matrix.cpp $(CFLAGS) 
+
 quality.o: byteimage.h quality.h quality.cpp
 	$(CXX) -c quality.cpp $(CFLAGS) 
 
@@ -90,6 +93,9 @@ tests/kerneltest: tests/kerneltest.cpp
 
 tests/templatetest: tests/templatetest.cpp
 	$(CXX) tests/templatetest.cpp -o tests/templatetest `byteimage-config --cflags --libs`
+
+tests/matrixtest: tests/matrixtest.cpp
+	$(CXX) tests/matrixtest.cpp -o tests/matrixtest `byteimage-config --cflags --libs`
 
 clean-tests:
 	rm -f tests/*~ $(TESTS)
