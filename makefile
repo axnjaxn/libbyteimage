@@ -19,6 +19,7 @@ all: byteimage-config libbyteimage.a
 
 byteimage-config:
 	echo "#!/bin/bash" > byteimage-config
+	echo "INC=\""$(INC)"\"" >> byteimage-config
 	echo "CFLAGS=\""$(CFG_CFLAGS)"\"" >> byteimage-config
 	echo "LIBS=\"-lbyteimage "$(CFG_LIBS)"\"" >> byteimage-config
 	cat script.sh >> byteimage-config
