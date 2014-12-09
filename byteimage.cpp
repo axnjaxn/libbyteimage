@@ -1,6 +1,6 @@
 /*
  * byteimage.cpp by Brian Jackson
- * Revised 28 Oct 2014
+ * Revised 8 Dec 2014
  */
 
 #include "byteimage.h"

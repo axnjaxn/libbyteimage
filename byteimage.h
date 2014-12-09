@@ -1,6 +1,6 @@
 /*
  * byteimage.h by Brian Jackson
- * Revised 28 Oct 2014
+ * Revised 8 Dec 2014
  */
 
 #ifndef _BPJ_BYTEIMAGE_H
@@ -61,7 +61,7 @@ class ByteImage {
   inline BYTE operator[](int i) const {return pixels[i];}
   inline BYTE& at(int r, int c, int ch = 0) {return pixels[nr * nc * ch + r * nc + c];}
   inline BYTE at(int r, int c, int ch = 0) const {return pixels[nr * nc * ch + r * nc + c];};
-  BYTE atBounded(int r, int c, int ch) const;
+  BYTE atBounded(int r, int c, int ch = 0) const;
 
   void resize(int nr, int nc);
   ByteImage resized(int nr, int nc) const;
