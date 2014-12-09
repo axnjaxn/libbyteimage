@@ -33,6 +33,7 @@ public:
   inline int size() const {return nr * nc;}
   inline double& at (int r, int c = 0) {return data[r * nc + c];}
   inline double at (int r, int c = 0) const {return data[r * nc + c];}
+  inline double* getArray() {return data;}
   inline const double* getArray() const {return data;}
 
   Matrix trans() const;
