@@ -81,6 +81,19 @@ void ByteImageDisplay::main() {
   }
 }
 
+int ByteImageDisplay::show(const ByteImage& img) {
+  exitflag = 0;
+  
+  SDL_Event event;
+  while (SDL_PollEvent(&event))
+    handleEvent(event);
+
+  updateImage(img);
+  update();
+  
+  return exitflag;
+}
+
 void writePixelArray(Uint32* dest, const ByteImage& img) {
   const ByteImage::BYTE *r, *g, *b;
 

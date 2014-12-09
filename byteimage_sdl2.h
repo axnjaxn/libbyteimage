@@ -41,6 +41,7 @@ public:
   virtual ~ByteImageDisplay();
 
   void main();
+  int show(const ByteImage& img);//Returns nonzero if exit event is caught
 };
 
 void writePixelArray(Uint32* dest, const ByteImage& img);
