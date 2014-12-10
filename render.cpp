@@ -30,6 +30,7 @@ void DrawRect(ByteImage& target, int x, int y, int w, int h,
   }
   if (x + w > target.nc)
     w = target.nc - x;
+  if (w <= 0) return;
 
   if (y < 0) {
     h += y;
@@ -37,6 +38,7 @@ void DrawRect(ByteImage& target, int x, int y, int w, int h,
   }
   if (y + h > target.nr)
     h = target.nr - y;  
+  if (h <= 0) return;
 
   for (int ch = 0; ch < target.nchannels; ch++)
     for (int r = y; r < y + h; r++)
@@ -45,12 +47,13 @@ void DrawRect(ByteImage& target, int x, int y, int w, int h,
 
 void DrawRect(ByteImage& target, int x, int y, int w, int h,
 	      ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B) {
-if (x < 0) {
+  if (x < 0) {
     w += x;
     x = 0;
   }
   if (x + w > target.nc)
     w = target.nc - x;
+  if (w <= 0) return;
 
   if (y < 0) {
     h += y;
@@ -58,6 +61,7 @@ if (x < 0) {
   }
   if (y + h > target.nr)
     h = target.nr - y;  
+  if (h <= 0) return;
 
   for (int r = y; r < y + h; r++) {
     memset(target.R() + r * target.nc + x, R, w);
