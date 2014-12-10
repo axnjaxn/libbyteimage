@@ -210,3 +210,57 @@ void DrawBezier(ByteImage& target, const std::vector<Matrix>& pts, const Matrix&
     v0 = v1;
   }
 }
+
+void DrawTriangle(ByteImage& target, const Matrix& v0, const Matrix& v1, const Matrix& v2, const Matrix& rgb) {
+  Matrix u, l, r, d;
+  u = v0;
+  l = v1;
+  d = v2;
+
+  if (getY(l) < getY(u)) swap(u, l);
+  if (getY(d) < getY(u)) swap(u, d);
+  if (getY(d) < getY(l)) swap(l, d);
+
+  //Form two triangles: ulr and lrd
+  r = makePoint(getX(u) + (getY(l) - getY(u))  * (getX(d) - getX(u)) / (getY(d) - getY(u)), getY(l));
+  if (getX(l) > getX(r)) swap(l, r);
+
+  float lpos, rpos;
+  float lslope, rslope;
+  int x, y, w, h = 1;
+
+  //Blit upper triangle
+  lpos = rpos = getX(u);
+  lslope = (getX(l) - getX(u)) / (getY(l) - getY(u));
+  rslope = (getX(r) - getX(u)) / (getY(r) - getY(u));
+  for (y = (int)(getY(u) + 0.5); y < (int)(getY(l) + 0.5); y++) {
+    x = (int)(lpos + 0.5);
+    w = (int)(rpos + 0.5) - x + 1;
+      
+    if (target.nchannels == 1)
+      DrawRect(target, x, y, w, h, getValue(rgb));
+    else
+      DrawRect(target, x, y, w, h, getR(rgb), getG(rgb), getB(rgb));
+      
+    lpos += lslope;
+    rpos += rslope;
+  }
+   
+  //Blit lower triangle
+  lpos = getX(l);
+  rpos = getX(r);
+  lslope = (getX(d) - getX(l)) / (getY(d) - getY(l));
+  rslope = (getX(d) - getX(r)) / (getY(d) - getY(r));
+  for (; y < (int)(getY(d) + 0.5); y++) {
+    x = (int)(lpos + 0.5);
+    w = (int)(rpos + 0.5) - x + 1;
+
+    if (target.nchannels == 1)
+      DrawRect(target, x, y, w, h, getValue(rgb));
+    else
+      DrawRect(target, x, y, w, h, getR(rgb), getG(rgb), getB(rgb));
+      
+    lpos += lslope;
+    rpos += rslope;
+  }
+}
