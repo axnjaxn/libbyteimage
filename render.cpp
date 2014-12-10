@@ -211,6 +211,9 @@ void DrawBezier(ByteImage& target, const std::vector<Matrix>& pts, const Matrix&
   }
 }
 
+inline int floor(double d) {return (int)d;}
+inline int ceil(double d) {return (int)d + (d != (int)d);}
+
 void DrawTriangle(ByteImage& target, const Matrix& v0, const Matrix& v1, const Matrix& v2, const Matrix& rgb) {
   Matrix u, l, r, d;
   u = v0;
@@ -234,8 +237,8 @@ void DrawTriangle(ByteImage& target, const Matrix& v0, const Matrix& v1, const M
   lslope = (getX(l) - getX(u)) / (getY(l) - getY(u));
   rslope = (getX(r) - getX(u)) / (getY(r) - getY(u));
   for (y = (int)(getY(u) + 0.5); y < (int)(getY(l) + 0.5); y++) {
-    x = (int)(lpos + 0.5);
-    w = (int)(rpos + 0.5) - x + 1;
+    x = floor(lpos);
+    w = ceil(rpos) - x + 1;
       
     if (target.nchannels == 1)
       DrawRect(target, x, y, w, h, getValue(rgb));
@@ -252,8 +255,8 @@ void DrawTriangle(ByteImage& target, const Matrix& v0, const Matrix& v1, const M
   lslope = (getX(d) - getX(l)) / (getY(d) - getY(l));
   rslope = (getX(d) - getX(r)) / (getY(d) - getY(r));
   for (; y < (int)(getY(d) + 0.5); y++) {
-    x = (int)(lpos + 0.5);
-    w = (int)(rpos + 0.5) - x + 1;
+    x = floor(lpos);
+    w = ceil(rpos) - x + 1;
 
     if (target.nchannels == 1)
       DrawRect(target, x, y, w, h, getValue(rgb));
