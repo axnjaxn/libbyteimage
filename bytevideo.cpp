@@ -121,6 +121,10 @@ void ByteVideoWriter::open(std::string fn, int nr, int nc, double fps) {
   writer = cvCreateVideoWriter(fn.c_str(), CV_FOURCC('D', 'I', 'V', 'X'), fps, cvSize(nc, nr));
 }
 
+void ByteVideoWriter::openMP4(std::string fn, int nr, int nc, double fps) {
+  writer = cvCreateVideoWriter(fn.c_str(), CV_FOURCC('X', '2', '6', '4'), fps, cvSize(nc, nr));
+}
+
 void ByteVideoWriter::write(const ByteImage& image) {
   std::vector<cv::Mat> mat(3);
 

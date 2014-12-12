@@ -53,6 +53,7 @@ public:
   ByteVideoWriter(std::string fn, int nr, int nc, double fps = 24);
 
   void open(std::string fn, int nr, int nc, double fps = 24);
+  void openMP4(std::string fn, int nr, int nc, double fps = 24);
 
   void write(const ByteImage& image);
 
