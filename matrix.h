@@ -39,6 +39,8 @@ public:
   Matrix trans() const;
   Matrix inv() const;
   static Matrix solve(Matrix A, Matrix b);
+  
+  Matrix cholesky() const;
 
   inline friend double getX(const Matrix& v) {return v.data[0] / v.data[2];}
   inline friend double getY(const Matrix& v) {return v.data[1] / v.data[2];}

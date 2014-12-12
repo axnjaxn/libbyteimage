@@ -1,6 +1,6 @@
 BIN = byteimage.o matrix.o ransac.o quality.o kernel.o template.o render.o
 INC = byteimage.h matrix.h ransac.h quality.h kernel.h template.h render.h
-TESTS = tests/imgtest
+TESTS = tests/imgtest tests/cholestest
 
 CFG_CFLAGS =
 CFG_LIBS =
@@ -111,6 +111,9 @@ tests/rendertest: tests/rendertest.cpp
 
 tests/beziertest: tests/beziertest.cpp
 	$(CXX) tests/beziertest.cpp -o tests/beziertest `byteimage-config --cflags --libs`
+
+tests/cholestest: tests/cholestest.cpp
+	$(CXX) tests/cholestest.cpp -o tests/cholestest `byteimage-config --cflags --libs`
 
 clean-tests:
 	rm -f tests/*~ $(TESTS)

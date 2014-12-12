@@ -1,5 +1,6 @@
 #include "matrix.h"
 #include <cstring>
+#include <cmath>
 
 Matrix::Matrix() {
   nr = nc = 0;
@@ -158,6 +159,28 @@ Matrix Matrix::solve(Matrix A, Matrix b) {
   }
 
   return b;
+}
+
+Matrix Matrix::cholesky() const {
+  Matrix L(rows(), cols());
+
+  double sum;
+  for (int i = 0; i < L.rows(); i++) {
+    for (int j = 0; j < i; j++) {
+      sum = 0.0;
+      for (int k = 0; k < j; k++)
+	sum += L.at(i, k) * L.at(j, k);
+      L.at(i, j) = (at(i, j) - sum) / L.at(j, j);
+    }
+
+    sum = 0.0;
+    for (int k = 0; k < i; k++)
+      sum += L.at(i, k) * L.at(i, k);
+    
+    L.at(i, i) = sqrt(at(i, i) - sum);
+  }
+
+  return L;
 }
 
 Matrix makePoint(double x, double y, double w) {
