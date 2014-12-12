@@ -45,6 +45,7 @@ public:
 };
 
 Matrix makePoint(double x, double y, double w = 1.0);
+Matrix normalize(const Matrix& v);
 
 #endif
 

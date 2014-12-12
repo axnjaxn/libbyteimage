@@ -165,3 +165,11 @@ Matrix makePoint(double x, double y, double w) {
   v.at(0) = x; v.at(1) = y; v.at(2) = w;
   return v;
 }
+
+Matrix normalize(const Matrix& v) {
+  Matrix u(v);
+  u.at(0) /= u.at(2);
+  u.at(1) /= u.at(2);
+  u.at(2) = 1.0;
+  return u;
+}
