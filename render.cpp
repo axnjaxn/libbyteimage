@@ -5,18 +5,8 @@ template <typename tn>
 inline void swap(tn& a, tn& b) {tn t = a; a = b; b = t;}
 inline float fabs(float f) {return (f >= 0)? f : -f;}
 
-Matrix makePoint(double x, double y, double w) {
-  Matrix v(3, 1);
-  v.at(0) = x;
-  v.at(1) = y;
-  v.at(2) = w;
-  return v;
-}
-
 Matrix makeColor(double r, double g, double b) {return makePoint(r, g, b);}
 
-inline double getX(const Matrix& v) {return v.at(0) / v.at(2);}
-inline double getY(const Matrix& v) {return v.at(1) / v.at(2);}
 inline double getValue(const Matrix& rgb) {return (rgb.at(0) + rgb.at(1) + rgb.at(2)) / 3.0;}
 inline ByteImage::BYTE getR(const Matrix& rgb) {return ByteImage::clip(rgb.at(0));}
 inline ByteImage::BYTE getG(const Matrix& rgb) {return ByteImage::clip(rgb.at(1));}

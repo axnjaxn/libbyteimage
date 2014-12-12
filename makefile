@@ -71,7 +71,7 @@ kernel.o: byteimage.h kernel.h kernel.cpp
 template.o: byteimage.h template.h template.cpp
 	$(CXX) -c template.cpp $(CFLAGS) 
 
-render.o: byteimage.h render.h render.cpp
+render.o: byteimage.h matrix.h render.h render.cpp
 	$(CXX) -c render.cpp $(CFLAGS) 
 
 clean: clean-tests

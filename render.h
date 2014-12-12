@@ -5,7 +5,6 @@
 #include "matrix.h"
 #include <vector>
 
-Matrix makePoint(double x, double y, double w = 1.0);
 Matrix makeColor(double r, double g, double b);//On a [0 - 255] scale
 
 void DrawRect(ByteImage& target, int x, int y, int w, int h, ByteImage::BYTE v);

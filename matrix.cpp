@@ -20,6 +20,7 @@ Matrix::Matrix(int nr, int nc) {
 }
 
 Matrix::Matrix(const Matrix& mat) {
+  nr = nc = 0;
   data = NULL;
   *this = mat;
 }
@@ -36,11 +37,13 @@ Matrix Matrix::identity(int n) {
 }
 
 Matrix& Matrix::operator=(const Matrix& mat) {
-  if (data) delete [] data;
-
+  if (nr * nc != mat.nr * mat.nc) {
+    if (data) delete [] data;
+    data = new double [mat.nr * mat.nc];
+  }
   nr = mat.nr;
   nc = mat.nc;
-  data = new double [nr * nc];
+
   memcpy(data, mat.data, nr * nc * sizeof(double));
 
   return *this;
@@ -155,4 +158,10 @@ Matrix Matrix::solve(Matrix A, Matrix b) {
   }
 
   return b;
+}
+
+Matrix makePoint(double x, double y, double w) {
+  Matrix v(3, 1); 
+  v.at(0) = x; v.at(1) = y; v.at(2) = w;
+  return v;
 }
