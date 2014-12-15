@@ -23,6 +23,10 @@ class ByteImage {
   inline static BYTE diff(BYTE a, BYTE b) {
     return (a > b)? a - b : b - a;
   }
+  inline static BYTE interp(BYTE a, BYTE b, float t) {
+    t = (t < 0)? 0 : (t > 1)? 1 : t;
+    return clip((1 - t) * a + t * b);
+  }
 
   BYTE* pixels;
   int nr, nc, nchannels;
@@ -65,6 +69,10 @@ class ByteImage {
 
   void resize(int nr, int nc);
   ByteImage resized(int nr, int nc) const;
+
+  static ByteImage avg(const ByteImage& img1, const ByteImage& img2);
+  static ByteImage diff(const ByteImage& img1, const ByteImage& img2);
+  static ByteImage interp(const ByteImage& img1, const ByteImage& img2, float t);
 
   ByteImage odd() const;
   ByteImage even() const;

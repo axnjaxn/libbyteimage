@@ -11,6 +11,9 @@ using namespace Magick;
 #include <Magick++.h>
 #endif
 
+template <typename tn>
+inline tn min(tn a, tn b) {return (a <= b)? a : b;}
+
 ByteImage::ByteImage() {
   pixels = NULL; 
   nr = nc = nchannels = 0;
@@ -125,6 +128,51 @@ void ByteImage::resize(int nr, int nc) {
 ByteImage ByteImage::resized(int nr, int nc) const {
   ByteImage result(*this);
   result.resize(nr, nc);
+  return result;
+}
+
+ByteImage ByteImage::avg(const ByteImage& img1, const ByteImage& img2) {
+  if (img1.nchannels != img2.nchannels) return avg(img1.toColor(), img2.toColor());
+
+  ByteImage result(min(img1.nr, img2.nr),
+		   min(img1.nc, img2.nc),
+		   img1.nchannels);
+
+  for (int ch = 0; ch < result.nchannels; ch++)
+    for (int r = 0; r < result.nr; r++)
+      for (int c = 0; c < result.nc; c++)
+	result.at(r, c, ch) = avg(img1.at(r, c, ch), img2.at(r, c, ch));
+
+  return result;
+}
+
+ByteImage ByteImage::diff(const ByteImage& img1, const ByteImage& img2) {
+  if (img1.nchannels != img2.nchannels) return diff(img1.toColor(), img2.toColor());
+
+  ByteImage result(min(img1.nr, img2.nr),
+		   min(img1.nc, img2.nc),
+		   img1.nchannels);
+
+  for (int ch = 0; ch < result.nchannels; ch++)
+    for (int r = 0; r < result.nr; r++)
+      for (int c = 0; c < result.nc; c++)
+	result.at(r, c, ch) = diff(img1.at(r, c, ch), img2.at(r, c, ch));
+
+  return result;
+}
+
+ByteImage ByteImage::interp(const ByteImage& img1, const ByteImage& img2, float t) {
+  if (img1.nchannels != img2.nchannels) return interp(img1.toColor(), img2.toColor(), t);
+
+  ByteImage result(min(img1.nr, img2.nr),
+		   min(img1.nc, img2.nc),
+		   img1.nchannels);
+
+  for (int ch = 0; ch < result.nchannels; ch++)
+    for (int r = 0; r < result.nr; r++)
+      for (int c = 0; c < result.nc; c++)
+	result.at(r, c, ch) = interp(img1.at(r, c, ch), img2.at(r, c, ch), t);
+
   return result;
 }
 
