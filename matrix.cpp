@@ -80,6 +80,13 @@ Matrix Matrix::operator*(double d) const {
   return result;
 }
 
+Matrix Matrix::operator/(double d) const {
+  Matrix result(*this);
+  for (int i = 0; i < size(); i++)
+    result.data[i] /= d;
+  return result;
+}
+
 Matrix Matrix::row(int i) const {
   Matrix result(1, nc);
   memcpy(result.data, data, nc * sizeof(double));

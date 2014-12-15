@@ -24,6 +24,7 @@ public:
   
   Matrix operator*(double d) const;
   inline friend Matrix operator*(double d, const Matrix& mat) {return mat * d;}
+  Matrix operator/(double d) const;
 
   Matrix row(int i) const;
   Matrix col(int i) const;
