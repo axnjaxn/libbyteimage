@@ -118,11 +118,11 @@ ByteVideoWriter::ByteVideoWriter(std::string fn, int nr, int nc, double fps) {
 }
 
 void ByteVideoWriter::open(std::string fn, int nr, int nc, double fps) {
-  writer = cvCreateVideoWriter(fn.c_str(), CV_FOURCC('D', 'I', 'V', 'X'), fps, cvSize(nc, nr));
-}
-
-void ByteVideoWriter::openMP4(std::string fn, int nr, int nc, double fps) {
-  writer = cvCreateVideoWriter(fn.c_str(), CV_FOURCC('X', '2', '6', '4'), fps, cvSize(nc, nr));
+  int i = fn.size() - 4;
+  if (fn[i] == '.' && fn[i + 1] == 'm' && fn[i + 2] == 'p' && fn[i + 3] == '4')
+    writer = cvCreateVideoWriter(fn.c_str(), CV_FOURCC('H', '2', '6', '4'), fps, cvSize(nc, nr));
+  else
+    writer = cvCreateVideoWriter(fn.c_str(), CV_FOURCC('D', 'I', 'V', 'X'), fps, cvSize(nc, nr));
 }
 
 void ByteVideoWriter::write(const ByteImage& image) {
