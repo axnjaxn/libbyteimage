@@ -37,11 +37,15 @@ public:
   inline double* getArray() {return data;}
   inline const double* getArray() const {return data;}
 
+  Matrix slice(int r0, int r1, int c0, int c1) const;
+  void replace(const Matrix& mat, int r0, int c0);
+
   Matrix trans() const;
   Matrix inv() const;
   static Matrix solve(Matrix A, Matrix b);
   
   Matrix cholesky() const;
+  Matrix bidiag(Matrix& U, Matrix& V) const;
 
   inline friend double getX(const Matrix& v) {return v.data[0] / v.data[2];}
   inline friend double getY(const Matrix& v) {return v.data[1] / v.data[2];}
@@ -49,6 +53,8 @@ public:
 
 Matrix makePoint(double x, double y, double w = 1.0);
 Matrix normalize(const Matrix& v);
+double sqLength(const Matrix& v);
+double length(const Matrix& v);
 
 #endif
 

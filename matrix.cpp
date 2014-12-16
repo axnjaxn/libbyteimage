@@ -110,6 +110,18 @@ void Matrix::permuteRows(int i, int j) {
   delete [] temp;
 }
 
+Matrix Matrix::slice(int r0, int r1, int c0, int c1) const {
+  Matrix s(r1 - r0 + 1, c1 - c0 + 1);
+  for (int r = 0; r < s.nr; r++)
+    memcpy(s.data + r * s.nc, data + (r0 + r) * nc + c0, s.nc * sizeof(double));
+  return s;
+}
+
+void Matrix::replace(const Matrix& mat, int r0, int c0) {
+  for (int r = 0; r < mat.nr; r++)
+    memcpy(data + (r0 + r) * nc + c0, mat.data + r * mat.nc, mat.nc * sizeof(double));
+}
+
 Matrix Matrix::trans() const {
   Matrix result(nc, nr);
   for (int r = 0; r < result.nr; r++)
@@ -190,6 +202,36 @@ Matrix Matrix::cholesky() const {
   return L;
 }
 
+Matrix Matrix::bidiag(Matrix& U, Matrix& V) const {
+  const int m = nr, n = nc;
+
+  Matrix u(m, 1), v(n, 1), w, AT = trans(), J(m, n);
+  double alpha, beta;
+  
+  U = Matrix::identity(m);
+  V = Matrix::identity(n);
+  v.at(0) = 1.0;
+  beta = 0.0;
+
+  for (int k = 0; k < n; k++) {
+    w = (*this) * v - beta * u;
+    alpha = length(w);
+    u = w / alpha;
+    w = AT * u - alpha * v;
+    beta = length(w);
+    v = w / beta;
+
+    U.replace(u, 0, k);
+    J.at(k, k) = alpha;
+    if (k < n - 1) {
+      V.replace(v, 0, k + 1);
+      J.at(k, k + 1) = beta;
+    }
+  }
+
+  return J;
+}
+
 Matrix makePoint(double x, double y, double w) {
   Matrix v(3, 1); 
   v.at(0) = x; v.at(1) = y; v.at(2) = w;
@@ -202,4 +244,15 @@ Matrix normalize(const Matrix& v) {
   u.at(1) /= u.at(2);
   u.at(2) = 1.0;
   return u;
+}
+
+double sqLength(const Matrix& v) {
+  double sum = 0.0;
+  for (int i = 0; i < v.rows(); i++)
+    sum += v.at(i) * v.at(i);
+  return sum;
+}
+
+double length(const Matrix& v) {
+  return sqrt(sqLength(v));
 }
