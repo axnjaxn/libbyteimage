@@ -16,6 +16,7 @@ public:
   ~Matrix();
 
   static Matrix identity(int n);
+  static Matrix givens(int n, int i, int j, double th);
 
   Matrix& operator=(const Matrix& mat);
   Matrix operator+(const Matrix& mat) const;
@@ -45,7 +46,7 @@ public:
   static Matrix solve(Matrix A, Matrix b);
   
   Matrix cholesky() const;
-  Matrix bidiag(Matrix& U, Matrix& V) const;
+  Matrix bidiag(Matrix& P, Matrix& Q) const;
 
   inline friend double getX(const Matrix& v) {return v.data[0] / v.data[2];}
   inline friend double getY(const Matrix& v) {return v.data[1] / v.data[2];}

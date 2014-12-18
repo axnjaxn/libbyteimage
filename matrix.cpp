@@ -37,6 +37,17 @@ Matrix Matrix::identity(int n) {
   return I;
 }
 
+Matrix Matrix::givens(int n, int i, int j, double th) {
+  Matrix G(identity(n));
+  double s = sin(th), c = cos(th);
+
+  G.at(i, i) = G.at(j, j) = c;
+  G.at(i, j) = -s;
+  G.at(j, i) = s;
+
+  return G;
+}
+
 Matrix& Matrix::operator=(const Matrix& mat) {
   if (nr * nc != mat.nr * mat.nc) {
     if (data) delete [] data;
@@ -202,14 +213,14 @@ Matrix Matrix::cholesky() const {
   return L;
 }
 
-Matrix Matrix::bidiag(Matrix& U, Matrix& V) const {
+Matrix Matrix::bidiag(Matrix& P, Matrix& Q) const {
   const int m = nr, n = nc;
 
   Matrix u(m, 1), v(n, 1), w, AT = trans(), J(m, n);
   double alpha, beta;
   
-  U = Matrix::identity(m);
-  V = Matrix::identity(n);
+  P = Matrix::identity(m);
+  Q = Matrix::identity(n);
   v.at(0) = 1.0;
   beta = 0.0;
 
@@ -221,10 +232,10 @@ Matrix Matrix::bidiag(Matrix& U, Matrix& V) const {
     beta = length(w);
     v = w / beta;
 
-    U.replace(u, 0, k);
+    P.replace(u, 0, k);
     J.at(k, k) = alpha;
     if (k < n - 1) {
-      V.replace(v, 0, k + 1);
+      Q.replace(v, 0, k + 1);
       J.at(k, k + 1) = beta;
     }
   }
