@@ -86,37 +86,37 @@ install: byteimage-config libbyteimage.a $(INC)
 tests: $(TESTS)
 
 tests/imgtest: tests/imgtest.cpp
-	$(CXX) tests/imgtest.cpp -o tests/imgtest `byteimage-config --cflags --libs`
+	$(CXX) tests/imgtest.cpp -o tests/imgtest -g `byteimage-config --cflags --libs`
 
 tests/sdl2test: tests/sdl2test.cpp
-	$(CXX) tests/sdl2test.cpp -o tests/sdl2test `byteimage-config --cflags --libs`
+	$(CXX) tests/sdl2test.cpp -o tests/sdl2test -g `byteimage-config --cflags --libs`
 
 tests/vidtest: tests/vidtest.cpp
-	$(CXX) tests/vidtest.cpp -o tests/vidtest `byteimage-config --cflags --libs`
+	$(CXX) tests/vidtest.cpp -o tests/vidtest -g `byteimage-config --cflags --libs`
 
 tests/kerneltest: tests/kerneltest.cpp
-	$(CXX) tests/kerneltest.cpp -o tests/kerneltest `byteimage-config --cflags --libs`
+	$(CXX) tests/kerneltest.cpp -o tests/kerneltest -g `byteimage-config --cflags --libs`
 
 tests/templatetest: tests/templatetest.cpp
-	$(CXX) tests/templatetest.cpp -o tests/templatetest `byteimage-config --cflags --libs`
+	$(CXX) tests/templatetest.cpp -o tests/templatetest -g `byteimage-config --cflags --libs`
 
 tests/matrixtest: tests/matrixtest.cpp
-	$(CXX) tests/matrixtest.cpp -o tests/matrixtest `byteimage-config --cflags --libs`
+	$(CXX) tests/matrixtest.cpp -o tests/matrixtest -g `byteimage-config --cflags --libs`
 
 tests/ransactest: tests/ransactest.cpp
-	$(CXX) tests/ransactest.cpp -o tests/ransactest `byteimage-config --cflags --libs`
+	$(CXX) tests/ransactest.cpp -o tests/ransactest -g `byteimage-config --cflags --libs`
 
 tests/rendertest: tests/rendertest.cpp
-	$(CXX) tests/rendertest.cpp -o tests/rendertest `byteimage-config --cflags --libs`
+	$(CXX) tests/rendertest.cpp -o tests/rendertest -g `byteimage-config --cflags --libs`
 
 tests/beziertest: tests/beziertest.cpp
-	$(CXX) tests/beziertest.cpp -o tests/beziertest `byteimage-config --cflags --libs`
+	$(CXX) tests/beziertest.cpp -o tests/beziertest -g `byteimage-config --cflags --libs`
 
 tests/cholestest: tests/cholestest.cpp
-	$(CXX) tests/cholestest.cpp -o tests/cholestest `byteimage-config --cflags --libs`
+	$(CXX) tests/cholestest.cpp -o tests/cholestest -g `byteimage-config --cflags --libs`
 
 tests/svdtest: tests/svdtest.cpp
-	$(CXX) tests/svdtest.cpp -o tests/svdtest `byteimage-config --cflags --libs`
+	$(CXX) tests/svdtest.cpp -o tests/svdtest -g `byteimage-config --cflags --libs`
 
 clean-tests:
 	rm -f tests/*~ $(TESTS)
