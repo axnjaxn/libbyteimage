@@ -30,14 +30,45 @@ inline double dabs(double d) {return (d >= 0)? d : -d;}
  */ 
 double computeWilkinson(double a, double b, double c) {
   double r = (a - c) / 2;
-  return c + dabs(b * b / (dabs(r) + sqrt(r * r + b * b)));
+  double s = (r >= 0)? 1.0 : -1.0;
+  return c - s * b * b / (dabs(r) + sqrt(r * r + b * b)) ;
 }
 
 /*
  * Derived geometrically
  */
-double computeRotation(double a, double b) {
-  return -atan2(b, a);
+//double computeRotation(double a, double b) {return -atan2(b, a);}
+void rot(double a, double b, double& cs, double& sn, double& r) {
+  double t, tt;
+  if (a == 0.0) {
+    cs = 0.0;
+    sn = 1.0;
+    r = b;
+  }
+  else if (dabs(a) > dabs(b)) {
+    t = b / a;
+    tt = sqrt(1 + t * t);
+    cs = 1.0 / tt;
+    sn = t * cs;
+    r - a * tt;
+  }
+  else {
+    t = a / b;
+    tt = sqrt(1 + t * t);
+    sn = 1.0 / tt;
+    cs = t * sn;
+    r = b * tt;
+  }
+}
+
+Matrix givensCS(int n, int i, int j, double cs, double sn) {
+  Matrix G(Matrix::identity(n));
+  
+  G.at(i, i) = G.at(j, j) = cs;
+  G.at(i, j) = -sn;
+  G.at(j, i) = sn;
+
+  return G;
 }
 
 inline double sq(double d) {return d * d;}
@@ -54,6 +85,7 @@ void chase(Matrix& J, Matrix& U, Matrix& V, int p, int q) {
   const int m = J.rows(), n = J.cols();
   const int N = n - q;
 
+  /*
   double w, th;
   Matrix S(m), T(n);
   
@@ -87,6 +119,20 @@ void chase(Matrix& J, Matrix& U, Matrix& V, int p, int q) {
     J = S * J;
     U = U * S.trans();
   }
+
+  */
+
+  double oldcs, oldsn, h, cs, sn, r;
+  oldcs = 1.0;
+  cs = 1.0;
+  for (int i = p; i < N - 1; i++) {
+    rot(J.at(i, i) * cs, J.at(i, i + 1), cs, sn, r);
+    if (i != p) J.at(i - 1, i) = oldsn * r;
+    rot(oldcs * r, J.at(i + 1, i + 1) * sn, oldcs, oldsn, J.at(i, i));
+  }
+  h = J.at(N - 1, N - 1) * cs;
+  J.at(N - 2, N - 1) = h * oldsn;
+  J.at(N - 1, N - 1) = h * oldcs;
 }
 
 /*
@@ -118,6 +164,7 @@ Matrix svd(const Matrix& A, Matrix& U, Matrix& V) {
      */
     
     //B3,3 (q x q) is the largest diagonal at the bottom-right of J
+#if 1
     for (q = 0; q < n - 1 && bn(J, n - q) == 0.0; q++);
     if (q == n - 1) break;//Convergence
     printf("q: %d\n", q);
@@ -126,6 +173,9 @@ Matrix svd(const Matrix& A, Matrix& U, Matrix& V) {
     for (p = n - q; p > 0 && bn(J, p - 1) != 0.0; p--);
     if (p == 1) p = 0;
     printf("p: %d\n", p);
+#else
+    p = q = 0;
+#endif
 
     printf("J so far:\n");
     printMatrix(J);
@@ -134,6 +184,7 @@ Matrix svd(const Matrix& A, Matrix& U, Matrix& V) {
     /*
      * Select rotation sequence
      */
+#if 1
     for (i = p; i < n - q; i++) {
       if (an(J, i) == 0.0) {
 	annihilate(J, U, V, p, q, i);
@@ -143,6 +194,9 @@ Matrix svd(const Matrix& A, Matrix& U, Matrix& V) {
     }
     if (i == n - q)
       chase(J, U, V, p, q);
+#else
+    chase(J, U, V, p, q);
+#endif
   }
 }
 
