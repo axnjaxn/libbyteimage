@@ -26,20 +26,35 @@ inline void pause() {getchar();}
 inline double dabs(double d) {return (d >= 0)? d : -d;}
 
 /*
- * Derived from 8.11.2 of Datta
- */ 
-double computeWilkinson(double a, double b, double c) {
-  double r = (a - c) / 2;
-  double s = (r >= 0)? 1.0 : -1.0;
-  return c - s * b * b / (dabs(r) + sqrt(r * r + b * b)) ;
+ * Final draft implementation
+ */
+
+void pqBlock(const Matrix& J, int& p, int& q) {
+  const int n = J.cols();
+
+  //B3,3 (q x q) is the largest diagonal at the bottom-right of J
+  for (q = 0; q < n - 1 && J.at(n - q - 2, n - q - 1) == 0.0; q++);
+  if (q == n - 1) q = n;
+  
+  //B1,1 (p x p) is constructed so that B2,2 is the largest strictly bidiagonal block
+  for (p = n - q; p > 0 && J.at(p - 2, p - 1) != 0.0; p--);
+  if (p == 1) p = 0;
 }
 
-/*
- * Derived geometrically
- */
-//double computeRotation(double a, double b) {return -atan2(b, a);}
-void rot(double a, double b, double& cs, double& sn, double& r) {
-  double t, tt;
+Matrix givensCS(int n, int i, int j, double cs, double sn) {
+  Matrix G(Matrix::identity(n));
+  
+  G.at(i, i) = G.at(j, j) = cs;
+  G.at(i, j) = -sn;
+  G.at(j, i) = sn;
+
+  return G;
+}
+
+//Adapted from DK90
+double rot(double a, double b, double& cs, double& sn) {
+  double t, tt, r;
+
   if (a == 0.0) {
     cs = 0.0;
     sn = 1.0;
@@ -59,17 +74,12 @@ void rot(double a, double b, double& cs, double& sn, double& r) {
     cs = t * sn;
     r = b * tt;
   }
+
+  return r;
 }
 
-Matrix givensCS(int n, int i, int j, double cs, double sn) {
-  Matrix G(Matrix::identity(n));
-  
-  G.at(i, i) = G.at(j, j) = cs;
-  G.at(i, j) = -sn;
-  G.at(j, i) = sn;
-
-  return G;
-}
+//TODO: Figure out how this works from GKR
+void eliminateBeta(Matrix& J, Matrix& U, Matrix& V, int p, int q, int k) { }
 
 inline double sq(double d) {return d * d;}
 inline double& an(Matrix& J, int n) {return J.at(n, n);}
@@ -77,63 +87,70 @@ inline double& bn(Matrix& J, int n) {return J.at(n - 1, n);}
 inline double an2(Matrix& J, int n) {return sq(an(J, n));}
 inline double bn2(Matrix& J, int n) {return sq(bn(J, n));}
 
-void annihilate(Matrix& J, Matrix& U, Matrix& V, int p, int q, int k) {
-  //TODO
+/*
+ * Derived from 8.11.2 of Datta
+ */ 
+double computeWilkinson(double a, double b, double c) {
+  double r = (a - c) / 2;
+  double s = (r >= 0)? 1.0 : -1.0;
+  return c - s * b * b / (dabs(r) + sqrt(r * r + b * b)) ;
 }
 
 void chase(Matrix& J, Matrix& U, Matrix& V, int p, int q) {
   const int m = J.rows(), n = J.cols();
   const int N = n - q;
 
-  /*
-  double w, th;
+  double w, cs, sn;
   Matrix S(m), T(n);
   
   //Compute Wilkinson shift and T2
-  w = computeWilkinson(an2(J, N - 2) + bn2(J, N - 2), 
-		       an(J, N - 2) * bn(J, N - 1), 
-		       an2(J, N - 1) + bn2(J, N - 1));
+  w = computeWilkinson(sq(J.at(N - 2, N - 2)) + sq(J.at(N - 2, N - 1)),
+		       J.at(N - 2, N - 1) * J.at(N - 1, N - 1),
+		       sq(J.at(N - 1, N - 1)));
+  printf("Wilkinson: %lf\n", w);
 
-  th = computeRotation(an2(J, p) - w, 
-		       an(J, p) * bn(J, p + 1));
-  T = Matrix::givens(n, p, p + 1, th);
+  rot(an2(J, p) - w, an(J, p) * bn(J, p + 1), cs, sn);
+  T = givensCS(n, p, p + 1, cs, sn);
   
   J = J * T;
   V = V * T;
+
+  printf("J:\n");
+  printMatrix(J);
+  pause();
   
   //Perform Givens rotation to chase the values down the off-bidiagonals
   for (int i = p; i < N - 1; i++) {
     if (i > p) {
       //Compute Ti, annihilating values above superdiagonal values
-      th = -computeRotation(J.at(i - 1, i), J.at(i - 1, i + 1));
-      T = Matrix::givens(n, i, i + 1, th);
+      rot(J.at(i - 1, i), J.at(i - 1, i + 1), cs, sn);
+      T = givensCS(n, i, i + 1, cs, sn);
+
+      printf("Computed T\n");
 
       J = J * T;
       V = V * T;
+
+      printf("J:\n");
+      printMatrix(J);
+      pause();
     }
 
     //Compute Si^T, annihilating subdiagonal values
-    th = computeRotation(J.at(i, i), J.at(i + 1, i));
-    S = Matrix::givens(m, i, i + 1, th);
+    rot(J.at(i, i), J.at(i + 1, i), cs, sn);
+    S = givensCS(m, i, i + 1, cs, -sn);
+
+    printf("Computed S\n");
 
     J = S * J;
     U = U * S.trans();
-  }
 
-  */
-
-  double oldcs, oldsn, h, cs, sn, r;
-  oldcs = 1.0;
-  cs = 1.0;
-  for (int i = p; i < N - 1; i++) {
-    rot(J.at(i, i) * cs, J.at(i, i + 1), cs, sn, r);
-    if (i != p) J.at(i - 1, i) = oldsn * r;
-    rot(oldcs * r, J.at(i + 1, i + 1) * sn, oldcs, oldsn, J.at(i, i));
+    printf("J:\n");
+    printMatrix(J);
+    pause();
   }
-  h = J.at(N - 1, N - 1) * cs;
-  J.at(N - 2, N - 1) = h * oldsn;
-  J.at(N - 1, N - 1) = h * oldcs;
 }
+
 
 /*
  * Compute singular value decomposition by GR-SVD
@@ -147,57 +164,40 @@ Matrix svd(const Matrix& A, Matrix& U, Matrix& V) {
 
   //Perform Golub-Kahan bidiagonalization
   Matrix J = A.bidiag(U, V);
+  int i, p, q;
 
-  int i, p, q;//dimensions of square blocks B1,1 and B3,3 resp.
-  for (;;) {
-    /*
-     * Deflate superdiagonal (beta) values
-     */
+  while (true) {
+    //Test for beta-convergence
     for (i = 0; i < n - 1; i++)
-      if (dabs(bn(J, i + 1)) <= eps * (dabs(an(J, i)) + dabs(an(J, i + 1)))) {
-	printf("Deflated beta %d\n", i + 1);
-	bn(J, i + 1) = 0.0;
+      if (dabs(J.at(i, i + 1)) <= eps * (dabs(J.at(i, i)) + dabs(J.at(i + 1, i + 1))))
+	J.at(i, i + 1) = 0.0;
+
+    //Block the matrix into a diagonal, a strictly bidiagonal, and a remainder block
+    pqBlock(J, p, q);
+
+    printf("p: %d q: %d\n", p, q);
+
+    //Test if the entire matrix is diagonal
+    if (q == n) break;
+
+    //Determine a set of rotations to perform
+    for (i = p; i < n - q; i++)
+      if (J.at(i, i) == 0.0) {
+	printf("Don't have this code yet.\n");
+	eliminateBeta(J, U, V, p, q, i);//This set of rotations eliminates one superdiagonal value
+	break;
       }
-    
-    /*
-     * Compute dimensions of blocks
-     */
-    
-    //B3,3 (q x q) is the largest diagonal at the bottom-right of J
-#if 1
-    for (q = 0; q < n - 1 && bn(J, n - q) == 0.0; q++);
-    if (q == n - 1) break;//Convergence
-    printf("q: %d\n", q);
+    if (i == n - q)
+      chase(J, U, V, p, q);//This set of rotations decreases the superdiagonal values towards convergence
 
-    //B1,1 (p x p) is constructed so that B2,2 is the largest strictly bidiagonal block
-    for (p = n - q; p > 0 && bn(J, p - 1) != 0.0; p--);
-    if (p == 1) p = 0;
-    printf("p: %d\n", p);
-#else
-    p = q = 0;
-#endif
-
-    printf("J so far:\n");
+    printf("---Iteration finished---\n");
     printMatrix(J);
     pause();
 
-    /*
-     * Select rotation sequence
-     */
-#if 1
-    for (i = p; i < n - q; i++) {
-      if (an(J, i) == 0.0) {
-	annihilate(J, U, V, p, q, i);
-	printMatrix(J);
-	return J;
-      }
-    }
-    if (i == n - q)
-      chase(J, U, V, p, q);
-#else
-    chase(J, U, V, p, q);
-#endif
+    //TODO: n - p - q == 2?
   }
+
+  return J;
 }
 
 /*
