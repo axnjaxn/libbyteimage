@@ -26,9 +26,14 @@ inline void pause() {getchar();}
 inline double dabs(double d) {return (d >= 0)? d : -d;}
 
 /*
- * Final draft implementation
+ * Divide the matrix into three blocks:
+ * [ B1,1   0   0   ] p rows
+ * [   0  B2,2  0   ] n - q - p rows
+ * [   0    0  B3,3 ] q rows
+ * B3,3 is the largest strictly diagonal block, hence q is maximized
+ * B2,2 is the largest strictly bidiagonal block, hence p is minimized
+ * Each pass of the Golub-Reinsch QR operates on B2,2.
  */
-
 void pqBlock(const Matrix& J, int& p, int& q) {
   const int n = J.cols();
 
@@ -41,6 +46,11 @@ void pqBlock(const Matrix& J, int& p, int& q) {
   if (p == 1) p = 0;
 }
 
+/*
+ * Plug cosines and sines of an angle
+ * into a Givens rotation matrix of size n
+ * Note: passing in -sn instead of sn is equivalent to a transverse
+ */
 Matrix givensCS(int n, int i, int j, double cs, double sn) {
   Matrix G(Matrix::identity(n));
   
@@ -51,7 +61,12 @@ Matrix givensCS(int n, int i, int j, double cs, double sn) {
   return G;
 }
 
-//Adapted from DK90
+/*
+ * Adapted from DK90:
+ * Computes cosine and sine of an angle such that
+ * the resultant rotation eliminates b. 
+ * Returns the new value for a: sqrt(a^2 + b^2)
+ */
 double rot(double a, double b, double& cs, double& sn) {
   double t, tt, r;
 
@@ -81,6 +96,12 @@ double rot(double a, double b, double& cs, double& sn) {
 //TODO: Figure out how this works from GKR
 void eliminateBeta(Matrix& J, Matrix& U, Matrix& V, int p, int q, int k) { }
 
+/*
+ * Convenience functions
+ * an is the nth diagonal, starting at 0
+ * bn is the nth superdiagonal, so that an and bn are on the same column
+ * (hence, b0 is undefined)
+ */
 inline double sq(double d) {return d * d;}
 inline double& an(Matrix& J, int n) {return J.at(n, n);}
 inline double& bn(Matrix& J, int n) {return J.at(n - 1, n);}
@@ -89,6 +110,10 @@ inline double bn2(Matrix& J, int n) {return sq(bn(J, n));}
 
 /*
  * Derived from 8.11.2 of Datta
+ * This finds the eigenvalue of:
+ * [ a b ]
+ * [ b c ]
+ * closer to c.
  */ 
 double computeWilkinson(double a, double b, double c) {
   double r = (a - c) / 2;
@@ -96,6 +121,12 @@ double computeWilkinson(double a, double b, double c) {
   return c - s * b * b / (dabs(r) + sqrt(r * r + b * b)) ;
 }
 
+/*
+ * "Chase the bulge" down J.
+ * As a result of this method, J will remain bidiagonal,
+ * but off-diagonals will be reduced, and U & V accumulate the rotations.
+ * p and q are matrix dimensions of the block representation of J.
+ */
 void chase(Matrix& J, Matrix& U, Matrix& V, int p, int q) {
   const int m = J.rows(), n = J.cols();
   const int N = n - q;
@@ -151,7 +182,6 @@ void chase(Matrix& J, Matrix& U, Matrix& V, int p, int q) {
   }
 }
 
-
 /*
  * Compute singular value decomposition by GR-SVD
  * Matrix is bidiagonalized by Golub and Kahan,
@@ -193,8 +223,6 @@ Matrix svd(const Matrix& A, Matrix& U, Matrix& V) {
     printf("---Iteration finished---\n");
     printMatrix(J);
     pause();
-
-    //TODO: n - p - q == 2?
   }
 
   return J;
