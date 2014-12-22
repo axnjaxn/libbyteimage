@@ -93,8 +93,18 @@ double rot(double a, double b, double& cs, double& sn) {
   return r;
 }
 
-//TODO: Figure out how this works from GKR
-void eliminateBeta(Matrix& J, Matrix& U, Matrix& V, int p, int q, int k) { }
+/*
+ * A series of rotations can be used to zero a row if its diagonal entry is zero
+ * Golub and Van Loan 1996 gives the following method
+ */
+void eliminateBeta(Matrix& J, Matrix& U, Matrix& V, int p, int q, int k) {
+  printf("Eliminating beta.\n");
+  printf("Initial:\n");
+  printMatrix(J);
+  pause();
+
+    
+}
 
 /*
  * Convenience functions
@@ -138,17 +148,12 @@ void chase(Matrix& J, Matrix& U, Matrix& V, int p, int q) {
   w = computeWilkinson(sq(J.at(N - 2, N - 2)) + sq(J.at(N - 2, N - 1)),
 		       J.at(N - 2, N - 1) * J.at(N - 1, N - 1),
 		       sq(J.at(N - 1, N - 1)));
-  printf("Wilkinson: %lf\n", w);
 
   rot(an2(J, p) - w, an(J, p) * bn(J, p + 1), cs, sn);
   T = givensCS(n, p, p + 1, cs, sn);
   
   J = J * T;
   V = V * T;
-
-  printf("J:\n");
-  printMatrix(J);
-  pause();
   
   //Perform Givens rotation to chase the values down the off-bidiagonals
   for (int i = p; i < N - 1; i++) {
@@ -157,28 +162,16 @@ void chase(Matrix& J, Matrix& U, Matrix& V, int p, int q) {
       rot(J.at(i - 1, i), J.at(i - 1, i + 1), cs, sn);
       T = givensCS(n, i, i + 1, cs, sn);
 
-      printf("Computed T\n");
-
       J = J * T;
       V = V * T;
-
-      printf("J:\n");
-      printMatrix(J);
-      pause();
     }
 
     //Compute Si^T, annihilating subdiagonal values
     rot(J.at(i, i), J.at(i + 1, i), cs, sn);
     S = givensCS(m, i, i + 1, cs, -sn);
 
-    printf("Computed S\n");
-
     J = S * J;
     U = U * S.trans();
-
-    printf("J:\n");
-    printMatrix(J);
-    pause();
   }
 }
 
@@ -196,6 +189,9 @@ Matrix svd(const Matrix& A, Matrix& U, Matrix& V) {
   Matrix J = A.bidiag(U, V);
   int i, p, q;
 
+  printMatrix(J);
+  pause();
+
   while (true) {
     //Test for beta-convergence
     for (i = 0; i < n - 1; i++)
@@ -205,24 +201,17 @@ Matrix svd(const Matrix& A, Matrix& U, Matrix& V) {
     //Block the matrix into a diagonal, a strictly bidiagonal, and a remainder block
     pqBlock(J, p, q);
 
-    printf("p: %d q: %d\n", p, q);
-
     //Test if the entire matrix is diagonal
     if (q == n) break;
 
     //Determine a set of rotations to perform
     for (i = p; i < n - q; i++)
       if (J.at(i, i) == 0.0) {
-	printf("Don't have this code yet.\n");
 	eliminateBeta(J, U, V, p, q, i);//This set of rotations eliminates one superdiagonal value
 	break;
       }
     if (i == n - q)
       chase(J, U, V, p, q);//This set of rotations decreases the superdiagonal values towards convergence
-
-    printf("---Iteration finished---\n");
-    printMatrix(J);
-    pause();
   }
 
   return J;
@@ -239,14 +228,18 @@ int main(int argc, char* argv[]) {
   A.at(1, 0) = 0.0; A.at(1, 1) = 1.0;
   A.at(2, 0) = 1.0; A.at(2, 1) = 0.0;
 #else
-  Matrix A(3, 3);
-  A.at(0, 0) = 1; A.at(0, 1) = 2;
-  A.at(1, 1) = 2; A.at(1, 2) = 3;
-  A.at(2, 2) = 1;
+  Matrix A(5);
+  for (int i = 0; i < 5; i++) {
+    A.at(i, i) = i + 1;
+    if (i < 4)
+      A.at(i, i + 1) = i + 2;
+  }
+  A.at(1, 1) = 0.0;
 #endif
 
   printf("A:\n");
   printMatrix(A);
+  pause();
 
   Matrix U, W, V;
   W = svd(A, U, V);
