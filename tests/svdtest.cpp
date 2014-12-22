@@ -42,8 +42,7 @@ void pqBlock(const Matrix& J, int& p, int& q) {
   if (q == n - 1) q = n;
   
   //B1,1 (p x p) is constructed so that B2,2 is the largest strictly bidiagonal block
-  for (p = n - q; p > 0 && J.at(p - 2, p - 1) != 0.0; p--);
-  if (p == 1) p = 0;
+  for (p = n - q - 1; p > 0 && J.at(p - 1, p) != 0.0; p--);
 }
 
 /*
@@ -98,12 +97,30 @@ double rot(double a, double b, double& cs, double& sn) {
  * Golub and Van Loan 1996 gives the following method
  */
 void eliminateBeta(Matrix& J, Matrix& U, Matrix& V, int p, int q, int k) {
+  const int m = J.rows(), n = J.cols();
+
   printf("Eliminating beta.\n");
   printf("Initial:\n");
   printMatrix(J);
   pause();
 
-    
+  Matrix S;
+  double cs, sn;
+  if (k + 1 < n) {
+    for (int i = k + 1; i < n; i++) {
+      rot(J.at(k, i), J.at(i, i), cs, sn);
+      S = givensCS(m, k, i, sn, cs);
+      J = S * J;
+      U = U * S.trans();
+
+      printf("J:\n");
+      printMatrix(J);
+      pause();
+    }
+  }
+  else {
+
+  }
 }
 
 /*
@@ -173,6 +190,10 @@ void chase(Matrix& J, Matrix& U, Matrix& V, int p, int q) {
     J = S * J;
     U = U * S.trans();
   }
+
+  printf("J post-chase:\n");
+  printMatrix(J);
+  pause();
 }
 
 /*
@@ -186,13 +207,10 @@ Matrix svd(const Matrix& A, Matrix& U, Matrix& V) {
   const int m = A.rows(), n = A.cols();
 
   //Perform Golub-Kahan bidiagonalization
-  Matrix J = A.bidiag(U, V);
+  Matrix J = A;//.bidiag(U, V);
   int i, p, q;
 
-  printMatrix(J);
-  pause();
-
-  while (true) {
+  while (true) { 
     //Test for beta-convergence
     for (i = 0; i < n - 1; i++)
       if (dabs(J.at(i, i + 1)) <= eps * (dabs(J.at(i, i)) + dabs(J.at(i + 1, i + 1))))
@@ -200,6 +218,11 @@ Matrix svd(const Matrix& A, Matrix& U, Matrix& V) {
 
     //Block the matrix into a diagonal, a strictly bidiagonal, and a remainder block
     pqBlock(J, p, q);
+
+    printf("J:\n");
+    printMatrix(J);
+    printf("p: %d q: %d\n", p, q);
+    pause();
 
     //Test if the entire matrix is diagonal
     if (q == n) break;
