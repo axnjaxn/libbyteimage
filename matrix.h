@@ -47,6 +47,7 @@ public:
   
   Matrix cholesky() const;
   Matrix bidiag(Matrix& P, Matrix& Q) const;
+  Matrix svd(Matrix& U, Matrix& V, bool reorder = false) const;
 
   inline friend double getX(const Matrix& v) {return v.data[0] / v.data[2];}
   inline friend double getY(const Matrix& v) {return v.data[1] / v.data[2];}
