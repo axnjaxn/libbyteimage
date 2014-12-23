@@ -39,30 +39,22 @@ Matrix bidiag(const Matrix& A, Matrix& P, Matrix& Q) {
     alpha = length(w);
     if (alpha)
       u = w / alpha;
-    else 
-      u = Matrix(m, 1);
+    else
+      u = P.slice(0, m, k, k);
 
     w = AT * u - alpha * v;
     beta = length(w);
     if (beta)
       v = w / beta;
-    else 
-      v = Matrix(n, 1);
+    else if (k < n - 1)
+	v = Q.slice(0, n, k + 1, k + 1);
 
     P.replace(u, 0, k);
     J.at(k, k) = alpha;
-
-    printf("Alpha replaced:\n");
-    printMatrix(J);
-    pause();
     
     if (k < n - 1) {
       Q.replace(v, 0, k + 1);
       J.at(k, k + 1) = beta;
-
-      printf("Beta replaced:\n");
-      printMatrix(J);
-      pause();
     }
   }
 
@@ -145,43 +137,26 @@ double rot(double a, double b, double& cs, double& sn) {
  */
 void eliminateBeta(Matrix& J, Matrix& U, Matrix& V, int p, int q, int k) {
   const int m = J.rows(), n = J.cols();
-  const int N = n - q;  
-
-  printf("Eliminating beta ( k = %d N = %d ).\n", k, N);
-  printf("Initial:\n");
-  printMatrix(J);
-  pause();
+  const int N = n - q;
 
   double cs, sn;
   if (k + 1 < N) {
-    printf("Row elimination.\n");
     Matrix S;
     for (int i = k + 1; i < N; i++) {
       rot(J.at(k, i), J.at(i, i), cs, sn);
       S = givensCS(m, k, i, sn, cs);
       J = S * J;
       U = U * S.trans();
-
-      printf("J:\n");
-      printMatrix(J);
-      pause();
     }
   }
   else {
-    printf("Column elimination.\n");
     Matrix T;
     for (int i = k - 1; i >= 0; i--) {
-      printf("i: %d k: %d\n", i, k);
-
       rot(J.at(i, i), J.at(i, k), cs, sn);
       T = givensCS(n, i, k, cs, sn);
 
       J = J * T;
       V = V * T;
-
-      printf("J:\n");
-      printMatrix(J);
-      pause();
     }
   }
 }
@@ -253,10 +228,6 @@ void chase(Matrix& J, Matrix& U, Matrix& V, int p, int q) {
     J = S * J;
     U = U * S.trans();
   }
-
-  printf("J post-chase:\n");
-  printMatrix(J);
-  pause();
 }
 
 /*
@@ -270,8 +241,8 @@ Matrix svd(const Matrix& A, Matrix& U, Matrix& V) {
   const int m = A.rows(), n = A.cols();
 
   //Perform Golub-Kahan bidiagonalization
-  //Matrix J = bidiag(A, U, V);
-  Matrix J = A; U = Matrix::identity(m); V = Matrix::identity(n);//Bidiagonalization is broken
+  Matrix J = bidiag(A, U, V);
+  //Matrix J = A; U = Matrix::identity(m); V = Matrix::identity(n);//Bidiagonalization is broken
   int i, p, q;
 
   while (true) { 
@@ -282,11 +253,6 @@ Matrix svd(const Matrix& A, Matrix& U, Matrix& V) {
 
     //Block the matrix into a diagonal, a strictly bidiagonal, and a remainder block
     pqBlock(J, p, q);
-
-    printf("J:\n");
-    printMatrix(J);
-    printf("p: %d q: %d\n", p, q);
-    pause();
 
     //Test if the entire matrix is diagonal
     if (q == n) break;
@@ -321,7 +287,7 @@ int main(int argc, char* argv[]) {
     if (i < 4)
       A.at(i, i + 1) = i + 2;
   }
-  A.at(1, 1) = 0.0;
+  A.at(4, 4) = 0.0;
 #endif
 
   printf("A:\n");
@@ -331,14 +297,14 @@ int main(int argc, char* argv[]) {
   Matrix U, W, V;
   W = svd(A, U, V);
 
-  printf("W:\n");
-  printMatrix(W);
-
   printf("U:\n");
   printMatrix(U);
 
   printf("V:\n");
   printMatrix(V);
+
+  printf("W:\n");
+  printMatrix(W);
 
   printf("U W V*:\n");
   printMatrix(U * W * V.trans());
