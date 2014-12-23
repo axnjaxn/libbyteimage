@@ -23,6 +23,52 @@ inline void pause() {getchar();}
 #include <cmath>
 #include <cfloat>
 
+Matrix bidiag(const Matrix& A, Matrix& P, Matrix& Q) {
+  const int m = A.rows(), n = A.cols();
+
+  Matrix u(m, 1), v(n, 1), w, AT = A.trans(), J(m, n);
+  double alpha, beta;
+  
+  P = Matrix::identity(m);
+  Q = Matrix::identity(n);
+  v.at(0) = 1.0;
+  beta = 0.0;
+
+  for (int k = 0; k < n; k++) {
+    w = A * v - beta * u;
+    alpha = length(w);
+    if (alpha)
+      u = w / alpha;
+    else 
+      u = Matrix(m, 1);
+
+    w = AT * u - alpha * v;
+    beta = length(w);
+    if (beta)
+      v = w / beta;
+    else 
+      v = Matrix(n, 1);
+
+    P.replace(u, 0, k);
+    J.at(k, k) = alpha;
+
+    printf("Alpha replaced:\n");
+    printMatrix(J);
+    pause();
+    
+    if (k < n - 1) {
+      Q.replace(v, 0, k + 1);
+      J.at(k, k + 1) = beta;
+
+      printf("Beta replaced:\n");
+      printMatrix(J);
+      pause();
+    }
+  }
+
+  return J;
+}
+
 inline double dabs(double d) {return (d >= 0)? d : -d;}
 
 /*
@@ -43,6 +89,7 @@ void pqBlock(const Matrix& J, int& p, int& q) {
   
   //B1,1 (p x p) is constructed so that B2,2 is the largest strictly bidiagonal block
   for (p = n - q - 1; p > 0 && J.at(p - 1, p) != 0.0; p--);
+  if (p < 0) p = 0;
 }
 
 /*
@@ -98,16 +145,18 @@ double rot(double a, double b, double& cs, double& sn) {
  */
 void eliminateBeta(Matrix& J, Matrix& U, Matrix& V, int p, int q, int k) {
   const int m = J.rows(), n = J.cols();
+  const int N = n - q;  
 
-  printf("Eliminating beta.\n");
+  printf("Eliminating beta ( k = %d N = %d ).\n", k, N);
   printf("Initial:\n");
   printMatrix(J);
   pause();
 
-  Matrix S;
   double cs, sn;
-  if (k + 1 < n) {
-    for (int i = k + 1; i < n; i++) {
+  if (k + 1 < N) {
+    printf("Row elimination.\n");
+    Matrix S;
+    for (int i = k + 1; i < N; i++) {
       rot(J.at(k, i), J.at(i, i), cs, sn);
       S = givensCS(m, k, i, sn, cs);
       J = S * J;
@@ -119,7 +168,21 @@ void eliminateBeta(Matrix& J, Matrix& U, Matrix& V, int p, int q, int k) {
     }
   }
   else {
+    printf("Column elimination.\n");
+    Matrix T;
+    for (int i = k - 1; i >= 0; i--) {
+      printf("i: %d k: %d\n", i, k);
 
+      rot(J.at(i, i), J.at(i, k), cs, sn);
+      T = givensCS(n, i, k, cs, sn);
+
+      J = J * T;
+      V = V * T;
+
+      printf("J:\n");
+      printMatrix(J);
+      pause();
+    }
   }
 }
 
@@ -207,7 +270,8 @@ Matrix svd(const Matrix& A, Matrix& U, Matrix& V) {
   const int m = A.rows(), n = A.cols();
 
   //Perform Golub-Kahan bidiagonalization
-  Matrix J = A;//.bidiag(U, V);
+  //Matrix J = bidiag(A, U, V);
+  Matrix J = A; U = Matrix::identity(m); V = Matrix::identity(n);//Bidiagonalization is broken
   int i, p, q;
 
   while (true) { 
