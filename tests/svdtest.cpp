@@ -238,13 +238,44 @@ void chase(Matrix& J, Matrix& U, Matrix& V, int p, int q) {
   }
 }
 
+void swapColumns(Matrix& A, int i, int j) {
+  double t;
+  for (int k = 0; k < A.rows(); k++) {
+    t = A.at(k, i);
+    A.at(k, i) = A.at(k, j);
+    A.at(k, j) = t;
+  }
+}
+
+void swapDiag(Matrix& A, int i, int j) {
+  double t = A.at(i, i);
+  A.at(i, i) = A.at(j, j);
+  A.at(j, j) = t;
+}
+
+void reorderSVD(Matrix& U, Matrix& W, Matrix& V) {
+  const int m = U.rows(), n = V.rows();
+  int i, j, k;
+
+  for (i = 0; i < n - 1; i++) {
+    k = i;
+    for (j = i + 1; j < n; j++)
+      if (dabs(W.at(j, j)) > dabs(W.at(k, k))) k = j;
+    if (i != k) {
+      swapColumns(U, i, k);
+      swapDiag(W, i, k);
+      swapColumns(V, i, k);
+    }
+  }
+}
+
 /*
  * Compute singular value decomposition by GR-SVD
  * Matrix is bidiagonalized by Golub and Kahan,
  * then deflated by QR iteration.
  * Reference: Handbook of Linear Algebra, CRC press, 2007 ed.
  */
-Matrix svd(const Matrix& A, Matrix& U, Matrix& V) {
+Matrix svd(const Matrix& A, Matrix& U, Matrix& V, bool reorder = 0) {
   const double eps = DBL_EPSILON;
   const int m = A.rows(), n = A.cols();
 
@@ -255,7 +286,6 @@ Matrix svd(const Matrix& A, Matrix& U, Matrix& V) {
   printMatrix(J);
   pause();
 
-  //Matrix J = A; U = Matrix::identity(m); V = Matrix::identity(n);//Bidiagonalization is broken
   int i, p, q;
 
   while (true) { 
@@ -287,6 +317,8 @@ Matrix svd(const Matrix& A, Matrix& U, Matrix& V) {
     pause();
   }
 
+  if (reorder) reorderSVD(U, J, V);
+
   return J;
 }
 
@@ -301,7 +333,7 @@ int main(int argc, char* argv[]) {
   A.at(1, 0) = 0.0; A.at(1, 1) = 1.0;
   A.at(2, 0) = 1.0; A.at(2, 1) = 0.0;
 #else
-  Matrix A(5);
+  Matrix A(6, 5);
   for (int i = 0; i < 5; i++) {
     A.at(i, i) = i + 1;
     if (i < 4)
@@ -315,7 +347,7 @@ int main(int argc, char* argv[]) {
   pause();
 
   Matrix U, W, V;
-  W = svd(A, U, V);
+  W = svd(A, U, V, 1);
 
   printf("U:\n");
   printMatrix(U);
