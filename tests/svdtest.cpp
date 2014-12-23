@@ -150,13 +150,21 @@ void eliminateBeta(Matrix& J, Matrix& U, Matrix& V, int p, int q, int k) {
     }
   }
   else {
+    printf("Performed column elimination\n");
     Matrix T;
     for (int i = k - 1; i >= 0; i--) {
-      rot(J.at(i, i), J.at(i, k), cs, sn);
+      if (rot(J.at(i, i), J.at(i, k), cs, sn) < 0) {
+	cs = -cs;
+	sn = -sn;
+      }
       T = givensCS(n, i, k, cs, sn);
 
       J = J * T;
       V = V * T;
+
+      printf("J:\n");
+      printMatrix(J);
+      pause();
     }
   }
 }
@@ -242,6 +250,11 @@ Matrix svd(const Matrix& A, Matrix& U, Matrix& V) {
 
   //Perform Golub-Kahan bidiagonalization
   Matrix J = bidiag(A, U, V);
+
+  printf("Bidiagonalized:\n");
+  printMatrix(J);
+  pause();
+
   //Matrix J = A; U = Matrix::identity(m); V = Matrix::identity(n);//Bidiagonalization is broken
   int i, p, q;
 
@@ -260,11 +273,18 @@ Matrix svd(const Matrix& A, Matrix& U, Matrix& V) {
     //Determine a set of rotations to perform
     for (i = p; i < n - q; i++)
       if (J.at(i, i) == 0.0) {
+	printf("Performed beta elimination.\n");
 	eliminateBeta(J, U, V, p, q, i);//This set of rotations eliminates one superdiagonal value
 	break;
       }
-    if (i == n - q)
+    if (i == n - q) {
+      printf("Performed chase.\n");
       chase(J, U, V, p, q);//This set of rotations decreases the superdiagonal values towards convergence
+    }
+
+    printf("J:\n");
+    printMatrix(J);
+    pause();
   }
 
   return J;
