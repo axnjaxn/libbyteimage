@@ -32,6 +32,16 @@ else
 CFG_CFLAGS += -D_BYTEIMAGE_NO_MAGICK
 endif
 
+ifneq (, $(shell freetype-config --version))
+BIN += font.o
+INC += font.h
+CFG_CFLAGS += `freetype-config --cflags`
+CFG_LIBS += `freetype-config --libs`
+TESTS += tests/fonttest
+else
+CFG_CFLAGS += -D_BYTEIMAGE_NO_FREETYPE
+endif
+
 CFLAGS = -O3 -Wno-unused-result $(CFG_CFLAGS)
 
 all: byteimage-config libbyteimage.a
@@ -73,6 +83,9 @@ template.o: byteimage.h template.h template.cpp
 
 render.o: byteimage.h matrix.h render.h render.cpp
 	$(CXX) -c render.cpp $(CFLAGS) 
+
+font.o: byteimage.h font.h font.cpp
+	$(CXX) -c font.cpp $(CFLAGS)
 
 clean: clean-tests
 	rm -f *~ $(BIN) libbyteimage.a byteimage-config
@@ -117,6 +130,9 @@ tests/cholestest: tests/cholestest.cpp
 
 tests/svdtest: tests/svdtest.cpp
 	$(CXX) tests/svdtest.cpp -o tests/svdtest -g `byteimage-config --cflags --libs`
+
+tests/fonttest: tests/fonttest.cpp
+	$(CXX) tests/fonttest.cpp -o tests/fonttest -g `byteimage-config --cflags --libs`
 
 clean-tests:
 	rm -f tests/*~ $(TESTS)
