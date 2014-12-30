@@ -1,4 +1,5 @@
 #include <byteimage/byteimage_sdl2.h>
+#include <byteimage/render.h>
 #include <byteimage/font.h>
 
 int main(int argc, char* argv[]) {
@@ -20,8 +21,14 @@ int main(int argc, char* argv[]) {
 
   //Render font
   TextRenderer text("/usr/share/fonts/truetype/freefont/FreeSerif.ttf", 24);
+
   text.drawUnkerned(img, str, img.nr - 60, 0, 255, 0, 0);
+  
+  int x, y, w, h;
+  text.getBox(str, x, y, w, h);
+  DrawRect(img, x, y + img.nr - 36, w, h, 0, 0, 255);
   text.draw(img, str, img.nr - 36, 0, 255, 192, 0);
+
   text.drawUnkerned(img, str, img.nr - 12, 0, 255, 0, 0);
   text.draw(img, str, img.nr - 12, 0, 255, 192, 0);
   

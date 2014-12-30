@@ -23,6 +23,8 @@ public:
 
   void draw(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE v = 255) const;
   void draw(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B) const;
+  
+  void getBox(const char* str, int& x, int& y, int& w, int& h) const;
 };
 
 #endif

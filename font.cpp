@@ -111,3 +111,47 @@ void TextRenderer::draw(ByteImage& target, const char* str, int r, int c, ByteIm
     previous = glyph_index;
   }
 }
+
+void TextRenderer::getBox(const char* str, int& x, int& y, int& w, int& h) const {
+  if (!library || !face) return;
+
+  bool kerns = FT_HAS_KERNING(face);
+
+  FT_GlyphSlot slot = face->glyph;
+  int pen_x = 0, pen_y = 0;
+  
+  FT_UInt glyph_index, previous = 0;
+  FT_Vector delta;
+
+  //w and h will store lower corner until end of function
+  x = y = w = h = 0;
+  int v = 0;
+  for (; *str; str++) {
+    glyph_index = FT_Get_Char_Index(face, *str);
+    
+    if (FT_Load_Glyph(face, glyph_index, FT_LOAD_RENDER)) continue;
+    else if (slot->bitmap.pixel_mode != FT_PIXEL_MODE_GRAY) continue;
+
+    if (kerns) {
+      FT_Get_Kerning(face, previous, glyph_index, FT_KERNING_DEFAULT, &delta);
+      pen_x += delta.x >> 6;
+    }
+
+    v = pen_x + slot->bitmap_left;
+    if (v < x) x = v;
+    v += slot->bitmap.width;
+    if (v > w) w = v;
+
+    v = pen_y - slot->bitmap_top;
+    if (v < y) y = v;
+    v += slot->bitmap.rows;
+    if (v > h) h = v;
+    
+    pen_x += slot->advance.x >> 6;
+
+    previous = glyph_index;
+  }
+
+  w -= x;
+  h -= y;
+}
