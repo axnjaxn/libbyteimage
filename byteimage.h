@@ -1,6 +1,5 @@
 /*
  * byteimage.h by Brian Jackson
- * Revised 8 Dec 2014
  */
 
 #ifndef _BPJ_BYTEIMAGE_H
@@ -95,6 +94,9 @@ class ByteImage {
 
   BYTE bilin(double r, double c, int ch = 0) const;
   ByteImage scale(double factor) const;
+
+  ByteImage rotatedCW() const;
+  ByteImage rotatedCCW() const;
   
 #ifndef _BYTEIMAGE_NO_MAGICK
   void load_filename(std::string fn);

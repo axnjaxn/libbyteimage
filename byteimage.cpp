@@ -1,6 +1,5 @@
 /*
  * byteimage.cpp by Brian Jackson
- * Revised 8 Dec 2014
  */
 
 #include "byteimage.h"
@@ -429,6 +428,28 @@ ByteImage ByteImage::scale(double factor) const {
 	dest.at(r, c, ch) = bilin(factor * r, factor * c, ch);
 
   return dest;
+}
+
+ByteImage ByteImage::rotatedCW() const {
+  ByteImage result(nc, nr, nchannels);
+
+  for (int ch = 0; ch < result.nchannels; ch++)
+    for (int r = 0; r < result.nr; r++)
+      for (int c = 0; c < result.nc; c++)
+	result.at(r, c, ch) = at(nr - c - 1, r, ch);
+
+  return result;
+}
+
+ByteImage ByteImage::rotatedCCW() const {
+  ByteImage result(nc, nr, nchannels);
+
+  for (int ch = 0; ch < result.nchannels; ch++)
+    for (int r = 0; r < result.nr; r++)
+      for (int c = 0; c < result.nc; c++)
+	result.at(r, c, ch) = at(c, nc - r - 1, ch);
+
+  return result;
 }
 
 #ifndef _BYTEIMAGE_NO_MAGICK
