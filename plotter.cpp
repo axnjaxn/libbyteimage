@@ -127,21 +127,7 @@ void Plotter::setAxisOffset(int px) {
   axis_offset = px;
 }
 
-void drawCentered(TextRenderer* text, ByteImage& target, const char* str, int r, int c, 
-		  ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B) {
-  int x, y, w, h;
-  text->getBox(str, x, y, w, h);
-  
-  r = r + h / 2 - (y + h);
-  c = c + w / 2 - (x + w);
-  
-  text->draw(target, str, r, c, R, G, B);
-}
 
-void drawCentered(TextRenderer* text, ByteImage& target, const char* str, int r, int c, 
-		  ByteImage::BYTE v = 255) {
-  drawCentered(text, target, str, r, c, v, v, v);
-}
 
 ByteImage Plotter::render(int nr, int nc) const {
   ByteImage img(nr, nc, 3);
@@ -157,17 +143,18 @@ ByteImage Plotter::render(int nr, int nc) const {
 
   //Compute title area
   if (titleRender && title_margin && !title.empty()) {
-    drawCentered(titleRender, img, title.c_str(), y + h - title_margin / 2, x + w / 2, 0);
+    titleRender->drawCentered(img, title.c_str(), y + h - title_margin / 2, x + w / 2, 0);
     h -= title_margin;
   }
   
   if (labelRender && label_margin) {
     //Compute xlabel
     if (!xlabel.empty()) {
+      //TODO: Don't leave space if the ylabel isn't drawn
       ByteImage textBox(label_margin, w - label_margin);
       memset(textBox.pixels, 0xFF, textBox.size());
-      drawCentered(labelRender, textBox, xlabel.c_str(),
-		   textBox.nr / 2, textBox.nc / 2, 0);
+      labelRender->drawCentered(textBox, xlabel.c_str(),
+			       textBox.nr / 2, textBox.nc / 2, 0);
       img.blit(textBox, y + h - label_margin, x + label_margin);
       
       h -= label_margin;
@@ -177,8 +164,8 @@ ByteImage Plotter::render(int nr, int nc) const {
     if (!ylabel.empty()) {
       ByteImage textBox(label_margin, h);
       memset(textBox.pixels, 0xFF, textBox.size());
-      drawCentered(labelRender, textBox, ylabel.c_str(),
-		   textBox.nr / 2, textBox.nc / 2, 0);
+      labelRender->drawCentered(textBox, ylabel.c_str(),
+			       textBox.nr / 2, textBox.nc / 2, 0);
       img.blit(textBox.rotatedCCW(), y, x);
 
       x += label_margin;

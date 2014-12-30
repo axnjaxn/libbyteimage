@@ -112,6 +112,21 @@ void TextRenderer::draw(ByteImage& target, const char* str, int r, int c, ByteIm
   }
 }
 
+void TextRenderer::drawCentered(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE v) const {
+  drawCentered(target, str, r, c, v, v, v);
+}
+
+void TextRenderer::drawCentered(ByteImage& target, const char* str, int r, int c, 
+				ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B) const {
+  int x, y, w, h;
+  getBox(str, x, y, w, h);
+  
+  r = r + h / 2 - (y + h);
+  c = c + w / 2 - (x + w);
+  
+  draw(target, str, r, c, R, G, B);
+}
+
 void TextRenderer::getBox(const char* str, int& x, int& y, int& w, int& h) const {
   if (!library || !face) return;
 
