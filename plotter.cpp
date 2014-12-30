@@ -143,17 +143,6 @@ void drawCentered(TextRenderer* text, ByteImage& target, const char* str, int r,
   drawCentered(text, target, str, r, c, v, v, v);
 }
 
-ByteImage rotatedCCW(const ByteImage& img) {
-  ByteImage result(img.nc, img.nr, img.nchannels);
-
-  for (int ch = 0; ch < result.nchannels; ch++)
-    for (int r = 0; r < result.nr; r++)
-      for (int c = 0; c < result.nc; c++)
-	result.at(r, c, ch) = img.at(c, img.nc - r - 1, ch);
-
-  return result;
-}
-
 ByteImage Plotter::render(int nr, int nc) const {
   ByteImage img(nr, nc, 3);
   memset(img.pixels, 0xFF, img.size());
@@ -190,8 +179,7 @@ ByteImage Plotter::render(int nr, int nc) const {
       memset(textBox.pixels, 0xFF, textBox.size());
       drawCentered(labelRender, textBox, ylabel.c_str(),
 		   textBox.nr / 2, textBox.nc / 2, 0);
-      textBox = rotatedCCW(textBox);
-      img.blit(textBox, y, x);
+      img.blit(textBox.rotatedCCW(), y, x);
 
       x += label_margin;
       w -= label_margin;
