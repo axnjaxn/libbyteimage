@@ -14,18 +14,16 @@ public:
   public:
     std::vector<Matrix> points;//xyw
     Matrix color;//rgb
-    int sz;
-    bool has_line, has_bar, has_point;
+    int point_size, line_size;
+    bool has_bar;
 
     Plot();
 
     void addPoint(double x, double y);
     void setColor(double r, double g, double b);
-    void hideMarks();
-    void setPoint();
-    void setBar();
-    void setLine(bool enabled = 1);
-    void setSize(int size);
+    void setPointSize(int size);
+    void setLineSize(int size);
+    void setBar(bool enabled);
   };
 
   TextRenderer *titleRender, *labelRender, *numberRender;

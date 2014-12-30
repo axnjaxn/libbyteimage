@@ -2,9 +2,8 @@
 #include "render.h"
 
 Plotter::Plot::Plot() {
-  setSize(3);
-  setPoint();
-  setLine(0);
+  setPointSize(3);
+  setLineSize(0);
   setColor(0, 0, 0);
 }
 
@@ -16,26 +15,18 @@ void Plotter::Plot::setColor(double r, double g, double b) {
   color = makeColor(0, 0, 0);
 }
 
-void Plotter::Plot::hideMarks() {
-  has_bar = has_point = 0;
-}
-
-void Plotter::Plot::setPoint() {
+void Plotter::Plot::setPointSize(int size) {
   has_bar = 0;
-  has_point = 1;
+  point_size = size;
 }
 
-void Plotter::Plot::setBar() {
-  has_bar = 1;
-  has_point = 0;
+void Plotter::Plot::setLineSize(int size) {
+  has_bar = 0;
+  line_size = size;
 }
 
-void Plotter::Plot::setLine(bool enabled) {
-  has_line = enabled;
-}
-
-void Plotter::Plot::setSize(int size) {
-  sz = size;
+void Plotter::Plot::setBar(bool enabled) {
+  has_bar = enabled;
 }
 
 Plotter::Plotter() {
@@ -85,10 +76,14 @@ void Plotter::enableGrid(bool enabled) {
   draw_grid = enabled;
 }
 
+int getDefaultMargin(int size) {
+  return (int)(size / 72.0 * TextRenderer::dpi + 5);
+}
+
 void Plotter::setTitleFont(const std::string& name, int size, int margin) {
   if (titleRender) delete titleRender;
   titleRender = new TextRenderer(name.c_str(), size);
-  title_margin = margin? margin : size * 3;
+  title_margin = margin? margin : getDefaultMargin(size);
 }
 
 void Plotter::setTitle(const std::string& title) {
@@ -98,7 +93,7 @@ void Plotter::setTitle(const std::string& title) {
 void Plotter::setLabelFont(const std::string& name, int size, int margin) {
   if (labelRender) delete labelRender;
   labelRender = new TextRenderer(name.c_str(), size);
-  label_margin = margin? margin : size * 3;
+  label_margin = margin? margin : getDefaultMargin(size);
 }
 
 void Plotter::setXLabel(const std::string& label) {
@@ -112,7 +107,7 @@ void Plotter::setYLabel(const std::string& label) {
 void Plotter::setNumberFont(const std::string& name, int size, int margin) {
   if (numberRender) delete numberRender;
   numberRender = new TextRenderer(name.c_str(), size);
-  number_margin = margin? margin : size * 3;
+  number_margin = margin? margin : getDefaultMargin(size);
 }
 
 void Plotter::setNumberFormat(const std::string& xformat, const std::string& yformat) {
@@ -132,6 +127,33 @@ void Plotter::setAxisOffset(int px) {
   axis_offset = px;
 }
 
+void drawCentered(TextRenderer* text, ByteImage& target, const char* str, int r, int c, 
+		  ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B) {
+  int x, y, w, h;
+  text->getBox(str, x, y, w, h);
+  
+  r = r + h / 2 - (y + h);
+  c = c + w / 2 - (x + w);
+  
+  text->draw(target, str, r, c, R, G, B);
+}
+
+void drawCentered(TextRenderer* text, ByteImage& target, const char* str, int r, int c, 
+		  ByteImage::BYTE v = 255) {
+  drawCentered(text, target, str, r, c, v, v, v);
+}
+
+ByteImage rotatedCCW(const ByteImage& img) {
+  ByteImage result(img.nc, img.nr, img.nchannels);
+
+  for (int ch = 0; ch < result.nchannels; ch++)
+    for (int r = 0; r < result.nr; r++)
+      for (int c = 0; c < result.nc; c++)
+	result.at(r, c, ch) = img.at(c, img.nc - r - 1, ch);
+
+  return result;
+}
+
 ByteImage Plotter::render(int nr, int nc) const {
   ByteImage img(nr, nc, 3);
   memset(img.pixels, 0xFF, img.size());
@@ -145,22 +167,32 @@ ByteImage Plotter::render(int nr, int nc) const {
   h -= 2 * border_margin;
 
   //Compute title area
-  //TODO: Centering of text!
   if (titleRender && title_margin && !title.empty()) {
-    //TODO
+    drawCentered(titleRender, img, title.c_str(), y + h - title_margin / 2, x + w / 2, 0);
     h -= title_margin;
   }
   
   if (labelRender && label_margin) {
     //Compute xlabel
     if (!xlabel.empty()) {
-      //TODO
+      ByteImage textBox(label_margin, w - label_margin);
+      memset(textBox.pixels, 0xFF, textBox.size());
+      drawCentered(labelRender, textBox, xlabel.c_str(),
+		   textBox.nr / 2, textBox.nc / 2, 0);
+      img.blit(textBox, y + h - label_margin, x + label_margin);
+      
       h -= label_margin;
     }
 
     //Compute ylabel
     if (!ylabel.empty()) {
-      //TODO
+      ByteImage textBox(label_margin, h);
+      memset(textBox.pixels, 0xFF, textBox.size());
+      drawCentered(labelRender, textBox, ylabel.c_str(),
+		   textBox.nr / 2, textBox.nc / 2, 0);
+      textBox = rotatedCCW(textBox);
+      img.blit(textBox, y, x);
+
       x += label_margin;
       w -= label_margin;
     }
@@ -182,7 +214,7 @@ ByteImage Plotter::render(int nr, int nc) const {
     }
   }
 
-  //Graph area
+  //Graph area  
   ByteImage graph(h, w, 3);
   memset(graph.pixels, 0xFF, graph.size());
 
@@ -192,9 +224,23 @@ ByteImage Plotter::render(int nr, int nc) const {
   DrawRect(graph, axis_offset, graph.nr - axis_offset - axis_thickness, 
 	   graph.nc - axis_offset - 1, axis_thickness, 0);
   
+  //Compute value-to-graph matrix
+  Matrix T = Matrix::identity(3);
+  double a = axis_offset + axis_thickness * 0.5;
+  double f = (w - a) / (mx.at(0) - mn.at(0));
+  T.at(0, 0) = f;
+  T.at(0, 2) = a - f * mn.at(0);
+  a = h - a;
+  f = -a / (mx.at(1) - mn.at(1));
+  T.at(1, 1) = f;
+  T.at(1, 2) = a - f * mn.at(1);
+
   //Draw ticks
   std::vector<int> xticks, yticks;
   std::vector<double> xtickvalues, ytickvalues;
+  //TODO
+
+  //Draw grid
   //TODO
 
   //Draw numbers
@@ -202,6 +248,15 @@ ByteImage Plotter::render(int nr, int nc) const {
   
   //Draw plots
   graph = graph.toColor();
+  for (int i = 0; i < plots.size(); i++) {
+    if (plots[i].line_size)
+      for (int j = 1; j < plots[i].points.size(); j++)
+	DrawLine(graph, T * plots[i].points[j - 1], T * plots[i].points[j], plots[i].color, plots[i].line_size);
+
+    if (plots[i].point_size)
+      for (int j = 0; j < plots[i].points.size(); j++)
+	DrawPoint(graph, T * plots[i].points[j], plots[i].color, plots[i].point_size);
+  }
   //TODO
 
   //Blit graph to rest of image
