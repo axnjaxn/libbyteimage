@@ -182,9 +182,29 @@ ByteImage Plotter::render(int nr, int nc) const {
     }
   }
 
-  //Compute graph area
+  //Graph area
   ByteImage graph(h, w, 3);
+  memset(graph.pixels, 0xFF, graph.size());
+
+  //Draw axes
+  DrawRect(graph, axis_offset, 0, 
+	   axis_thickness, graph.nr - axis_offset, 0);
+  DrawRect(graph, axis_offset, graph.nr - axis_offset - axis_thickness, 
+	   graph.nc - axis_offset - 1, axis_thickness, 0);
+  
+  //Draw ticks
+  std::vector<int> xticks, yticks;
+  std::vector<double> xtickvalues, ytickvalues;
   //TODO
+
+  //Draw numbers
+  //TODO
+  
+  //Draw plots
+  graph = graph.toColor();
+  //TODO
+
+  //Blit graph to rest of image
   img.blit(graph, y, x);
 
   return img;
