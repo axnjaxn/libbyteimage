@@ -2,4 +2,3 @@
 *.o
 libbyteimage.a
 byteimage-config
-ransactest

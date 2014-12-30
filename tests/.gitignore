@@ -4,8 +4,10 @@ vidtest
 kerneltest
 templatetest
 matrixtest
+ransactest
 rendertest
 beziertest
 cholestest
 svdtest
 fonttest
+graphtest
