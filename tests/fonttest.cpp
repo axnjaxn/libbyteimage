@@ -20,10 +20,10 @@ int main(int argc, char* argv[]) {
 
   //Render font
   TextRenderer text("/usr/share/fonts/truetype/freefont/FreeSerif.ttf", 24);
-  text.draw(img, str, img.nr - 60, 0, 255, 0, 0);
-  text.drawKerned(img, str, img.nr - 36, 0, 255, 192, 0);
-  text.draw(img, str, img.nr - 12, 0, 255, 0, 0);
-  text.drawKerned(img, str, img.nr - 12, 0, 255, 192, 0);
+  text.drawUnkerned(img, str, img.nr - 60, 0, 255, 0, 0);
+  text.draw(img, str, img.nr - 36, 0, 255, 192, 0);
+  text.drawUnkerned(img, str, img.nr - 12, 0, 255, 0, 0);
+  text.draw(img, str, img.nr - 12, 0, 255, 192, 0);
   
   display(img);
 

@@ -50,11 +50,11 @@ void TextRenderer::drawGlyph(int pen_y, int pen_x, ByteImage& target, int r, int
       }
 }
 
-void TextRenderer::draw(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE v) const {
-  draw(target, str, r, c, v, v, v);
+void TextRenderer::drawUnkerned(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE v) const {
+  drawUnkerned(target, str, r, c, v, v, v);
 }
 
-void TextRenderer::draw(ByteImage& target, const char* str, int r, int c, 
+void TextRenderer::drawUnkerned(ByteImage& target, const char* str, int r, int c, 
 			ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B) const {
   if (!library || !face) return;
 
@@ -74,15 +74,15 @@ void TextRenderer::draw(ByteImage& target, const char* str, int r, int c,
   }
 }
 
-void TextRenderer::drawKerned(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE v) const {
-  drawKerned(target, str, r, c, v, v, v);
+void TextRenderer::draw(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE v) const {
+  draw(target, str, r, c, v, v, v);
 }
 
-void TextRenderer::drawKerned(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B) const {
+void TextRenderer::draw(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B) const {
   if (!library || !face) return;
 
   if (!FT_HAS_KERNING(face)) {
-    draw(target, str, r, c, R, G, B);
+    drawUnkerned(target, str, r, c, R, G, B);
     return;
   }
 

@@ -18,10 +18,11 @@ public:
   TextRenderer(const char* name, int size = 12, int index = 0);
   virtual ~TextRenderer();
 
+  void drawUnkerned(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE v = 255) const;
+  void drawUnkerned(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B) const;
+
   void draw(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE v = 255) const;
   void draw(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B) const;
-  void drawKerned(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE v = 255) const;
-  void drawKerned(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B) const;
 };
 
 #endif
