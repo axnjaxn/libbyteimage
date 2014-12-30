@@ -10,6 +10,8 @@ protected:
   static FT_Library library;
   FT_Face face;
 
+  void drawGlyph(int pen_y, int pen_x, ByteImage& target, int r, int c, ByteImage::BYTE rgb[3]) const;
+
 public:
   static int dpi;//72 by default
 
@@ -18,6 +20,8 @@ public:
 
   void draw(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE v = 255) const;
   void draw(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B) const;
+  void drawKerned(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE v = 255) const;
+  void drawKerned(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B) const;
 };
 
 #endif

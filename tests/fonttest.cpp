@@ -2,7 +2,7 @@
 #include <byteimage/font.h>
 
 int main(int argc, char* argv[]) {
-  ByteImage img(300, 400, 3);
+  ByteImage img(96, 600, 3);
   
   //Draw background gradient
   double t;
@@ -16,10 +16,15 @@ int main(int argc, char* argv[]) {
     memcpy(img.B() + r * img.nc, img.B(), img.nc);
   }
 
-  //Render font
-  TextRenderer text("/usr/share/fonts/truetype/freefont/FreeSans.ttf", 36);
-  text.draw(img, "Mind your ps and qs", img.nr - 1, 0, 255, 192, 0);
+  const char* str = "dolphins abduct by proxy the ever awkward klutz";
 
+  //Render font
+  TextRenderer text("/usr/share/fonts/truetype/freefont/FreeSerif.ttf", 24);
+  text.draw(img, str, img.nr - 60, 0, 255, 0, 0);
+  text.drawKerned(img, str, img.nr - 36, 0, 255, 192, 0);
+  text.draw(img, str, img.nr - 12, 0, 255, 0, 0);
+  text.drawKerned(img, str, img.nr - 12, 0, 255, 192, 0);
+  
   display(img);
 
   return 0;
