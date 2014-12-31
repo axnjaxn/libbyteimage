@@ -12,7 +12,7 @@ void Plotter::Plot::addPoint(double x, double y) {
 }
 
 void Plotter::Plot::setColor(double r, double g, double b) {
-  color = makeColor(0, 0, 0);
+  color = makeColor(r, g, b);
 }
 
 void Plotter::Plot::setPointSize(int size) {

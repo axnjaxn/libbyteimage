@@ -7,9 +7,19 @@ int main(int argc, char* argv[]) {
   Plotter plotter;
 
   Plotter::Plot plot;
-  int n = 100;
+  int n = 30;
   for (int x = 0; x < n; x++)
     plot.addPoint((double)x / (n - 1), 0.001 * (rand() % 1000));
+  plot.setLineSize(1);
+  plot.setColor(255, 0, 0);
+  plotter.addPlot(plot);
+
+  plot = Plotter::Plot();
+  n = 300;
+  for (int x = 0; x < n; x++)
+    plot.addPoint((double)x / (n - 1), 0.5 * cos(40.0 * x / (n - 1)) + 0.5);
+  plot.setPointSize(0);
+  plot.setColor(0, 0, 255);
   plot.setLineSize(1);
   plotter.addPlot(plot);
 
