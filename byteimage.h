@@ -73,15 +73,6 @@ class ByteImage {
   static ByteImage diff(const ByteImage& img1, const ByteImage& img2);
   static ByteImage interp(const ByteImage& img1, const ByteImage& img2, float t);
 
-  ByteImage odd() const;
-  ByteImage even() const;
-  ByteImage oddAvg() const;
-  ByteImage evenAvg() const;
-  ByteImage odd_d2() const;
-  ByteImage even_d2() const;
-  ByteImage dropCols() const;
-  ByteImage expandRows() const;
-
   ByteImage toLightness() const;
   ByteImage toValue() const;
   ByteImage toGrayscale() const;
