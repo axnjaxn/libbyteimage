@@ -310,7 +310,7 @@ ByteImage::BYTE ByteImage::bilin(double r, double c, int ch) const {
   return (ByteImage::BYTE)(sum + 0.5);
 }
 
-ByteImage ByteImage::scale(double factor) const {
+ByteImage ByteImage::sampled(double factor) const {
   ByteImage dest((int)(nr * factor + 0.5), (int)(nc * factor + 0.5), nchannels);
   
   factor = 1.0 / factor;
@@ -320,6 +320,54 @@ ByteImage ByteImage::scale(double factor) const {
 	dest.at(r, c, ch) = bilin(factor * r, factor * c, ch);
 
   return dest;
+}
+
+ByteImage ByteImage::scaled(int nr, int nc) const {
+  ByteImage scaled(nr, nc, this->nchannels);
+  double xfact = (double)this->nc / nc;
+  double yfact = (double)this->nr / nr;
+
+  double* colors = new double [scaled.nchannels];
+  double x0, y0, x1, y1, w, h;
+  int sr, sc;
+  for (int r = 0; r < nr; r++) {
+    for (int c = 0; c < nc; c++) {
+      memset(colors, 0, sizeof(double) * scaled.nchannels);
+
+      y0 = r * yfact;
+      y1 = y0 + yfact;
+      for (int sr = (int)y0; sr < y1 && sr < this->nr; y0 = ++sr) {
+	if (sr == (int)y1)
+	  h = y1 - y0;
+	else
+	  h = 1 - (y0 - sr);
+	
+	x0 = c * xfact;
+	x1 = x0 + xfact;
+	for (int sc = (int)x0; sc < x1 && sc < this->nc; x0 = ++sc) {
+	  if (sc == (int)x1)
+	    w = x1 - x0;
+	  else
+	    w = 1 - (x0 - sc);
+
+	  for (int ch = 0; ch < scaled.nchannels; ch++)
+	    colors[ch] += at(sr, sc, ch) * w * h;
+	}
+      }
+      
+      for (int ch = 0; ch < scaled.nchannels; ch++)
+	scaled.at(r, c, ch) = ByteImage::clip(colors[ch] / (xfact * yfact));
+    }
+  }
+  delete [] colors;
+
+  return scaled;
+}
+
+ByteImage ByteImage::aspectScaled(int nr, int nc) const {
+  double ysc = (double)nr / this->nr;
+  double xsc = (double)nc / this->nc;
+  return (xsc <= ysc)? scaled(this->nr * xsc, nc) : scaled(nr, this->nc * ysc);
 }
 
 ByteImage ByteImage::rotatedCW() const {

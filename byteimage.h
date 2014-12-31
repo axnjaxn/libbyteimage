@@ -84,7 +84,9 @@ class ByteImage {
   ByteImage d2() const;
 
   BYTE bilin(double r, double c, int ch = 0) const;
-  ByteImage scale(double factor) const;
+  ByteImage sampled(double factor) const;
+  ByteImage scaled(int nr, int nc) const;
+  ByteImage aspectScaled(int nr, int nc) const;//Guarantees returned image has bounds less than or equal to given dimensions
 
   ByteImage rotatedCW() const;
   ByteImage rotatedCCW() const;
