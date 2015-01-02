@@ -36,6 +36,7 @@ class ByteImage {
   inline const BYTE* R() const {return pixels;}
   inline const BYTE* G() const {return pixels + nr * nc;}
   inline const BYTE* B() const {return pixels + 2 * nr * nc;}
+  static ByteImage combineChannels(const ByteImage& r, const ByteImage& g, const ByteImage& b);
 
  protected:
   //These assume RGB, 3 channel encoding
@@ -99,6 +100,7 @@ class ByteImage {
   void write(FILE* fp) const;
 
   void blit(const ByteImage& src, int destr, int destc);
+  void blend(const ByteImage& color, const ByteImage& alpha, int destr, int destc);
   
   ByteImage getLightness() const;
   ByteImage setLightness(const ByteImage& I) const;

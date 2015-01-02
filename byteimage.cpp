@@ -462,36 +462,69 @@ void ByteImage::write(FILE* fp) const {
   fwrite(pixels, 1, nr * nc * nchannels, fp);
 }
 
-//uf this can be optimized
 void ByteImage::blit(const ByteImage& src, int destr, int destc) {
   if (src.nchannels != nchannels) {
     if (nchannels == 1) blit(src.toGrayscale(), destr, destc);
     else if (nchannels == 3) blit(src.toColor(), destr, destc);
-    else printf("Can't blit: channel mismatch.\n");
     return;
   }
 
-  int rd, cd;//Destination coordinates
-  const BYTE *sr = src.R(), *sg = src.G(), *sb = src.B();
-  BYTE *tr = R(), *tg = G(), *tb = B();
+  int x = destc, y = destr, w = src.nc, h = src.nr;
 
-  for (int r = 0; r < src.nr; r++) {
-    rd = destr + r;
-    if (rd < 0) continue;
-    else if (rd >= nr) break;
-
-    for (int c = 0; c < src.nc; c++) {
-      cd = destc + c;
-      if (cd < 0) continue;
-      else if (cd >= nc) break;
-      
-      tr[rd * nc + cd] = sr[r * src.nc + c];
-      if (nchannels == 3) {
-	tg[rd * nc + cd] = sg[r * src.nc + c];
-	tb[rd * nc + cd] = sb[r * src.nc + c];
-      }
-    }
+  if (x < 0) {
+    w += x;
+    x = 0;
   }
+  if (x + w > nc)
+    w = nc - x;
+  if (w <= 0) return;
+
+  if (y < 0) {
+    h += y;
+    y = 0;
+  }
+  if (y + h > nr)
+    h = nr - y;  
+  if (h <= 0) return;
+
+  for (int ch = 0; ch < nchannels; ch++)
+    for (int r = 0; r < h; r++)
+      memcpy(pixels + ch * nr * nc + (r + y) * nc + x, 
+	     src.pixels + ch * src.nr * src.nc + (r + y - destr) * src.nc + x - destc,
+	     w);
+}
+
+void ByteImage::blend(const ByteImage& color, const ByteImage& alpha, int destr, int destc) {
+  if (color.nchannels != nchannels) {
+    if (nchannels == 1) blend(color.toGrayscale(), alpha, destr, destc);
+    else if (nchannels == 3) blend(color.toColor(), alpha, destr, destc);
+    return;
+  }
+
+  int x = destc, y = destr, w = color.nc, h = color.nr;
+
+  if (x < 0) {
+    w += x;
+    x = 0;
+  }
+  if (x + w > nc)
+    w = nc - x;
+  if (w <= 0) return;
+
+  if (y < 0) {
+    h += y;
+    y = 0;
+  }
+  if (y + h > nr)
+    h = nr - y;  
+  if (h <= 0) return;
+
+  for (int ch = 0; ch < nchannels; ch++)
+    for (int r = 0; r < h; r++)
+      for (int c = 0; c < w; c++)
+	at(r + y, c + x, ch) = interp(at(r + y, c + x, ch), 
+				      color.at(r + y - destr, c + x - destc, ch), 
+				      alpha.at(r + y - destr, c + x - destc) / 255.0);
 }
 
 #include <cmath>
@@ -551,6 +584,14 @@ void hsl2rgb(double h, double s, double l,
   r += m;
   g += m;
   b += m;
+}
+
+ByteImage ByteImage::combineChannels(const ByteImage& r, const ByteImage& g, const ByteImage& b) {
+  ByteImage result(r.nr, r.nc, 3);
+  memcpy(result.R(), r.pixels, result.nr * result.nc);
+  memcpy(result.G(), g.pixels, result.nr * result.nc);
+  memcpy(result.B(), b.pixels, result.nr * result.nc);
+  return result;
 }
 
 void ByteImage::setLightness(int r, int c, BYTE l) {
