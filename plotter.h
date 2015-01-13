@@ -43,7 +43,7 @@ public:
   void addPlot(const Plot& plot);
   void setScale(double xmin, double ymin, double xmax, double ymax);//Default: [0, 1]
   void hideTicks();//Default
-  void setTicks(double xticks, double yticks, double xoffset, double yoffset);
+  void setTicks(double xticks, double yticks, double xoffset = 0.0, double yoffset = 0.0);
   void enableGrid(bool enabled = 1);//Default: off
   void setTitleFont(const std::string& name, int size, int margin = 0);
   void setTitle(const std::string& title);
