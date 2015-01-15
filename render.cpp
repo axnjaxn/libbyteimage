@@ -184,6 +184,18 @@ void DrawLine(ByteImage& target, const Matrix& a, const Matrix& b, const Matrix&
     DrawLine(target, ax, ay, bx, by, getR(rgb), getG(rgb), getB(rgb), sz);
 }
 
+void DrawCross(ByteImage& target, int x, int y, 
+	       ByteImage::BYTE r, ByteImage::BYTE g, ByteImage::BYTE b,
+	       int radius, int line_size) {
+  DrawLine(target, x, y - radius, x, y + radius, r, g, b, line_size);
+  DrawLine(target, x - radius, y, x + radius, y, r, g, b, line_size);
+}
+
+void DrawCross(ByteImage& target, const Matrix& v, const Matrix& rgb, 
+	       int radius, int line_size) {
+  DrawCross(target, getX(v), getY(v), getR(rgb), getG(rgb), getB(rgb), radius, line_size);
+}
+
 void DrawBezier(ByteImage& target, const std::vector<Matrix>& pts, const Matrix& rgb, int sz, int n) {
   std::vector<Matrix> interp(pts.size());
 

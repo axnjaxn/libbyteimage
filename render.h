@@ -19,6 +19,9 @@ void DrawLine(ByteImage& target, int ax, int ay, int bx, int by, ByteImage::BYTE
 void DrawLine(ByteImage& target, int ax, int ay, int bx, int by, ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B, int sz = 1);
 void DrawLine(ByteImage& target, const Matrix& a, const Matrix& b, const Matrix& rgb, int sz = 1);
 
+void DrawCross(ByteImage& target, int x, int y, ByteImage::BYTE r, ByteImage::BYTE g, ByteImage::BYTE b, int radius = 2, int line_size = 1);
+void DrawCross(ByteImage& target, const Matrix& v, const Matrix& rgb, int radius = 2, int line_size = 1);
+
 void DrawBezier(ByteImage& target, const std::vector<Matrix>& pts, const Matrix& rgb, int sz = 1, int n = 16);
 
 void DrawTriangle(ByteImage& target, const Matrix& v0, const Matrix& v1, const Matrix& v2, const Matrix& rgb);
