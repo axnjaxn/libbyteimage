@@ -9,5 +9,6 @@ rendertest
 beziertest
 cholestest
 svdtest
+nulltest
 fonttest
 graphtest

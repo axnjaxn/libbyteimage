@@ -192,6 +192,48 @@ Matrix Matrix::solve(Matrix A, Matrix b) {
   return b;
 }
 
+Matrix Matrix::solveNull(Matrix A) {
+  //Row echelon form
+  double factor;
+  for (int k = 0; k < A.nr; k++) {
+    //Find highest pivot
+    int highest = k;
+    for (int i = k + 1; i < A.nr; i++)
+      if (dabs(A.at(i, k)) > dabs(A.at(highest, k))) highest = i;
+    A.permuteRows(highest, k);
+
+    //Scale row
+    for (int i = k + 1; i < A.nr; i++) {
+      if (A.at(k, k) == 0.0 || A.at(i, k) == 0.0) continue;
+      factor = -A.at(i, k) / A.at(k, k);
+      for (int j = k; j < A.nc; j++)
+	A.at(i, j) += factor * A.at(k, j);
+    }
+  }
+
+  //Basic vs free variables
+  int* freevars = new int [A.nc], nfree = 0;
+  for (int r = 0, c = 0; r < A.nr && c < A.nc; c++)
+    if (A.at(r, c) == 0.0) freevars[nfree++] = c;
+    else r++;
+
+  //Reconstruct the matrix to allow fixing the free variables
+  Matrix M(A.nc, A.nc), N(A.nc, nfree), zero(A.nc, 1);
+  M.replace(A, 0, 0);
+  for (int i = 0; i < nfree; i++)
+    M.at(freevars[i], freevars[i]) = 1.0;
+
+  //Fix each free variable and solve for the null vector bases
+  for (int i = 0; i < nfree; i++) {
+    zero.at(freevars[i]) = 1.0;
+    N.replace(solve(M, zero), 0, i);
+    zero.at(freevars[i]) = 0.0;
+  }
+
+  delete [] freevars;
+  return N;
+}
+
 Matrix Matrix::cholesky() const {
   Matrix L(rows(), cols());
 

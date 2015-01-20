@@ -44,6 +44,7 @@ public:
   Matrix trans() const;
   Matrix inv() const;
   static Matrix solve(Matrix A, Matrix b);
+  static Matrix solveNull(Matrix A);//Columns of the returned result are the basis
   
   Matrix cholesky() const;
   Matrix bidiag(Matrix& P, Matrix& Q) const;
