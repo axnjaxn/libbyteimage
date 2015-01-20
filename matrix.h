@@ -39,6 +39,10 @@ public:
   inline const double* getArray() const {return data;}
 
   Matrix slice(int r0, int r1, int c0, int c1) const;
+  inline Matrix sliceRows(int r0, int r1) const {return slice(r0, r1, 0, nc - 1);}
+  inline Matrix sliceRow(int r) const {return slice(r, r, 0, nc - 1);}
+  inline Matrix sliceCols(int c0, int c1) const {return slice(0, nr - 1, c0, c1);}
+  inline Matrix sliceCol(int c) const {return slice(0, nr - 1, c, c);}
   void replace(const Matrix& mat, int r0, int c0);
 
   Matrix trans() const;
