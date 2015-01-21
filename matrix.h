@@ -18,6 +18,8 @@ public:
   static Matrix identity(int n);
   static Matrix givens(int n, int i, int j, double th);
 
+  Matrix operator-() const {return (*this) * -1.0;}
+
   Matrix& operator=(const Matrix& mat);
   Matrix operator+(const Matrix& mat) const;
   Matrix operator-(const Matrix& mat) const;
