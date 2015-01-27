@@ -329,7 +329,6 @@ ByteImage ByteImage::scaled(int nr, int nc) const {
 
   double* colors = new double [scaled.nchannels];
   double x0, y0, x1, y1, w, h;
-  int sr, sc;
   for (int r = 0; r < nr; r++) {
     for (int c = 0; c < nc; c++) {
       memset(colors, 0, sizeof(double) * scaled.nchannels);
