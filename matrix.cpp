@@ -377,7 +377,7 @@ double rot(double a, double b, double& cs, double& sn) {
     tt = sqrt(1 + t * t);
     cs = 1.0 / tt;
     sn = t * cs;
-    r - a * tt;
+    r = a * tt;
   }
   else {
     t = a / b;
