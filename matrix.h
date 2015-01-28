@@ -64,6 +64,7 @@ Matrix makePoint(double x, double y, double w = 1.0);
 Matrix normalize(const Matrix& v);
 double sqLength(const Matrix& v);
 double length(const Matrix& v);
+double dot(const Matrix& v1, const Matrix& v2);
 
 #endif
 

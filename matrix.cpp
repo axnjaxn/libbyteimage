@@ -562,3 +562,10 @@ Matrix Matrix::svd(Matrix& U, Matrix& V, bool reorder) const {
 
   return J;
 }
+
+double dot(const Matrix& v1, const Matrix& v2) {
+  double sum = 0.0;
+  for (int i = 0; i < v1.rows(); i++)
+    sum += v1.at(i) * v2.at(i);
+  return sum;
+}
