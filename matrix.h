@@ -12,6 +12,7 @@ public:
   Matrix();
   Matrix(int n);
   Matrix(int nr, int nc);
+  Matrix(double* ary, int nr, int nc);
   Matrix(const Matrix& mat);
   ~Matrix();
 

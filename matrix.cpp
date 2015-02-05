@@ -21,6 +21,13 @@ Matrix::Matrix(int nr, int nc) {
   memset(data, 0, nr * nc * sizeof(double));
 }
 
+Matrix::Matrix(double* ary, int nr, int nc) {
+  this->nr = nr;
+  this->nc = nc;
+  data = new double [nr * nc];
+  memcpy(data, ary, nr * nc * sizeof(double));
+}
+
 Matrix::Matrix(const Matrix& mat) {
   nr = nc = 0;
   data = NULL;
