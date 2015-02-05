@@ -21,7 +21,7 @@ Matrix::Matrix(int nr, int nc) {
   memset(data, 0, nr * nc * sizeof(double));
 }
 
-Matrix::Matrix(double* ary, int nr, int nc) {
+Matrix::Matrix(const double* ary, int nr, int nc) {
   this->nr = nr;
   this->nc = nc;
   data = new double [nr * nc];
