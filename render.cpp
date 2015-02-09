@@ -213,6 +213,17 @@ void DrawBezier(ByteImage& target, const std::vector<Matrix>& pts, const Matrix&
   }
 }
 
+void DrawCircle(ByteImage& target, const Matrix& v, const Matrix& rgb, double radius) {
+  double r2 = radius * radius;
+  int r = (int)(getY(v) + 0.5), c = (int)(getX(v) + 0.5);
+  for (int i = (int)(radius + 1); i >= 0; i--)
+    for (int j = (int)(radius + 1); j >= 0; j--)
+      if (i * i + j * j <= r2) {
+	DrawRect(target, c - j, r - i, 2 * j + 1, 1, getR(rgb), getG(rgb), getB(rgb));
+	DrawRect(target, c - j, r + i, 2 * j + 1, 1, getR(rgb), getG(rgb), getB(rgb));
+      }
+}
+
 inline int floor(double d) {return (int)d;}
 inline int ceil(double d) {return (int)d + (d != (int)d);}
 

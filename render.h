@@ -24,6 +24,7 @@ void DrawCross(ByteImage& target, const Matrix& v, const Matrix& rgb, int radius
 
 void DrawBezier(ByteImage& target, const std::vector<Matrix>& pts, const Matrix& rgb, int sz = 1, int n = 16);
 
+void DrawCircle(ByteImage& target, const Matrix& v, const Matrix& rgb, double radius);
 void DrawTriangle(ByteImage& target, const Matrix& v0, const Matrix& v1, const Matrix& v2, const Matrix& rgb);
 
 #endif
