@@ -11,6 +11,7 @@ protected:
     int r, c;
     Pt() {r = c = 0;}
     Pt(int r, int c) {this->r = r; this->c = c;}
+    bool operator<(const Pt& p) const {return r * r + c * c < p.r * p.r + p.c * p.c;}
   };
 
   const ByteImage* img;

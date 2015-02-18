@@ -1,4 +1,5 @@
 #include "template.h"
+#include <algorithm>
 
 Template::Template() {
   img = NULL;  
@@ -11,22 +12,8 @@ void Template::setImage(const ByteImage& img) {
 }
 
 Template Template::makeBox(int radius) {
-  Template T;
-
-  T.points.push_back(Pt(0, 0));
-  for (int i = 1; i <= radius; i++) {
-    T.points.push_back(Pt(-i, 0));
-    T.points.push_back(Pt(i, 0));
-    for (int j = 1; j <= radius; j++) {
-      T.points.push_back(Pt(-i, -j));
-      T.points.push_back(Pt(-i, j));
-      T.points.push_back(Pt(i, -j));
-      T.points.push_back(Pt(i, j));
-    }
-  }
-      
-  T.width = 2 * radius + 1;
-
+  Template T = makeSerialBox(radius);
+  std::stable_sort(T.points.begin(), T.points.end());
   return T;
 }
 
@@ -44,23 +31,8 @@ Template Template::makeSerialBox(int radius) {
 }
 
 Template Template::makeCircle(int radius) {
-  Template T;
-
-  T.points.push_back(Pt(0, 0));
-  for (int i = 1; i <= radius; i++) {
-    T.points.push_back(Pt(-i, 0));
-    T.points.push_back(Pt(i, 0));
-    for (int j = 1; j <= radius; j++)
-      if (i * i + j * j <= radius * radius) {
-	T.points.push_back(Pt(-i, -j));
-	T.points.push_back(Pt(-i, j));
-	T.points.push_back(Pt(i, -j));
-	T.points.push_back(Pt(i, j));
-      }
-  }
-      
-  T.width = 2 * radius + 1;
-
+  Template T = makeSerialCircle(radius);
+  std::stable_sort(T.points.begin(), T.points.end());
   return T;
 }
 
