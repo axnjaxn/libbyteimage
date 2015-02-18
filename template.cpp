@@ -1,19 +1,8 @@
-/*
- * template.cpp by Brian Jackson
- * Revised 15 May 2014
- */
 #include "template.h"
 
-Template::Template(int size, bool isCircular) {
-  img = NULL;
-  if (isCircular) setCircular(size);
-  else setBox(size);
-}
-
-Template::Template(const ByteImage& img, int size, bool isCircular) {
-  setImage(img); 
-  if (isCircular) setCircular(size);
-  else setBox(size);
+Template::Template() {
+  img = NULL;  
+  width = nextIndex = 0;
 }
 
 void Template::setImage(const ByteImage& img) {
@@ -21,29 +10,72 @@ void Template::setImage(const ByteImage& img) {
   rewind();
 }
 
-void Template::setBox(int size) {
-  Pt p;
+Template Template::makeBox(int radius) {
+  Template T;
 
-  points.clear();
-  for (p.r = -size; p.r <= size; p.r++)
-    for (p.c = -size; p.c <= size; p.c++)
-      points.push_back(p);
+  T.points.push_back(Pt(0, 0));
+  for (int i = 1; i <= radius; i++) {
+    T.points.push_back(Pt(-i, 0));
+    T.points.push_back(Pt(i, 0));
+    for (int j = 1; j <= radius; j++) {
+      T.points.push_back(Pt(-i, -j));
+      T.points.push_back(Pt(-i, j));
+      T.points.push_back(Pt(i, -j));
+      T.points.push_back(Pt(i, j));
+    }
+  }
       
-  width = 2 * size + 1;
-  rewind();
+  T.width = 2 * radius + 1;
+
+  return T;
 }
 
-void Template::setCircular(int size) {
+Template Template::makeSerialBox(int radius) {
+  Template T;
   Pt p;
 
-  points.clear();
-  for (p.r = -size; p.r <= size; p.r++)
-    for (p.c = -size; p.c <= size; p.c++)
-      if (p.r * p.r + p.c * p.c <= size * size)
-	points.push_back(p);
+  for (p.r = -radius; p.r <= radius; p.r++)
+    for (p.c = -radius; p.c <= radius; p.c++)
+      T.points.push_back(p);
       
-  width = 2 * size + 1;
-  rewind();
+  T.width = 2 * radius + 1;
+
+  return T;
+}
+
+Template Template::makeCircle(int radius) {
+  Template T;
+
+  T.points.push_back(Pt(0, 0));
+  for (int i = 1; i <= radius; i++) {
+    T.points.push_back(Pt(-i, 0));
+    T.points.push_back(Pt(i, 0));
+    for (int j = 1; j <= radius; j++)
+      if (i * i + j * j <= radius * radius) {
+	T.points.push_back(Pt(-i, -j));
+	T.points.push_back(Pt(-i, j));
+	T.points.push_back(Pt(i, -j));
+	T.points.push_back(Pt(i, j));
+      }
+  }
+      
+  T.width = 2 * radius + 1;
+
+  return T;
+}
+
+Template Template::makeSerialCircle(int radius) {
+  Template T;
+  Pt p;
+
+  for (p.r = -radius; p.r <= radius; p.r++)
+    for (p.c = -radius; p.c <= radius; p.c++)
+      if (p.r * p.r + p.c * p.c <= radius * radius)
+	T.points.push_back(p);
+      
+  T.width = 2 * radius + 1;
+  
+  return T;
 }
 
 void Template::centerAt(int r, int c) {

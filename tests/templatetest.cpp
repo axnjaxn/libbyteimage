@@ -17,10 +17,18 @@ int main(int argc, char* argv[]) {
 	img.at(r + y, c + x) = !img.at(r + y, c + x) * 255;
   }
 
-  Template T(img, 16, 1);
+  Template T = Template::makeSerialCircle(16);
+  T.setImage(img);
   T.centerAt(128, 128);
   for (int r, c; T.next(r, c);)
-    img.at(r, c) = !img.at(r + y, c + x) * 255;
+    img.at(r, c) = !img.at(r, c) * 255;
+
+  img = img.toColor();
+  T = Template::makeCircle(16);
+  T.setImage(img);
+  T.centerAt(128, 128);
+  for (int r, c, i = 0; T.next(r, c); i++)
+    img.at(r, c, 0) = (i / 5) & 0xFF;
 
   display(img);
     
