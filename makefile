@@ -1,5 +1,5 @@
-BIN = byteimage.o matrix.o ransac.o quality.o kernel.o template.o render.o
-INC = byteimage.h matrix.h ransac.h quality.h kernel.h template.h render.h
+BIN = byteimage.o bitimage.o matrix.o ransac.o quality.o kernel.o template.o render.o
+INC = byteimage.h bitimage.h matrix.h ransac.h quality.h kernel.h template.h render.h
 TESTS = tests/imgtest tests/cholestest tests/svdtest tests/nulltest
 
 CFG_CFLAGS =
@@ -37,7 +37,7 @@ BIN += font.o plotter.o
 INC += font.h plotter.h
 CFG_CFLAGS += `freetype-config --cflags`
 CFG_LIBS += `freetype-config --libs`
-TESTS += tests/fonttest tests/graphtest
+TESTS += tests/fonttest tests/graphtest tests/morphtest
 else
 CFG_CFLAGS += -D_BYTEIMAGE_NO_FREETYPE
 endif
@@ -65,6 +65,9 @@ byteimage_sdl2.o: byteimage.h byteimage_sdl2.h byteimage_sdl2.cpp
 
 bytevideo.o: byteimage.h bytevideo.h bytevideo.cpp
 	$(CXX) -c bytevideo.cpp $(CFLAGS)
+
+bitimage.o: byteimage.h bitimage.h bitimage.cpp
+	$(CXX) -c bitimage.cpp $(CFLAGS)
 
 matrix.o: matrix.h matrix.cpp
 	$(CXX) -c matrix.cpp $(CFLAGS) 
@@ -142,6 +145,9 @@ tests/fonttest: tests/fonttest.cpp
 
 tests/graphtest: tests/graphtest.cpp
 	$(CXX) tests/graphtest.cpp -o tests/graphtest -g `byteimage-config --cflags --libs`
+
+tests/morphtest: tests/morphtest.cpp
+	$(CXX) tests/morphtest.cpp -o tests/morphtest -g `byteimage-config --cflags --libs`
 
 clean-tests:
 	rm -f tests/*~ $(TESTS)
