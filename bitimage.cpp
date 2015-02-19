@@ -42,6 +42,8 @@ BitImage& BitImage::operator=(const BitImage& img) {
   nc = img.nc;
   nstride = img.nstride;
   memcpy(blocks, img.blocks, countBytes());
+
+  return *this;
 }
 
 void BitImage::clear() {
