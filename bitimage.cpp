@@ -20,7 +20,7 @@ BitImage::BitImage(int nr, int nc) {
   this->nc = nc;
   nstride = (nc / BlockSize) + !!(nc % BlockSize);
   blocks = new Block [size()];
-  memset(blocks, 0, countBytes());
+  clear();
 }
 
 BitImage::BitImage(const BitImage& img) {
@@ -42,6 +42,10 @@ BitImage& BitImage::operator=(const BitImage& img) {
   nc = img.nc;
   nstride = img.nstride;
   memcpy(blocks, img.blocks, countBytes());
+}
+
+void BitImage::clear() {
+  memset(blocks, 0, countBytes());
 }
   
 ByteImage BitImage::toByteImage() const {

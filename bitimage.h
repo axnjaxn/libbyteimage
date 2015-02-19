@@ -26,7 +26,8 @@ public:
   inline int stride() const {return nstride;} //In blocks
   inline int size() const {return nr * nstride;} //In blocks
   inline int countBytes() const {return BlockSize * nr * nstride;}
-  
+
+  void clear();
   inline bool at(int r, int c) const {return (blocks[r * nstride + (c >> pos_bits)] >> (c & bitmask)) & 0x01;}
   inline void set(int r, int c) {blocks[r * nstride + (c >> pos_bits)] |= 1 << (c & bitmask);}
   inline void unset(int r, int c) {blocks[r * nstride + (c >> pos_bits)] &= ~(1 << (c & bitmask));}
