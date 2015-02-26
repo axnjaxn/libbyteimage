@@ -585,6 +585,8 @@ void hsl2rgb(double h, double s, double l,
   b += m;
 }
 
+
+
 ByteImage ByteImage::combineChannels(const ByteImage& r, const ByteImage& g, const ByteImage& b) {
   ByteImage result(r.nr, r.nc, 3);
   memcpy(result.R(), r.pixels, result.nr * result.nc);
@@ -738,4 +740,43 @@ ByteImage ByteImage::setValue(const ByteImage& V) const {
     for (int c = 0; c < nc; c++)
       result.setValue(r, c, V.at(r, c));
   return result;
+}
+
+void rgb2hsl_fast(ByteImage::BYTE r, ByteImage::BYTE g, ByteImage::BYTE b,
+		  float &h, float &s, float &l) {
+  ByteImage::BYTE min, max;
+  float c;
+
+  max = (r > g)? r : g;
+  max = (max > b)? max : b;
+
+  min = (r < g)? r : g;
+  min = (min < b)? min : b;
+  
+  c = max - min;
+
+  //Find hue in degrees
+  if (c == 0) h = 0;
+  else if (max == r) {
+    h = (g - b) / c;
+    if (b > g) h += 6.0;
+  }
+  else if (max == g) h = (b - r) / c + 2;
+  else h = (r - g) / c + 4;
+
+  h = 60 * h;
+  
+  //Find lightness
+  const float d255 = 3.921568627e-3;
+  const float d510 = 0.5 * d255;
+  l = (max + min) * d510;
+  
+  //Find saturation
+  if (l > 0.0 && l < 1.0) {
+    s = c * d255;
+    if (l > 0.5) s /= 2 - 2 * l;
+    else s /= 2 * l;
+  }
+  else
+    s = 0.0;
 }
