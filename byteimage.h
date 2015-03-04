@@ -67,6 +67,8 @@ class ByteImage {
   inline BYTE at(int r, int c, int ch = 0) const {return pixels[nr * nc * ch + r * nc + c];};
   BYTE atBounded(int r, int c, int ch = 0) const;
 
+  void fill(BYTE b);
+
   void resize(int nr, int nc);
   ByteImage resized(int nr, int nc) const;
 

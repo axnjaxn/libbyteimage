@@ -105,6 +105,10 @@ ByteImage::BYTE ByteImage::atBounded(int r, int c, int ch) const {
   return at(r, c, ch);
 }
 
+void ByteImage::fill(ByteImage::BYTE b) {
+  memset(pixels, b, nr * nc * nchannels);
+}
+
 void ByteImage::resize(int nr, int nc) {
   int mr = (nr < this->nr)? nr : this->nr;
   int mc = (nc < this->nc)? nc : this->nc;
