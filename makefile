@@ -1,5 +1,5 @@
-BIN = byteimage.o bitimage.o component.o matrix.o ransac.o quality.o kernel.o template.o render.o
-INC = byteimage.h bitimage.h component.h matrix.h ransac.h quality.h kernel.h template.h render.h
+BIN = byteimage.o bitimage.o component.o matrix.o ransac.o quality.o kernel.o template.o render.o palette.o
+INC = byteimage.h bitimage.h component.h matrix.h ransac.h quality.h kernel.h template.h render.h palette.h
 TESTS = tests/imgtest tests/cholestest tests/svdtest tests/nulltest
 
 CFG_CFLAGS =
@@ -10,7 +10,7 @@ BIN += byteimage_sdl2.o
 INC += byteimage_sdl2.h
 CFG_CFLAGS += `sdl2-config --cflags`
 CFG_LIBS += `sdl2-config --libs`
-TESTS += tests/sdl2test tests/kerneltest tests/templatetest tests/matrixtest tests/ransactest tests/rendertest tests/beziertest
+TESTS += tests/sdl2test tests/kerneltest tests/templatetest tests/matrixtest tests/ransactest tests/rendertest tests/beziertest tests/palettetest
 else
 CFG_CFLAGS += -D_BYTEIMAGE_NO_SDL2
 endif
@@ -96,6 +96,9 @@ font.o: byteimage.h font.h font.cpp
 plotter.o: byteimage.h matrix.h font.h render.h plotter.h plotter.cpp
 	$(CXX) -c plotter.cpp $(CFLAGS)
 
+palette.o: byteimage.h palette.h palette.cpp
+	$(CXX) -c palette.cpp $(CFLAGS)
+
 clean: clean-tests
 	rm -f *~ $(BIN) libbyteimage.a byteimage-config
 
@@ -154,6 +157,9 @@ tests/morphtest: tests/morphtest.cpp
 
 tests/componenttest: tests/componenttest.cpp
 	$(CXX) tests/componenttest.cpp -o tests/componenttest -g `byteimage-config --cflags --libs`
+
+tests/palettetest: tests/palettetest.cpp
+	$(CXX) tests/palettetest.cpp -o tests/palettetest -g `byteimage-config --cflags --libs`
 
 clean-tests:
 	rm -f tests/*~ $(TESTS)
