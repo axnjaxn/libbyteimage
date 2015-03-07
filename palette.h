@@ -29,6 +29,11 @@ public:
   CachedPalette(const CachedPalette& pal);
   virtual ~CachedPalette();
 
+  static CachedPalette fromBytes(int n, ...);
+  static CachedPalette fromHex(int n, ...);
+  static CachedPalette fromFloats(int n, ...);
+  static CachedPalette fromColors(int n, ...);  
+
   CachedPalette& operator=(const CachedPalette& pal);
   inline Color& operator[](int i) {return colors[i];}
   inline const Color& operator[](int i) const {return colors[i];}
@@ -50,6 +55,7 @@ protected:
 public:
   LinearPalette();
   LinearPalette(const Color& c0, const Color& c1);
+  LinearPalette(const CachedPalette& pal);
   LinearPalette(int ncolors);
 
   inline Color& operator[](int i) {return source[i];}
@@ -58,8 +64,9 @@ public:
   inline int colors() const {return source.levels();}
 
   virtual Color inUnit(float v) const;
-};
 
-LinearPalette jetPalette();
+  static LinearPalette jet();
+  static LinearPalette parula();
+};
 
 #endif
