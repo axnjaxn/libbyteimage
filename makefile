@@ -42,7 +42,7 @@ else
 CFG_CFLAGS += -D_BYTEIMAGE_NO_FREETYPE
 endif
 
-CFLAGS = -g -Wno-unused-result $(CFG_CFLAGS)
+CFLAGS = -O3 -Wno-unused-result $(CFG_CFLAGS)
 
 all: byteimage-config libbyteimage.a
 
