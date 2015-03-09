@@ -1,10 +1,6 @@
 #include "render.h"
 #include <cstring>
 
-template <typename tn>
-inline void swap(tn& a, tn& b) {tn t = a; a = b; b = t;}
-//inline static float fabs(float f) {return (f >= 0)? f : -f;}
-
 Matrix makeColor(double r, double g, double b) {return makePoint(r, g, b);}
 
 inline double getValue(const Matrix& rgb) {return (rgb.at(0) + rgb.at(1) + rgb.at(2)) / 3.0;}
@@ -66,8 +62,8 @@ void DrawRect(ByteImage& target, const Matrix& ul, const Matrix& lr, const Matri
   int w = (int)(getX(lr) + 0.5);
   int h = (int)(getY(lr) + 0.5);
 
-  if (x > w) swap(x, w);
-  if (y > h) swap(y, h);
+  if (x > w) std::swap(x, w);
+  if (y > h) std::swap(y, h);
   w -= x;
   h -= y;
 
@@ -110,8 +106,8 @@ void DrawLine(ByteImage& target, int ax, int ay, int bx, int by,
   if (fabs(by - ay) <= fabs(bx - ax)) {
     slope = (float)(by - ay) / (bx - ax);    
     if (ax > bx) {
-      swap(ax, bx);
-      swap(ay, by);
+      std::swap(ax, bx);
+      std::swap(ay, by);
     }
       
 
@@ -125,8 +121,8 @@ void DrawLine(ByteImage& target, int ax, int ay, int bx, int by,
   else {
     slope = (float)(bx - ax) / (by - ay);
     if (ay > by) {
-      swap(ax, bx);
-      swap(ay, by);
+      std::swap(ax, bx);
+      std::swap(ay, by);
     }
 
     tx = ax; ty = ay;
@@ -145,8 +141,8 @@ void DrawLine(ByteImage& target, int ax, int ay, int bx, int by,
   if (fabs(by - ay) <= fabs(bx - ax)) {
     slope = (float)(by - ay) / (bx - ax);    
     if (ax > bx) {
-      swap(ax, bx);
-      swap(ay, by);
+      std::swap(ax, bx);
+      std::swap(ay, by);
     }
 
     tx = ax; ty = ay;
@@ -159,8 +155,8 @@ void DrawLine(ByteImage& target, int ax, int ay, int bx, int by,
   else {
     slope = (float)(bx - ax) / (by - ay);
     if (ay > by) {
-      swap(ax, bx);
-      swap(ay, by);
+      std::swap(ax, bx);
+      std::swap(ay, by);
     }
 
     tx = ax; ty = ay;
@@ -233,13 +229,13 @@ void DrawTriangle(ByteImage& target, const Matrix& v0, const Matrix& v1, const M
   l = v1;
   d = v2;
 
-  if (getY(l) < getY(u)) swap(u, l);
-  if (getY(d) < getY(u)) swap(u, d);
-  if (getY(d) < getY(l)) swap(l, d);
+  if (getY(l) < getY(u)) std::swap(u, l);
+  if (getY(d) < getY(u)) std::swap(u, d);
+  if (getY(d) < getY(l)) std::swap(l, d);
 
   //Form two triangles: ulr and lrd
   r = makePoint(getX(u) + (getY(l) - getY(u))  * (getX(d) - getX(u)) / (getY(d) - getY(u)), getY(l));
-  if (getX(l) > getX(r)) swap(l, r);
+  if (getX(l) > getX(r)) std::swap(l, r);
 
   float lpos, rpos;
   float lslope, rslope;
