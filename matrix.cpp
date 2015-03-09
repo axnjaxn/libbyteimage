@@ -59,10 +59,9 @@ Matrix& Matrix::operator=(const Matrix& mat) {
 
 Matrix& Matrix::operator=(Matrix&& mat) {
   delete [] data;
-  nr = mat.nr;
-  nc = mat.nc;
-  data = mat.data;
-  mat.data = nullptr;
+  nr = mat.nr; mat.nr = 0;
+  nc = mat.nc; mat.nc = 0;
+  data = mat.data; mat.data = nullptr;
 
   return *this;
 }

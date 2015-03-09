@@ -2,21 +2,15 @@
 #include <cstring>
 #include <cfloat>
 
-CachedPalette::CachedPalette() {colors = NULL; nlevels = 0;}
+CachedPalette::CachedPalette() : nlevels(0), colors(nullptr) { }
 
-CachedPalette::CachedPalette(int nlevels) {
+CachedPalette::CachedPalette(int nlevels) : nlevels(nlevels) {
   colors = new Color [nlevels];
-  this->nlevels = nlevels;
 }
 
-CachedPalette::CachedPalette(const CachedPalette& pal) {
-  colors = NULL;
-  *this = pal;
-}
+CachedPalette::CachedPalette(const CachedPalette& pal) : colors(nullptr) {*this = pal;}
 
-CachedPalette::~CachedPalette() {
-  if (colors) delete [] colors;
-}
+CachedPalette::~CachedPalette() {delete [] colors;}
 
 CachedPalette CachedPalette::fromBytes(int n, ...) {
   CachedPalette pal(n);
@@ -72,6 +66,13 @@ CachedPalette& CachedPalette::operator=(const CachedPalette& pal) {
     colors = new Color [nlevels];
   }
   memcpy(colors, pal.colors, nlevels * sizeof(Color));
+  return *this;
+}
+
+CachedPalette& CachedPalette::operator=(CachedPalette&& pal) {
+  nlevels = pal.nlevels; pal.nlevels = 0;
+  colors = pal.colors; pal.colors = nullptr;
+
   return *this;
 }
 

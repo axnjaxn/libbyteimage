@@ -41,11 +41,10 @@ BitImage& BitImage::operator=(const BitImage& img) {
 BitImage& BitImage::operator=(BitImage&& img) {
   delete [] blocks;
 
-  nr = img.nr;
-  nc = img.nc;
+  nr = img.nr; img.nr = 0;
+  nc = img.nc; img.nc = 0;
   nstride = img.nstride;
-  blocks = img.blocks;
-  img.blocks = nullptr;
+  blocks = img.blocks; img.blocks = nullptr;
 
   return *this;
 }

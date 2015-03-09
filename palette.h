@@ -27,6 +27,7 @@ public:
   CachedPalette();
   CachedPalette(int nlevels);
   CachedPalette(const CachedPalette& pal);
+  CachedPalette(CachedPalette&& pal);
   virtual ~CachedPalette();
 
   static CachedPalette fromBytes(int n, ...);
@@ -35,6 +36,7 @@ public:
   static CachedPalette fromColors(int n, ...);  
 
   CachedPalette& operator=(const CachedPalette& pal);
+  CachedPalette& operator=(CachedPalette&& pal);
   inline Color& operator[](int i) {return colors[i];}
   inline const Color& operator[](int i) const {return colors[i];}
 
