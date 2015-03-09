@@ -1,35 +1,39 @@
-/*
- * kernel.cpp by Brian Jackson
- * Revised 10 May 2014
- */
-
 #include "kernel.h"
 
 #include <cmath>
 #include <cstring>
 
-Kernel::Kernel() {nr = nc = 0; values = NULL;}
+Kernel::Kernel() : nr(0), nc(0), values(nullptr) { }
 
-Kernel::Kernel(int nr, int nc) {
-  this->nr = nr; 
-  this->nc = nc;
+Kernel::Kernel(int nr, int nc) : nr(nr), nc(nc) {
   values = new double [nr * nc];
   memset(values, 0, nr * nc * sizeof(double));
 }
 
-Kernel::Kernel(const Kernel& k) {
-  values = NULL;
-  *this = k;
-}
+Kernel::Kernel(const Kernel& k) : nr(0), nc(0), values(nullptr) {*this = k;}
 
-Kernel::~Kernel() {if (values) delete [] values;}
+Kernel::Kernel(Kernel&& k) : nr(0), nc(0), values(nullptr) {*this = k;}
+
+Kernel::~Kernel() {delete [] values;}
 
 Kernel& Kernel::operator=(const Kernel& k) {
-  if (values) delete [] values;
-  nr = k.nr; 
+  if (nr * nc != k.nr * k.nc) {
+    delete [] values;
+    values = new double [k.nr * k.nc];
+  }
+  nr = k.nr;
   nc = k.nc;
-  values = new double [nr * nc];
+
   memcpy(values, k.values, nr * nc * sizeof(double));
+
+  return *this;
+}
+
+Kernel& Kernel::operator=(Kernel&& k) {
+  nr = k.nr; k.nr = 0;
+  nc = k.nc; k.nc = 0;
+  values = k.values; k.values = nullptr;
+
   return *this;
 }
 

@@ -1,8 +1,3 @@
-/*
- * kernel.h by Brian Jackson
- * Revised 10 May 2014
- */
-
 #ifndef _BPJ_BYTEIMAGE_KERNEL_H
 #define _BPJ_BYTEIMAGE_KERNEL_H
 
@@ -16,9 +11,11 @@ public:
   Kernel();
   Kernel(int nr, int nc);
   Kernel(const Kernel& k);
-  ~Kernel();
+  Kernel(Kernel&& k);
+  virtual ~Kernel();
 
   Kernel& operator=(const Kernel& k);
+  Kernel& operator=(Kernel&& k);
 
   inline double& at(int i, int j) {return values[(i + nr / 2) * nc + (j + nc / 2)];}
   inline double at(int i, int j) const {return values[(i + nr / 2) * nc + (j + nc / 2)];}
