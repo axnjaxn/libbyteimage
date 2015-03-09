@@ -9,13 +9,13 @@ public:
   class Pt {
   public:
     int r, c;
-    Pt() {r = c = 0;}
-    Pt(int r, int c) {this->r = r; this->c = c;}
+    constexpr Pt() : r(0), c(0) { }
+    constexpr Pt(int r, int c) : r(r), c(c) { }
   };
 
   typedef unsigned char Flags;
-  static const Flags STATIC_ALLOC = 0;
-  static const Flags DYNAMIC_ALLOC = 1;
+  static constexpr Flags STATIC_ALLOC = 0;
+  static constexpr Flags DYNAMIC_ALLOC = 1;
 
 protected:
   static BitImage static_marking;

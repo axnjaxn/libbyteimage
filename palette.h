@@ -8,8 +8,8 @@ public:
   class Color {
   public:
     ByteImage::BYTE r, g, b;
-    inline Color() {r = g = b = 0;}
-    inline Color(ByteImage::BYTE r, ByteImage::BYTE g, ByteImage::BYTE b) {this->r = r; this->g = g; this->b = b;}
+    constexpr Color() : r(0), g(0), b(0) { }
+    constexpr Color(ByteImage::BYTE r, ByteImage::BYTE g, ByteImage::BYTE b) : r(r), g(g), b(b) { }
   };
   
   //These functions *must* ensure range safety.

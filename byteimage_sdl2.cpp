@@ -10,10 +10,19 @@ ByteImageDisplay::ByteImageDisplay(int nr, int nc, const char* title) {init(Byte
 
 ByteImageDisplay::ByteImageDisplay(const ByteImage& img, const char* title) {init(img, title);}
 
+ByteImageDisplay::ByteImageDisplay(ByteImageDisplay&& disp) 
+  : window(disp.window), texture(disp.texture), renderer(disp.renderer), 
+    px(disp.px), exitflag(disp.exitflag), drawflag(disp.drawflag), frameDelay(disp.frameDelay)  {
+  disp.window = nullptr;
+  disp.texture = nullptr;
+  disp.renderer = nullptr;
+  disp.px = nullptr;
+}
+
 ByteImageDisplay::~ByteImageDisplay() {
-  SDL_DestroyWindow(window);
-  SDL_DestroyTexture(texture);
-  SDL_DestroyRenderer(renderer);
+  if (window) SDL_DestroyWindow(window);
+  if (texture) SDL_DestroyTexture(texture);
+  if (renderer) SDL_DestroyRenderer(renderer);
   delete [] px;
 }
 

@@ -1,10 +1,7 @@
 #include "template.h"
 #include <algorithm>
 
-Template::Template() {
-  img = NULL;  
-  width = nextIndex = 0;
-}
+Template::Template() : img(nullptr), width(0), nextIndex(0) { }
 
 void Template::setImage(const ByteImage& img) {
   this->img = &img;

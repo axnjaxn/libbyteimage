@@ -38,7 +38,12 @@ public:
 
   ByteImageDisplay(int nr, int nc, const char* title = NULL);
   ByteImageDisplay(const ByteImage& img, const char* title = NULL);
+  ByteImageDisplay(const ByteImageDisplay&) = delete;
+  ByteImageDisplay(ByteImageDisplay&& disp);
   virtual ~ByteImageDisplay();
+
+  ByteImageDisplay& operator=(const ByteImageDisplay&) = delete;
+  ByteImageDisplay& operator=(ByteImageDisplay&&);
 
   void main();
   int show(const ByteImage& img);//Returns nonzero if exit event is caught
