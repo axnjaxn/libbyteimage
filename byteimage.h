@@ -54,10 +54,12 @@ class ByteImage {
   ByteImage(Magick::Image& img);
 #endif
   ByteImage(const ByteImage& img);
+  ByteImage(ByteImage&& img);
   ByteImage(FILE* fp, int nr, int nc, int nchannels);
   virtual ~ByteImage();
 
   ByteImage& operator=(const ByteImage& img);
+  ByteImage& operator=(ByteImage&& img);
 
   inline int inBounds(int r, int c) const {return (r >= 0 && r < nr && c >= 0 && c <= nc);}
   inline int size() const {return nr * nc * nchannels;}

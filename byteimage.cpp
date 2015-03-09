@@ -13,39 +13,27 @@ using namespace Magick;
 template <typename tn>
 inline tn min(tn a, tn b) {return (a <= b)? a : b;}
 
-ByteImage::ByteImage() {
-  pixels = NULL; 
-  nr = nc = nchannels = 0;
-}
+ByteImage::ByteImage() : nr(0), nc(0), nchannels(0), pixels(nullptr) { }
 
 #ifndef _BYTEIMAGE_NO_MAGICK
 ByteImage::ByteImage(std::string fn) {
-  pixels = NULL;
+  pixels = nullptr;
   load_filename(fn);
 }
 #endif
 
-ByteImage::ByteImage(int nr, int nc, int nchannels, BYTE val) {
-  this->nr = nr;
-  this->nc = nc;
-  this->nchannels = nchannels;
+ByteImage::ByteImage(int nr, int nc, int nchannels, BYTE val) : nr(nr), nc(nc), nchannels(nchannels) {
   pixels = new BYTE [size()];
   memset(pixels, val, size());
 }
 
-ByteImage::ByteImage(const BYTE* pixels, int nr, int nc, int nchannels) {
-  this->nr = nr;
-  this->nc = nc;
-  this->nchannels = nchannels;
+ByteImage::ByteImage(const BYTE* pixels, int nr, int nc, int nchannels) : nr(nr), nc(nc), nchannels(nchannels) {
   this->pixels = new BYTE [size()];
   memcpy(this->pixels, pixels, size());
 }
 
 #ifndef _BYTEIMAGE_NO_MAGICK
-ByteImage::ByteImage(Magick::Image& img) {
-  nr = img.rows();
-  nc = img.columns();
-  nchannels = 3;
+ByteImage::ByteImage(Magick::Image& img) : nr(img.rows()), nc(img.columns()), nchannels(3) {
   pixels = new BYTE [size()];
 
   Magick::Pixels cache(img);
@@ -66,33 +54,42 @@ ByteImage::ByteImage(Magick::Image& img) {
 }
 #endif
 
-ByteImage::ByteImage(FILE* fp, int nr, int nc, int nchannels) {
-  this->nr = nr;
-  this->nc = nc;
-  this->nchannels = nchannels;
+ByteImage::ByteImage(FILE* fp, int nr, int nc, int nchannels) : nr(nr), nc(nc), nchannels(nchannels) {
   pixels = new BYTE [nr * nc * nchannels];
   fread(pixels, 1, nr * nc * nchannels, fp);
 }
 
-ByteImage::ByteImage(const ByteImage& img) {
-  pixels = NULL;
-  *this = img;
-}
+ByteImage::ByteImage(const ByteImage& img) : nr(0), nc(0), nchannels(0), pixels(nullptr) {*this = img;}
+
+ByteImage::ByteImage(ByteImage&& img) : nr(0), nc(0), nchannels(0), pixels(nullptr) {*this = img;}
 
 ByteImage::~ByteImage() {
-  if (pixels) delete [] pixels;
+  delete [] pixels;
 }
 
 ByteImage& ByteImage::operator=(const ByteImage& img) {
-  if (pixels) delete [] pixels;
+  if (size() != img.size()) {
+    delete [] pixels;
+    pixels = new BYTE [img.size()];
+  }
 
   nr = img.nr;
   nc = img.nc;
   nchannels = img.nchannels;
-  pixels = new BYTE [size()];
   memcpy(pixels, img.pixels, size());
   
   return *this;
+}
+
+ByteImage& ByteImage::operator=(ByteImage&& img) {
+  nr = img.nr;
+  nc = img.nc;
+  nchannels = img.nchannels;
+  pixels = img.pixels;
+  img.pixels = nullptr;
+  
+  return *this;
+  
 }
 
 ByteImage::BYTE ByteImage::atBounded(int r, int c, int ch) const {

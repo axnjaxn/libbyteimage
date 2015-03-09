@@ -3,40 +3,28 @@
 #include <cmath>
 #include <cfloat>
 
-Matrix::Matrix() {
-  nr = nc = 0;
-  data = NULL;
-}
+Matrix::Matrix() : nr(0), nc(0), data(nullptr) { }
 
-Matrix::Matrix(int n) {
-  nr = nc = n;
+Matrix::Matrix(int n) : nr(n), nc(n) {
   data = new double [nr * nc];
   memset(data, 0, nr * nc * sizeof(double));
 }
 
-Matrix::Matrix(int nr, int nc) {
-  this->nr = nr;
-  this->nc = nc;
+Matrix::Matrix(int nr, int nc) : nr(nr), nc(nc) {
   data = new double [nr * nc];
   memset(data, 0, nr * nc * sizeof(double));
 }
 
-Matrix::Matrix(const double* ary, int nr, int nc) {
-  this->nr = nr;
-  this->nc = nc;
+Matrix::Matrix(const double* ary, int nr, int nc) : nr(nr), nc(nc) {
   data = new double [nr * nc];
   memcpy(data, ary, nr * nc * sizeof(double));
 }
 
-Matrix::Matrix(const Matrix& mat) {
-  nr = nc = 0;
-  data = NULL;
-  *this = mat;
-}
+Matrix::Matrix(const Matrix& mat) : nr(0), nc(0), data(nullptr) {*this = mat;}
 
-Matrix::~Matrix() {
-  if (data) delete [] data;
-}
+Matrix::Matrix(Matrix&& mat) : nr(0), nc(0), data(nullptr) {*this = mat;}
+
+Matrix::~Matrix() {delete [] data;}
 
 Matrix Matrix::identity(int n) {
   Matrix I(n);
@@ -58,13 +46,23 @@ Matrix Matrix::givens(int n, int i, int j, double th) {
 
 Matrix& Matrix::operator=(const Matrix& mat) {
   if (nr * nc != mat.nr * mat.nc) {
-    if (data) delete [] data;
+    delete [] data;
     data = new double [mat.nr * mat.nc];
   }
   nr = mat.nr;
   nc = mat.nc;
 
   memcpy(data, mat.data, nr * nc * sizeof(double));
+
+  return *this;
+}
+
+Matrix& Matrix::operator=(Matrix&& mat) {
+  delete [] data;
+  nr = mat.nr;
+  nc = mat.nc;
+  data = mat.data;
+  mat.data = nullptr;
 
   return *this;
 }

@@ -14,6 +14,7 @@ public:
   Matrix(int nr, int nc);
   Matrix(const double* ary, int nr, int nc);
   Matrix(const Matrix& mat);
+  Matrix(Matrix&& mat);
   ~Matrix();
 
   static Matrix identity(int n);
@@ -22,6 +23,7 @@ public:
   Matrix operator-() const {return (*this) * -1.0;}
 
   Matrix& operator=(const Matrix& mat);
+  Matrix& operator=(Matrix&& mat);
   Matrix operator+(const Matrix& mat) const;
   Matrix operator-(const Matrix& mat) const;
   Matrix operator*(const Matrix& mat) const;

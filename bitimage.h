@@ -19,9 +19,11 @@ public:
   BitImage();
   BitImage(int nr, int nc);
   BitImage(const BitImage& img);
+  BitImage(BitImage&& img);
   virtual ~BitImage();
 
   BitImage& operator=(const BitImage& img);
+  BitImage& operator=(BitImage&& img);
 
   inline int stride() const {return nstride;} //In blocks
   inline int size() const {return nr * nstride;} //In blocks

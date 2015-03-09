@@ -90,8 +90,8 @@ int main(int argc, char* argv[]) {
 
   const int nbad = 20;
   for (int i = 0; i < nbad; i += 2)
-    std::swap(tarp[i], tarp[i - 1]);
-
+    std::swap(tarp[i], tarp[i + 1]);
+  
   display(drawPointPair(refp, tarp));
 
   std::vector<int> inliers;

@@ -3,7 +3,7 @@
 
 template <typename tn>
 inline void swap(tn& a, tn& b) {tn t = a; a = b; b = t;}
-inline float fabs(float f) {return (f >= 0)? f : -f;}
+//inline static float fabs(float f) {return (f >= 0)? f : -f;}
 
 Matrix makeColor(double r, double g, double b) {return makePoint(r, g, b);}
 
@@ -224,8 +224,8 @@ void DrawCircle(ByteImage& target, const Matrix& v, const Matrix& rgb, double ra
       }
 }
 
-inline int floor(double d) {return (int)d;}
-inline int ceil(double d) {return (int)d + (d != (int)d);}
+inline int ifloor(double d) {return (int)d;}
+inline int iceil(double d) {return (int)d + (d != (int)d);}
 
 void DrawTriangle(ByteImage& target, const Matrix& v0, const Matrix& v1, const Matrix& v2, const Matrix& rgb) {
   Matrix u, l, r, d;
@@ -250,8 +250,8 @@ void DrawTriangle(ByteImage& target, const Matrix& v0, const Matrix& v1, const M
   lslope = (getX(l) - getX(u)) / (getY(l) - getY(u));
   rslope = (getX(r) - getX(u)) / (getY(r) - getY(u));
   for (y = (int)(getY(u) + 0.5); y < (int)(getY(l) + 0.5); y++) {
-    x = floor(lpos);
-    w = ceil(rpos) - x + 1;
+    x = ifloor(lpos);
+    w = iceil(rpos) - x + 1;
       
     if (target.nchannels == 1)
       DrawRect(target, x, y, w, h, getValue(rgb));
@@ -268,8 +268,8 @@ void DrawTriangle(ByteImage& target, const Matrix& v0, const Matrix& v1, const M
   lslope = (getX(d) - getX(l)) / (getY(d) - getY(l));
   rslope = (getX(d) - getX(r)) / (getY(d) - getY(r));
   for (; y < (int)(getY(d) + 0.5); y++) {
-    x = floor(lpos);
-    w = ceil(rpos) - x + 1;
+    x = ifloor(lpos);
+    w = iceil(rpos) - x + 1;
 
     if (target.nchannels == 1)
       DrawRect(target, x, y, w, h, getValue(rgb));

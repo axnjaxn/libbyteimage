@@ -10,27 +10,19 @@ static inline int posBits(int BlockSize) {
 const int BitImage::pos_bits = posBits(BitImage::BlockSize);
 const unsigned int BitImage::bitmask = (BitImage::BlockSize << 3) - 1;
 
-BitImage::BitImage() {
-  blocks = NULL;
-  nr = nc = nstride = 0;
-}
+BitImage::BitImage() : nr(0), nc(0), nstride(0), blocks(nullptr) { }
 
-BitImage::BitImage(int nr, int nc) {
-  this->nr = nr;
-  this->nc = nc;
+BitImage::BitImage(int nr, int nc) : nr(nr), nc(nc) {
   nstride = (nc / BlockSize) + !!(nc % BlockSize);
   blocks = new Block [size()];
   clear();
 }
 
-BitImage::BitImage(const BitImage& img) {
-  blocks = NULL;
-  *this = img;
-}
+BitImage::BitImage(const BitImage& img) : blocks(nullptr) {*this = img;}
 
-BitImage::~BitImage() {
-  if (blocks) delete [] blocks;
-}
+BitImage::BitImage(BitImage&& img) : blocks(nullptr) {*this = img;}
+
+BitImage::~BitImage() {delete [] blocks;}
 
 BitImage& BitImage::operator=(const BitImage& img) {
   if (size() != img.size()) {
@@ -42,6 +34,18 @@ BitImage& BitImage::operator=(const BitImage& img) {
   nc = img.nc;
   nstride = img.nstride;
   memcpy(blocks, img.blocks, countBytes());
+
+  return *this;
+}
+
+BitImage& BitImage::operator=(BitImage&& img) {
+  delete [] blocks;
+
+  nr = img.nr;
+  nc = img.nc;
+  nstride = img.nstride;
+  blocks = img.blocks;
+  img.blocks = nullptr;
 
   return *this;
 }
@@ -68,11 +72,9 @@ void BitImage::erode() {
       if (at(r - 1, c - 1) && at(r - 1, c) && at(r - 1, c + 1)
 	  && at(r, c - 1) && at(r, c) && at(r, c + 1)
 	  && at(r + 1, c - 1) && at(r + 1, c) && at(r + 1, c + 1))
-	result.set(r, c);	
+	result.set(r, c);
 
-  if (blocks) delete [] blocks;
-  blocks = result.blocks;
-  result.blocks = NULL;
+  *this = std::move(result);
 }
 
 void BitImage::dilate() {
@@ -92,20 +94,12 @@ void BitImage::dilate() {
 	result.set(r + 1, c + 1);
       }
 
-  if (blocks) delete [] blocks;
-  blocks = result.blocks;
-  result.blocks = NULL;
+  *this = std::move(result);
 }
 
-void BitImage::open() {
-  dilate();
-  erode();
-}
+void BitImage::open() {dilate(); erode();}
 
-void BitImage::close() {
-  erode();
-  dilate();
-}
+void BitImage::close() {erode(); dilate();}
 
 void BitImage::invert() {
   for (int i = 0; i < size(); i++)

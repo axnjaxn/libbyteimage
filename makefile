@@ -2,7 +2,7 @@ BIN = byteimage.o bitimage.o component.o matrix.o ransac.o quality.o kernel.o te
 INC = byteimage.h bitimage.h component.h matrix.h ransac.h quality.h kernel.h template.h render.h palette.h
 TESTS = tests/imgtest tests/cholestest tests/svdtest tests/nulltest
 
-CFG_CFLAGS =
+CFG_CFLAGS = -std=c++11
 CFG_LIBS =
 
 ifneq (, $(shell sdl2-config --version))
@@ -42,7 +42,7 @@ else
 CFG_CFLAGS += -D_BYTEIMAGE_NO_FREETYPE
 endif
 
-CFLAGS = -O3 -Wno-unused-result $(CFG_CFLAGS)
+CFLAGS = -g -Wno-unused-result $(CFG_CFLAGS)
 
 all: byteimage-config libbyteimage.a
 
