@@ -1,5 +1,5 @@
-BIN = byteimage.o bitimage.o component.o matrix.o ransac.o quality.o kernel.o template.o render.o palette.o
-INC = byteimage.h bitimage.h component.h matrix.h ransac.h quality.h kernel.h template.h render.h palette.h
+BIN = byteimage.o bitimage.o component.o matrix.o spline.o ransac.o quality.o kernel.o template.o render.o palette.o
+INC = byteimage.h bitimage.h component.h matrix.h spline.h ransac.h quality.h kernel.h template.h render.h palette.h
 TESTS = tests/imgtest tests/cholestest tests/svdtest tests/nulltest
 
 CFG_CFLAGS = -std=c++11
@@ -10,7 +10,7 @@ BIN += byteimage_sdl2.o
 INC += byteimage_sdl2.h
 CFG_CFLAGS += `sdl2-config --cflags`
 CFG_LIBS += `sdl2-config --libs`
-TESTS += tests/sdl2test tests/kerneltest tests/templatetest tests/matrixtest tests/ransactest tests/rendertest tests/beziertest tests/palettetest
+TESTS += tests/sdl2test tests/kerneltest tests/templatetest tests/matrixtest tests/splinetest tests/ransactest tests/rendertest tests/beziertest tests/palettetest
 else
 CFG_CFLAGS += -D_BYTEIMAGE_NO_SDL2
 endif
@@ -75,6 +75,9 @@ component.o: bitimage.h component.h component.cpp
 matrix.o: matrix.h matrix.cpp
 	$(CXX) -c matrix.cpp $(CFLAGS) 
 
+spline.o: matrix.h spline.h spline.cpp
+	$(CXX) -c spline.cpp $(CFLAGS) 
+
 ransac.o: matrix.h ransac.h ransac.cpp
 	$(CXX) -c ransac.cpp $(CFLAGS)
 
@@ -127,6 +130,9 @@ tests/templatetest: tests/templatetest.cpp
 
 tests/matrixtest: tests/matrixtest.cpp
 	$(CXX) tests/matrixtest.cpp -o tests/matrixtest -g `byteimage-config --cflags --libs`
+
+tests/splinetest: tests/splinetest.cpp
+	$(CXX) tests/splinetest.cpp -o tests/splinetest -g `byteimage-config --cflags --libs`
 
 tests/ransactest: tests/ransactest.cpp
 	$(CXX) tests/ransactest.cpp -o tests/ransactest -g `byteimage-config --cflags --libs`

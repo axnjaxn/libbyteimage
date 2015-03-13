@@ -4,6 +4,7 @@ vidtest
 kerneltest
 templatetest
 matrixtest
+splinetest
 ransactest
 rendertest
 beziertest
