@@ -20,6 +20,14 @@ Matrix::Matrix(const double* ary, int nr, int nc) : nr(nr), nc(nc) {
   memcpy(data, ary, nr * nc * sizeof(double));
 }
 
+Matrix::Matrix(std::initializer_list<double> v) : nr(v.size()), nc(1) {
+  data = new double [nr];
+
+  int i = 0;
+  for (double d : v)
+    data[i++] = d;
+}
+
 Matrix::Matrix(const Matrix& mat) : nr(0), nc(0), data(nullptr) {*this = mat;}
 
 Matrix::Matrix(Matrix&& mat) : nr(0), nc(0), data(nullptr) {*this = mat;}

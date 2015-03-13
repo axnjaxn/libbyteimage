@@ -1,6 +1,8 @@
 #ifndef _BPJ_MATRIX_H
 #define _BPJ_MATRIX_H
 
+#include <initializer_list>
+
 class Matrix {
 private:
   double* data;
@@ -13,6 +15,7 @@ public:
   Matrix(int n);
   Matrix(int nr, int nc);
   Matrix(const double* ary, int nr, int nc);
+  Matrix(std::initializer_list<double> v);//Creates a column vector
   Matrix(const Matrix& mat);
   Matrix(Matrix&& mat);
   ~Matrix();
@@ -63,10 +66,10 @@ public:
   inline friend double getY(const Matrix& v) {return v.data[1] / v.data[2];}
 };
 
-Matrix makePoint(double x, double y, double w = 1.0);
-Matrix normalize(const Matrix& v);
-double sqLength(const Matrix& v);
-double length(const Matrix& v);
+Matrix makePoint(double x, double y, double w = 1.0);//Deprecated: use initializer lists
+Matrix normalize(const Matrix& v);//Assumes homogeneous 3-vector
+double sqLength(const Matrix& v);//Assumes inhomogeneous n-vector
+double length(const Matrix& v);//Assumes inhomogeneous n-vector
 double dot(const Matrix& v1, const Matrix& v2);
 
 #endif
