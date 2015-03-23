@@ -43,11 +43,17 @@ int main(int argc, char* argv[]) {
   img = ByteImage(img.nr, img.nc, 3);
 
   Uint32 ticks = SDL_GetTicks();
-  for (int i = 1; i < 1000; i++)
-    std::vector<Component> components = Component::getComponents(b);
-  std::vector<Component> components = Component::getComponents(b);
+  std::vector<Component> components;
+  for (int i = 0; i < 1000; i++)
+    components = Component::getComponents(b);
   ticks = SDL_GetTicks() - ticks;
-  printf("Finished after %dms\n", ticks);
+  printf("Four-connected: finished after %dms\n", ticks);
+  
+  ticks = SDL_GetTicks();
+  for (int i = 0; i < 1000; i++)
+    components = Component::getComponents(b, Component::EIGHT_CONNECTED);
+  ticks = SDL_GetTicks() - ticks;
+  printf("Eight-connected: finished after %dms\n", ticks);
 
   ByteImage::BYTE R, G, B;
   for (int i = 0; i < components.size(); i++) {

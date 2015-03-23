@@ -26,6 +26,7 @@ void Component::getBounds(int& x, int& y, int& w, int &h) {
   h = y1 - y + 1;
 }
 
+template <bool eight_connected>
 Component Component::getComponentAt(BitImage& marking, const Component::Pt& initial_point) {
   Component component;
   Component::Pt pt;
@@ -40,17 +41,37 @@ Component Component::getComponentAt(BitImage& marking, const Component::Pt& init
 
     marking.set(pt.r, pt.c);
     component.add(pt);
-    if (pt.r > 0)
-      q.push(Component::Pt(pt.r - 1, pt.c));
-    if (pt.r < marking.nr - 1)
-      q.push(Component::Pt(pt.r + 1, pt.c));
-    if (pt.c > 0)
-      q.push(Component::Pt(pt.r, pt.c - 1));
-    if (pt.c < marking.nc - 1)
-      q.push(Component::Pt(pt.r, pt.c + 1));
+    if (eight_connected) {
+      if (pt.r > 0) {
+	if (pt.c > 0) q.push(Component::Pt(pt.r - 1, pt.c - 1));
+	q.push(Component::Pt(pt.r - 1, pt.c));
+	if (pt.c < marking.nc - 1) q.push(Component::Pt(pt.r - 1, pt.c + 1));
+      }
+      if (pt.c > 0) q.push(Component::Pt(pt.r, pt.c - 1));
+      if (pt.c < marking.nc - 1) q.push(Component::Pt(pt.r, pt.c + 1));
+      if (pt.r < marking.nr - 1) {
+	if (pt.c > 0) q.push(Component::Pt(pt.r + 1, pt.c - 1));
+	q.push(Component::Pt(pt.r + 1, pt.c));
+	if (pt.c < marking.nc - 1) q.push(Component::Pt(pt.r + 1, pt.c + 1));
+      }
+    }
+    else {
+      if (pt.r > 0)
+	q.push(Component::Pt(pt.r - 1, pt.c));
+      if (pt.r < marking.nr - 1)
+	q.push(Component::Pt(pt.r + 1, pt.c));
+      if (pt.c > 0)
+	q.push(Component::Pt(pt.r, pt.c - 1));
+      if (pt.c < marking.nc - 1)
+	q.push(Component::Pt(pt.r, pt.c + 1));
+    }
   }
 
   return component;
+}
+
+Component Component::getComponentAt(BitImage& marking, const Pt& initial_point, Flags flags) {
+  return (flags & EIGHT_CONNECTED)? getComponentAt<true>(marking, initial_point) : getComponentAt<false>(marking, initial_point);
 }
 
 std::vector<Component> Component::getComponents(const BitImage& img, Flags flags) {
@@ -69,7 +90,7 @@ std::vector<Component> Component::getComponents(const BitImage& img, Flags flags
   for (int r = 0; r < img.nr; r++)
     for (int c = 0; c < img.nc; c++)
       if (!marking.at(r, c))
-	components.push_back(getComponentAt(marking, Pt(r, c)));
+	components.push_back(getComponentAt(marking, Pt(r, c), flags));
   
   return components;		
 }
@@ -83,7 +104,7 @@ std::vector<Component> Component::getComponents(const BitImage& img, const std::
   std::vector<Component> components;
   for (int i = 0; i < pts.size(); i++)
     if (!marking.at(pts[i].r, pts[i].c))
-      components.push_back(getComponentAt(marking, pts[i]));
+      components.push_back(getComponentAt(marking, pts[i], flags));
   
   return components;		
 }

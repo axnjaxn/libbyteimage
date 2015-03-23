@@ -16,10 +16,15 @@ public:
   typedef unsigned char Flags;
   static constexpr Flags STATIC_ALLOC = 0;
   static constexpr Flags DYNAMIC_ALLOC = 1;
+  static constexpr Flags FOUR_CONNECTED = 0;
+  static constexpr Flags EIGHT_CONNECTED = 2;
 
 protected:
   static BitImage static_marking;
+
+  template <bool eight_connected>
   static Component getComponentAt(BitImage& marking, const Pt& initial_point);
+  static Component getComponentAt(BitImage& marking, const Pt& initial_point, Flags flags);
 
 public:
   std::vector<Pt> points;
