@@ -82,13 +82,13 @@ ByteImage& ByteImage::operator=(const ByteImage& img) {
 }
 
 ByteImage& ByteImage::operator=(ByteImage&& img) {
+  delete [] pixels;
   nr = img.nr; img.nr = 0;
   nc = img.nc; img.nc = 0;
   nchannels = img.nchannels; img.nchannels = 0;
   pixels = img.pixels; img.pixels = nullptr;
   
   return *this;
-  
 }
 
 ByteImage::BYTE ByteImage::atBounded(int r, int c, int ch) const {
