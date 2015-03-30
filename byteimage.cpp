@@ -561,7 +561,6 @@ void rgb2hsl(double r, double g, double b,
 
 void hsl2rgb(double h, double s, double l,
 	     double &r, double &g, double &b) {
-
   double c;
   if (l <= 0.5) c = 2 * l * s;
   else c = (2 - 2 * l) * s;
@@ -779,4 +778,32 @@ void rgb2hsl_fast(ByteImage::BYTE r, ByteImage::BYTE g, ByteImage::BYTE b,
   }
   else
     s = 0.0;
+}
+
+void hsl2rgb_fast(float h, float s, float l,
+		  ByteImage::BYTE &R, ByteImage::BYTE &G, ByteImage::BYTE &B) {
+  float c = (l <= 0.5)? c = 2 * l * s : (2 - 2 * l) * s;
+
+  const float d60 = 1.0 / 60.0;
+  h = h * d60;
+  int htype = (int)h;
+  h  = (htype & 1) + (h - htype);//h = fmod(h, 2)
+  h = (h > 1)? h - 1 : 1 - h;
+  float x = c * (1 - h);
+
+  float r, g, b;
+  switch (htype) {
+  default: r = 0; g = 0; b = 0; break;
+  case 0: r = c; g = x; b = 0; break;
+  case 1: r = x; g = c; b = 0; break;
+  case 2: r = 0; g = c; b = x; break;
+  case 3: r = 0; g = x; b = c; break;
+  case 4: r = x; g = 0; b = c; break;
+  case 5: r = c; g = 0; b = x; break;
+  }    
+
+  x = l - 0.5 * c;
+  R = ByteImage::clip(255.0f * (r + x));
+  G = ByteImage::clip(255.0f * (g + x));
+  B = ByteImage::clip(255.0f * (b + x));
 }

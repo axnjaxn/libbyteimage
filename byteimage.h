@@ -121,4 +121,8 @@ void hsv2rgb(double h, double s, double v, double &r, double& g, double& b);
 void rgb2hsl_fast(ByteImage::BYTE r, ByteImage::BYTE g, ByteImage::BYTE b,
 		  float &h, float &s, float &l);
 
+void hsl2rgb_fast(float h, float s, float l,
+		  ByteImage::BYTE &r, ByteImage::BYTE &g, ByteImage::BYTE &b);
+		  
+
 #endif
