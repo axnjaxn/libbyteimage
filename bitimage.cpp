@@ -52,6 +52,20 @@ BitImage& BitImage::operator=(BitImage&& img) {
 void BitImage::clear() {
   memset(blocks, 0, countBytes());
 }
+
+void BitImage::resize(int nr, int nc) {
+  if (this->nr * this->nc != nr * nc) {
+    delete [] blocks;
+    blocks = nullptr;
+  }
+
+  this->nr = nr;
+  this->nc = nc;
+  nstride = (nc / BlockSize) + !!(nc % BlockSize);
+  if (!blocks) blocks = new Block [size()];
+ 
+  clear();
+}
   
 ByteImage BitImage::toByteImage() const {
   ByteImage img(nr, nc);

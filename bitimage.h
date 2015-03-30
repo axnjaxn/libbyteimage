@@ -30,6 +30,8 @@ public:
   inline int countBytes() const {return BlockSize * nr * nstride;}
 
   void clear();
+  void resize(int nr, int nc);//Clears data
+
   inline bool at(int r, int c) const {return (blocks[r * nstride + (c >> pos_bits)] >> (c & bitmask)) & 0x01;}
   inline void set(int r, int c) {blocks[r * nstride + (c >> pos_bits)] |= 1 << (c & bitmask);}
   inline void unset(int r, int c) {blocks[r * nstride + (c >> pos_bits)] &= ~(1 << (c & bitmask));}
