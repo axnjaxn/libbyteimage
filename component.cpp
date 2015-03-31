@@ -3,7 +3,7 @@
 
 BitImage Component::static_marking;
 
-void Component::getCenter(double& x, double& y) {
+void Component::getCenter(double& x, double& y) const {
   x = y = 0.0;
   for (int i = 0; i < size(); i++) {
     x += points[i].c;
@@ -13,7 +13,7 @@ void Component::getCenter(double& x, double& y) {
   y /= points.size();
 }
 
-void Component::getBounds(int& x, int& y, int& w, int &h) {
+void Component::getBounds(int& x, int& y, int& w, int &h) const {
   int x1, y1;
   x = x1 = points[0].c; y = y1 = points[0].r;
   for (int i = 1; i < size(); i++) {

@@ -36,8 +36,8 @@ public:
 
   inline int size() const {return points.size();}
 
-  void getCenter(double& x, double& y);
-  void getBounds(int& x, int& y, int& w, int &h);
+  void getCenter(double& x, double& y) const;
+  void getBounds(int& x, int& y, int& w, int &h) const;
 
   static std::vector<Component> getComponents(const BitImage& img, Flags flags = 0);
   static std::vector<Component> getComponents(const BitImage& img, const std::vector<Pt>& pts, Flags flags = 0);
