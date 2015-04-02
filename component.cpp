@@ -108,3 +108,31 @@ std::vector<Component> Component::getComponents(const BitImage& img, const std::
   
   return components;		
 }
+
+BitImage Component::toBitImage() const {
+  int x, y, w, h;
+  getBounds(x, y, w, h);
+  
+  BitImage img(h, w);
+  for (auto pt : points)
+    img.set(pt.r - y, pt.c - x);
+
+  return img;
+}
+
+void Component::fillHull() {
+  int x, y, w, h;
+  getBounds(x, y, w, h);
+  
+  BitImage img(h, w);
+  for (auto pt : points)
+    img.set(pt.r - y, pt.c - x);
+
+  img.fillHull();
+  
+  points.clear();
+  for (int r = 0; r < img.nr; r++)
+    for (int c = 0; c < img.nc; c++)
+      if (img.at(r, c))
+	points.push_back(Component::Pt(r + y, c + x));  
+}

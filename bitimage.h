@@ -53,6 +53,8 @@ public:
   static BitImage OR(const BitImage& img1, const BitImage& img2);
   static BitImage XOR(const BitImage& img1, const BitImage& img2);
   static BitImage threshold(const ByteImage& img, ByteImage::BYTE t);//Sets bits for [t, 255]
+
+  void fillHull();
 };
 
 #endif

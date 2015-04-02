@@ -160,3 +160,106 @@ BitImage BitImage::threshold(const ByteImage& img, ByteImage::BYTE t) {
       if (img.at(r, c) >= t) out.set(r, c);
   return out;
 }
+
+/*
+ * Lattice convex hull method
+ * A scanline-based method for finding the convex hull of points on a lattice (such as pixels)
+ * Upper bound is around O(n log n), with n as the number of "on" pixels
+ */
+class LCH {
+public:
+  class Anchor {
+  public:
+    int r, c;
+    Anchor() : r(0), c(0) { }
+    Anchor(int r, int c) : r(r), c(c) { }
+  };
+
+  std::vector<Anchor> left, right;
+
+  static float slope(const Anchor& a0, const Anchor& a1) {
+    return (float)(a1.c - a0.c) / (a1.r - a0.r);
+  }
+
+protected:
+  static void findRowBounds(const BitImage& dual, int r, int& L, int& R) {
+    for (L = 0; L < dual.nc - 1 && !dual.at(r, L); L++);
+    for (R = dual.nc - 1; R > L && !dual.at(r, R); R--);
+  }
+
+  static float lastSlope(const std::vector<Anchor>& v) {
+    return slope(v[v.size() - 2], v[v.size() - 1]);
+  }
+
+  void insertLeft(int r, int L) {
+    Anchor A(r, L);
+    while (left.size() > 1 && slope(left[left.size() - 1], A) <= lastSlope(left))
+      left.pop_back();
+    left.push_back(A);
+  }
+
+  void insertRight(int r, int R) {
+    Anchor A(r, R);
+    while (right.size() > 1 && slope(right[right.size() - 1], A) >= lastSlope(right))
+      right.pop_back();
+    right.push_back(A);
+  }
+
+  //TODO: Optimize this
+  static BitImage getDual(const BitImage& img) {
+    BitImage dual(img.nr + 1, img.nc + 1);
+    
+    for (int r = 0; r < img.nr; r++)
+      for (int c = 0; c < img.nc; c++)
+	if (img.at(r, c)) {
+	  dual.set(r, c);
+	  dual.set(r, c + 1);
+	  dual.set(r + 1, c);
+	  dual.set(r + 1, c + 1);
+	}
+    
+    return dual;
+  }
+
+public:
+  LCH(const BitImage& img) {
+    BitImage dual(getDual(img));
+
+    int L, R;
+    findRowBounds(dual, 0, L, R);
+    left.push_back(Anchor(0, L));
+    right.push_back(Anchor(0, R));
+
+    for (int r = 1; r < dual.nr; r++) {
+      findRowBounds(dual, r, L, R);
+      insertLeft(r, L);
+      insertRight(r, R);
+    }
+  }
+};
+
+void BitImage::fillHull() {
+  const float EPS = 1e-9;
+  LCH hull(*this);
+
+  int Li = 0, Ri = 0, c0, c1;
+  float sL, sR;
+
+  clear();
+  for (int r = 0; r < nr; r++) {
+    if (r >= hull.left[Li].r) {
+      Li++;
+      sL = LCH::slope(hull.left[Li - 1], hull.left[Li]);
+    }
+    if (r >= hull.right[Ri].r) {
+      Ri++;
+      sR = LCH::slope(hull.right[Ri - 1], hull.right[Ri]);
+    }
+    
+    c0 = (int)(hull.left[Li - 1].c + sL * (r - hull.left[Li - 1].r + 0.5) + 0.5 + EPS);
+    c1 = (int)(hull.right[Ri - 1].c + sR * (r - hull.right[Ri - 1].r + 0.5) - 0.5 - EPS);
+
+    for (int c = c0; c <= c1; c++)
+      set(r, c);
+  }
+}

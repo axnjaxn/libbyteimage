@@ -41,6 +41,9 @@ public:
 
   static std::vector<Component> getComponents(const BitImage& img, Flags flags = 0);
   static std::vector<Component> getComponents(const BitImage& img, const std::vector<Pt>& pts, Flags flags = 0);
+
+  BitImage toBitImage() const;
+  void fillHull();
 };
 
 #endif
