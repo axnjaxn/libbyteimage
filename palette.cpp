@@ -129,6 +129,13 @@ Palette::Color LinearPalette::inUnit(float v) const {
   return c;
 }
 
+LinearPalette LinearPalette::hue() {
+  return LinearPalette(CachedPalette::fromHex(7, 
+					      0xFF0000, 0xFFFF00, 0x00FF00,
+					      0x00FFFF, 0x0000FF, 0xFF00FF,
+					      0xFF0000));
+}
+
 LinearPalette LinearPalette::jet() {
   return LinearPalette(CachedPalette::fromHex(9, 
 					      0x00007F, 0x0000FF, 0x007FFF,

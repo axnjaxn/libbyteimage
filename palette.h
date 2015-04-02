@@ -67,6 +67,7 @@ public:
 
   virtual Color inUnit(float v) const;
 
+  static LinearPalette hue();
   static LinearPalette jet();
   static LinearPalette parula();
 };
