@@ -12,53 +12,6 @@ CachedPalette::CachedPalette(const CachedPalette& pal) : colors(nullptr) {*this 
 
 CachedPalette::~CachedPalette() {delete [] colors;}
 
-CachedPalette CachedPalette::fromBytes(int n, ...) {
-  CachedPalette pal(n);
-  va_list vl;
-  va_start(vl,n);
-  for (int i = 0; i < n; i++) {
-    pal[i].r = va_arg(vl, int) & 0xFF;
-    pal[i].g = va_arg(vl, int) & 0xFF;
-    pal[i].b = va_arg(vl, int) & 0xFF;
-  }
-  return pal;
-}
-
-CachedPalette CachedPalette::fromHex(int n, ...) {
-  CachedPalette pal(n);
-  int rgb;
-  va_list vl;
-  va_start(vl,n);
-  for (int i = 0; i < n; i++) {
-    rgb = va_arg(vl, int);
-    pal[i].r = (rgb >> 16) & 0xFF;
-    pal[i].g = (rgb >> 8) & 0xFF;
-    pal[i].b = rgb & 0xFF;
-  }
-  return pal;
-}
-
-CachedPalette CachedPalette::fromFloats(int n, ...) {
-  CachedPalette pal(n);
-  va_list vl;
-  va_start(vl,n);
-  for (int i = 0; i < n; i++) {
-    pal[i].r = ByteImage::clip(255.0 * va_arg(vl, double));
-    pal[i].g = ByteImage::clip(255.0 * va_arg(vl, double));
-    pal[i].b = ByteImage::clip(255.0 * va_arg(vl, double));
-  }
-  return pal;
-}
-
-CachedPalette CachedPalette::fromColors(int n, ...) {
-  CachedPalette pal(n);
-  va_list vl;
-  va_start(vl,n);
-  for (int i = 0; i < n; i++)
-    pal[i] = va_arg(vl, Palette::Color);
-  return pal;
-}
-
 CachedPalette CachedPalette::fromBytes(std::initializer_list<int>v) {
   CachedPalette pal(v.size() / 3);
   auto it = v.begin();

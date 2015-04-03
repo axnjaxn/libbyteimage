@@ -94,7 +94,7 @@ render.o: byteimage.h matrix.h render.h render.cpp
 	$(CXX) -c render.cpp $(CFLAGS) 
 
 font.o: byteimage.h font.h font.cpp
-	$(CXX) -c font.cpp $(CFLAGS)
+	$(CXX) -c font.cpp $(CFLAGS) -Wno-parentheses
 
 plotter.o: byteimage.h matrix.h font.h render.h plotter.h plotter.cpp
 	$(CXX) -c plotter.cpp $(CFLAGS)

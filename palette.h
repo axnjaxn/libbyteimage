@@ -30,11 +30,6 @@ public:
   CachedPalette(CachedPalette&& pal);
   virtual ~CachedPalette();
 
-  static CachedPalette fromBytes(int n, ...);
-  static CachedPalette fromHex(int n, ...);
-  static CachedPalette fromFloats(int n, ...);
-  static CachedPalette fromColors(int n, ...);  
-
   static CachedPalette fromBytes(std::initializer_list<int> v);
   static CachedPalette fromHex(std::initializer_list<int> v);
   static CachedPalette fromFloats(std::initializer_list<float> v);
