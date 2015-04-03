@@ -59,6 +59,49 @@ CachedPalette CachedPalette::fromColors(int n, ...) {
   return pal;
 }
 
+CachedPalette CachedPalette::fromBytes(std::initializer_list<int>v) {
+  CachedPalette pal(v.size() / 3);
+  auto it = v.begin();
+  for (int i = 0; i < pal.levels(); i++) {
+    pal[i].r = *(it++) & 0xFF;
+    pal[i].g = *(it++) & 0xFF;
+    pal[i].b = *(it++) & 0xFF;
+  }
+  return pal;
+}
+
+CachedPalette CachedPalette::fromHex(std::initializer_list<int>v) {
+  CachedPalette pal(v.size());
+  auto it = v.begin();
+  int rgb;
+  for (int i = 0; i < pal.levels(); i++) {
+    rgb = *(it++);
+    pal[i].r = (rgb >> 16) & 0xFF;
+    pal[i].g = (rgb >> 8) & 0xFF;
+    pal[i].b = rgb & 0xFF;
+  }
+  return pal;
+}
+
+CachedPalette CachedPalette::fromFloats(std::initializer_list<float>v) {
+  CachedPalette pal(v.size() / 3);
+  auto it = v.begin();
+  for (int i = 0; i < pal.levels(); i++) {
+    pal[i].r = ByteImage::clip(255.0 * *(it++));
+    pal[i].g = ByteImage::clip(255.0 * *(it++));
+    pal[i].b = ByteImage::clip(255.0 * *(it++));
+  }
+  return pal;
+}
+
+CachedPalette CachedPalette::fromColors(std::initializer_list<Palette::Color>v) {
+  CachedPalette pal(v.size());
+  auto it = v.begin();
+  for (int i = 0; i < pal.levels(); i++)
+    pal[i] = *(it++);
+  return pal;
+}
+
 CachedPalette& CachedPalette::operator=(const CachedPalette& pal) {
   if (nlevels != pal.nlevels) {
     if (colors) delete [] colors;    
@@ -130,21 +173,15 @@ Palette::Color LinearPalette::inUnit(float v) const {
 }
 
 LinearPalette LinearPalette::hue() {
-  return LinearPalette(CachedPalette::fromHex(7, 
-					      0xFF0000, 0xFFFF00, 0x00FF00,
-					      0x00FFFF, 0x0000FF, 0xFF00FF,
-					      0xFF0000));
+  return LinearPalette(CachedPalette::fromHex({0xFF0000, 0xFFFF00, 0x00FF00, 0x00FFFF, 0x0000FF, 0xFF00FF, 0xFF0000}));
 }
 
 LinearPalette LinearPalette::jet() {
-  return LinearPalette(CachedPalette::fromHex(9, 
-					      0x00007F, 0x0000FF, 0x007FFF,
-					      0x00FFFF, 0x7FFF7F, 0xFFFF00,
-					      0xFF7F00, 0xFF0000, 0x7F0000));
+  return LinearPalette(CachedPalette::fromHex({0x00007F, 0x0000FF, 0x007FFF, 0x00FFFF, 0x7FFF7F, 0xFFFF00, 0xFF7F00, 0xFF0000, 0x7F0000}));
 }
 
 LinearPalette LinearPalette::parula() {
-  return LinearPalette(CachedPalette::fromFloats(64, 
+  return LinearPalette(CachedPalette::fromFloats({
 						 0.2081, 0.1663, 0.5292,
 						 0.2116, 0.1898, 0.5777,
 						 0.2123, 0.2138, 0.6270,
@@ -208,5 +245,5 @@ LinearPalette LinearPalette::parula() {
 						 0.9589, 0.8949, 0.1132,
 						 0.9598, 0.9218, 0.0948,
 						 0.9661, 0.9514, 0.0755,
-						 0.9763, 0.9831, 0.0538));
+						 0.9763, 0.9831, 0.0538}));
 }
