@@ -1,32 +1,20 @@
-/*
- * bytevideo.h by Brian Jackson
- * Revised 21 September 2012
- * Very minor update 2 December 2014
- * cflags must include `pkg-config opencv --cflags`
- * lflags must include `pkg-config opencv --libs`
- */
-
-#ifndef _BPJ_DAGSI_BYTEVIDEO_H
-#define _BPJ_DAGSI_BYTEVIDEO_H
+#ifndef _BPJ_BYTEIMAGE_BYTEVIDEO_H
+#define _BPJ_BYTEIMAGE_BYTEVIDEO_H
 
 #include "byteimage.h"
-#include <cv.h>
-#include <cvaux.h>
-#include <highgui.h>
+#include <opencv2/opencv.hpp>
 
 class ByteVideo {
 protected:
   std::string src;
-  CvCapture* cap;
-  int nr, nc;
+  cv::VideoCapture cap;
+  int nr, nc, pos, frames;
+  double fps;
   
-  static void toImage(IplImage* ipl, ByteImage& image);
-
 public:
   ByteVideo();
   ByteVideo(std::string fn);
   ByteVideo(const ByteVideo& vid);
-  virtual ~ByteVideo();
   
   ByteVideo& operator=(const ByteVideo& vid);
 
@@ -34,29 +22,26 @@ public:
 
   inline int width() const {return nc;}
   inline int height() const {return nr;}
+  inline int getIndex() const {return pos;}
+  inline int count() const {return frames;}
+  inline double FPS() const {return fps;}
 
   bool nextFrame(ByteImage& frame);
-  
-  //Broken
-  int getIndex() const;
-  int count() const;
 };
 
 class ByteVideoWriter {
 protected:
-  CvVideoWriter* writer;
+  cv::VideoWriter writer;
 
-  static IplImage* toIplImage(const ByteImage& image);
-  
 public:
-  ByteVideoWriter() {writer = NULL;}
-  ByteVideoWriter(std::string fn, int nr, int nc, double fps = 24);
+  ByteVideoWriter();
+  ByteVideoWriter(std::string fn, int nr, int nc, double fps = 30);
+  ByteVideoWriter(const ByteVideoWriter&) = delete;
 
-  void open(std::string fn, int nr, int nc, double fps = 24);
+  ByteVideoWriter& operator=(const ByteVideoWriter&) = delete;
 
+  void open(std::string fn, int nr, int nc, double fps = 30);
   void write(const ByteImage& image);
-
-  void close();
 };
 
 
