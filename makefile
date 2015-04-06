@@ -10,7 +10,7 @@ BIN += byteimage_sdl2.o
 INC += byteimage_sdl2.h
 CFG_CFLAGS += `sdl2-config --cflags`
 CFG_LIBS += `sdl2-config --libs`
-TESTS += tests/sdl2test tests/kerneltest tests/templatetest tests/matrixtest tests/splinetest tests/ransactest tests/rendertest tests/beziertest tests/palettetest
+TESTS += tests/sdl2test tests/kerneltest tests/templatetest tests/matrixtest tests/splinetest tests/ransactest tests/rendertest tests/beziertest tests/palettetest tests/hulltest
 else
 CFG_CFLAGS += -D_BYTEIMAGE_NO_SDL2
 endif
@@ -166,6 +166,9 @@ tests/componenttest: tests/componenttest.cpp
 
 tests/palettetest: tests/palettetest.cpp
 	$(CXX) tests/palettetest.cpp -o tests/palettetest -g `byteimage-config --cflags --libs`
+
+tests/hulltest: tests/hulltest.cpp
+	$(CXX) tests/hulltest.cpp -o tests/hulltest -g `byteimage-config --cflags --libs`
 
 clean-tests:
 	rm -f tests/*~ $(TESTS)
