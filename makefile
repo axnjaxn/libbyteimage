@@ -25,9 +25,9 @@ else
 CFG_CFLAGS += -D_BYTEIMAGE_NO_OPENCV
 endif
 
-ifneq (, $(shell Magick++-config --version))
-CFG_CFLAGS += `Magick++-config --cppflags --cxxflags`
-CFG_LIBS += `Magick++-config --libs`
+ifneq (, $(shell pkg-config Magick++ --modversion))
+CFG_CFLAGS += `pkg-config Magick++ --cflags`
+CFG_LIBS += `pkg-config Magick++ --libs`
 else
 CFG_CFLAGS += -D_BYTEIMAGE_NO_MAGICK
 endif
