@@ -1,17 +1,19 @@
-#include "bytevideo.h"
+#include "video.h"
 
-ByteVideo::ByteVideo() : src("") { }
+using namespace byteimage;
 
-ByteVideo::ByteVideo(std::string fn) {load_filename(fn);}
+Video::Video() : src("") { }
 
-ByteVideo::ByteVideo(const ByteVideo& vid) {load_filename(vid.src);}
+Video::Video(std::string fn) {load_filename(fn);}
 
-ByteVideo& ByteVideo::operator=(const ByteVideo& vid) {
+Video::Video(const Video& vid) {load_filename(vid.src);}
+
+Video& Video::operator=(const Video& vid) {
   load_filename(vid.src);
   return *this;
 }
 
-void ByteVideo::load_filename(std::string fn) {
+void Video::load_filename(std::string fn) {
   src = fn;
   cap.open(fn);
   nc = cap.get(CV_CAP_PROP_FRAME_WIDTH);
@@ -21,7 +23,7 @@ void ByteVideo::load_filename(std::string fn) {
   fps = cap.get(CV_CAP_PROP_FPS);
 }
 
-bool ByteVideo::nextFrame(ByteImage& I) {
+bool Video::nextFrame(ByteImage& I) {
   cv::Mat frame;
   if (!cap.read(frame)) return false;
 
@@ -36,13 +38,13 @@ bool ByteVideo::nextFrame(ByteImage& I) {
   return true;
 }
 
-ByteVideoWriter::ByteVideoWriter() { }
+VideoWriter::VideoWriter() { }
 
-ByteVideoWriter::ByteVideoWriter(std::string fn, int nr, int nc, double fps) {
+VideoWriter::VideoWriter(std::string fn, int nr, int nc, double fps) {
   open(fn, nr, nc, fps);
 }
 
-void ByteVideoWriter::open(std::string fn, int nr, int nc, double fps) {
+void VideoWriter::open(std::string fn, int nr, int nc, double fps) {
   int i = fn.size() - 4;
   if (fn[i] == '.' && fn[i + 1] == 'm' && fn[i + 2] == 'p' && fn[i + 3] == '4')
     writer.open(fn, CV_FOURCC('H', '2', '6', '4'), fps, cv::Size(nc, nr));
@@ -50,7 +52,7 @@ void ByteVideoWriter::open(std::string fn, int nr, int nc, double fps) {
     writer.open(fn, CV_FOURCC('D', 'I', 'V', 'X'), fps, cv::Size(nc, nr));
 }
 
-void ByteVideoWriter::write(const ByteImage& image) {
+void VideoWriter::write(const ByteImage& image) {
   if (!writer.isOpened()) return;
 
   std::vector<cv::Mat> mat(3);
