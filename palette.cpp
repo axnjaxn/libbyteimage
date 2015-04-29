@@ -2,6 +2,8 @@
 #include <cstring>
 #include <cfloat>
 
+using namespace byteimage;
+
 CachedPalette::CachedPalette() : nlevels(0), colors(nullptr) { }
 
 CachedPalette::CachedPalette(int nlevels) : nlevels(nlevels) {

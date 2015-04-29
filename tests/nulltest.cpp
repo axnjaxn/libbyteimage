@@ -1,6 +1,8 @@
 #include <byteimage/matrix.h>
 #include <cstdio>
 
+using namespace byteimage;
+
 void printMatrix(const Matrix& M) {
   for (int r = 0; r < M.rows(); r++) {
     for (int c = 0; c < M.cols(); c++)

@@ -2,8 +2,10 @@
 #include <cmath>
 #include <cstdlib>
 
+using namespace byteimage;
+
 template <typename tn>
-inline void swap(tn& a, tn& b) {tn t = a; a = b; b = t;}
+inline static void swap(tn& a, tn& b) {tn t = a; a = b; b = t;}
 
 RANSAC::RANSAC(int subset_size, bool homogeneous) {
   this->subset_size = subset_size;

@@ -1,6 +1,8 @@
 #include "spline.h"
 #include <algorithm>
 
+using namespace byteimage;
+
 Matrix Spline::at(double u) const {
   if (u < domainStart()) u = domainStart();
   else if (u > domainEnd()) u = domainEnd();

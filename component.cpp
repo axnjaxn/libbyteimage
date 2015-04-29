@@ -1,6 +1,8 @@
 #include "component.h"
 #include <queue>
 
+using namespace byteimage;
+
 BitImage Component::static_marking;
 
 void Component::getCenter(double& x, double& y) const {

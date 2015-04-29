@@ -1,6 +1,8 @@
 #include "plotter.h"
 #include "render.h"
 
+using namespace byteimage;
+
 Plotter::Plot::Plot() {
   setPointSize(3);
   setLineSize(0);
@@ -76,7 +78,7 @@ void Plotter::enableGrid(bool enabled) {
   draw_grid = enabled;
 }
 
-int getDefaultMargin(int size) {
+static int getDefaultMargin(int size) {
   return (int)(size / 72.0 * TextRenderer::dpi + 5);
 }
 
@@ -126,8 +128,6 @@ void Plotter::setAxisThickness(int px) {
 void Plotter::setAxisOffset(int px) {
   axis_offset = px;
 }
-
-
 
 ByteImage Plotter::render(int nr, int nc) const {
   ByteImage img(nr, nc, 3);

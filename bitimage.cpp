@@ -1,6 +1,8 @@
 #include "bitimage.h"
 #include <cstring>
 
+using namespace byteimage;
+
 static inline int posBits(int BlockSize) {
   int bits = 3, block = BlockSize;
   while (block >>= 1) bits++;

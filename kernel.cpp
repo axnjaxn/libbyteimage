@@ -3,6 +3,8 @@
 #include <cmath>
 #include <cstring>
 
+using namespace byteimage;
+
 Kernel::Kernel() : nr(0), nc(0), values(nullptr) { }
 
 Kernel::Kernel(int nr, int nc) : nr(nr), nc(nc) {

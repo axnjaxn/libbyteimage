@@ -1,14 +1,7 @@
-/*
- * svd.h?
- */
-
 #include <byteimage/matrix.h>
-
-/*
- * svd.cpp?
- */
-
 #include <cstdio>
+
+using namespace byteimage;
 
 void printMatrix(const Matrix& M) {
   for (int r = 0; r < M.rows(); r++) {
@@ -19,10 +12,6 @@ void printMatrix(const Matrix& M) {
 }
 
 inline void pause() {getchar();}
-
-/*
- * svdtest.cpp
- */
 
 int main(int argc, char* argv[]) {
   Matrix A(3, 2);

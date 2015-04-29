@@ -1,6 +1,8 @@
 #include "font.h"
 #include <cstdio>
 
+using namespace byteimage;
+
 int TextRenderer::dpi = 72;
 FT_Library TextRenderer::library = NULL;
 

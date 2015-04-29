@@ -3,6 +3,8 @@
 #include <cmath>
 #include <cfloat>
 
+using namespace byteimage;
+
 Matrix::Matrix() : nr(0), nc(0), data(nullptr) { }
 
 Matrix::Matrix(int n) : nr(n), nc(n) {
@@ -160,7 +162,7 @@ Matrix Matrix::inv() const {
   return solve(*this, identity(nr));
 }
 
-inline double dabs(double d) {return (d < 0.0)? -d : d;}
+inline static double dabs(double d) {return (d < 0.0)? -d : d;}
 
 Matrix Matrix::solve(Matrix A, Matrix b) {
   double factor;
@@ -307,13 +309,13 @@ Matrix Matrix::bidiag(Matrix& P, Matrix& Q) const {
 }
 
 
-Matrix makePoint(double x, double y, double w) {
+Matrix byteimage::makePoint(double x, double y, double w) {
   Matrix v(3, 1); 
   v.at(0) = x; v.at(1) = y; v.at(2) = w;
   return v;
 }
 
-Matrix normalize(const Matrix& v) {
+Matrix byteimage::normalize(const Matrix& v) {
   Matrix u(v);
   u.at(0) /= u.at(2);
   u.at(1) /= u.at(2);
@@ -321,14 +323,14 @@ Matrix normalize(const Matrix& v) {
   return u;
 }
 
-double sqLength(const Matrix& v) {
+double byteimage::sqLength(const Matrix& v) {
   double sum = 0.0;
   for (int i = 0; i < v.rows(); i++)
     sum += v.at(i) * v.at(i);
   return sum;
 }
 
-double length(const Matrix& v) {
+double byteimage::length(const Matrix& v) {
   return sqrt(sqLength(v));
 }
 
@@ -343,7 +345,7 @@ double length(const Matrix& v) {
  * B2,2 is the largest strictly bidiagonal block, hence p is minimized
  * Each pass of the Golub-Reinsch QR operates on B2,2.
  */
-void pqBlock(const Matrix& J, int& p, int& q) {
+static void pqBlock(const Matrix& J, int& p, int& q) {
   const int n = J.cols();
 
   //B3,3 (q x q) is the largest diagonal at the bottom-right of J
@@ -360,7 +362,7 @@ void pqBlock(const Matrix& J, int& p, int& q) {
  * into a Givens rotation matrix of size n
  * Note: passing in -sn instead of sn is equivalent to a transverse
  */
-Matrix givensCS(int n, int i, int j, double cs, double sn) {
+static Matrix givensCS(int n, int i, int j, double cs, double sn) {
   Matrix G(Matrix::identity(n));
   
   G.at(i, i) = G.at(j, j) = cs;
@@ -376,7 +378,7 @@ Matrix givensCS(int n, int i, int j, double cs, double sn) {
  * the resultant rotation eliminates b. 
  * Returns the new value for a: sqrt(a^2 + b^2)
  */
-double rot(double a, double b, double& cs, double& sn) {
+static double rot(double a, double b, double& cs, double& sn) {
   double t, tt, r;
 
   if (a == 0.0) {
@@ -406,7 +408,7 @@ double rot(double a, double b, double& cs, double& sn) {
  * A series of rotations can be used to zero a row if its diagonal entry is zero
  * Golub and Van Loan 1996 gives the following method
  */
-void eliminateBeta(Matrix& J, Matrix& U, Matrix& V, int p, int q, int k) {
+static void eliminateBeta(Matrix& J, Matrix& U, Matrix& V, int p, int q, int k) {
   const int m = J.rows(), n = J.cols();
   const int N = n - q;
 
@@ -454,7 +456,7 @@ inline double bn2(Matrix& J, int n) {return sq(bn(J, n));}
  * [ b c ]
  * closer to c.
  */ 
-double computeWilkinson(double a, double b, double c) {
+static double computeWilkinson(double a, double b, double c) {
   double r = (a - c) / 2;
   double s = (r >= 0)? 1.0 : -1.0;
   return c - s * b * b / (dabs(r) + sqrt(r * r + b * b)) ;
@@ -466,7 +468,7 @@ double computeWilkinson(double a, double b, double c) {
  * but off-diagonals will be reduced, and U & V accumulate the rotations.
  * p and q are matrix dimensions of the block representation of J.
  */
-void chase(Matrix& J, Matrix& U, Matrix& V, int p, int q) {
+static void chase(Matrix& J, Matrix& U, Matrix& V, int p, int q) {
   const int m = J.rows(), n = J.cols();
   const int N = n - q;
 
@@ -504,7 +506,7 @@ void chase(Matrix& J, Matrix& U, Matrix& V, int p, int q) {
   }
 }
 
-void swapColumns(Matrix& A, int i, int j) {
+static void swapColumns(Matrix& A, int i, int j) {
   double t;
   for (int k = 0; k < A.rows(); k++) {
     t = A.at(k, i);
@@ -513,13 +515,13 @@ void swapColumns(Matrix& A, int i, int j) {
   }
 }
 
-void swapDiag(Matrix& A, int i, int j) {
+static void swapDiag(Matrix& A, int i, int j) {
   double t = A.at(i, i);
   A.at(i, i) = A.at(j, j);
   A.at(j, j) = t;
 }
 
-void reorderSVD(Matrix& U, Matrix& W, Matrix& V) {
+static void reorderSVD(Matrix& U, Matrix& W, Matrix& V) {
   const int m = U.rows(), n = V.rows();
   int i, j, k;
 
@@ -575,7 +577,7 @@ Matrix Matrix::svd(Matrix& U, Matrix& V, bool reorder) const {
   return J;
 }
 
-double dot(const Matrix& v1, const Matrix& v2) {
+double byteimage::dot(const Matrix& v1, const Matrix& v2) {
   double sum = 0.0;
   for (int i = 0; i < v1.rows(); i++)
     sum += v1.at(i) * v2.at(i);

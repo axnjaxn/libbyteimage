@@ -1,15 +1,17 @@
 #include "render.h"
 #include <cstring>
 
-Matrix makeColor(double r, double g, double b) {return makePoint(r, g, b);}
+using namespace byteimage;
 
-inline double getValue(const Matrix& rgb) {return (rgb.at(0) + rgb.at(1) + rgb.at(2)) / 3.0;}
-inline ByteImage::BYTE getR(const Matrix& rgb) {return ByteImage::clip(rgb.at(0));}
-inline ByteImage::BYTE getG(const Matrix& rgb) {return ByteImage::clip(rgb.at(1));}
-inline ByteImage::BYTE getB(const Matrix& rgb) {return ByteImage::clip(rgb.at(2));}
+Matrix byteimage::makeColor(double r, double g, double b) {return makePoint(r, g, b);}
 
-void DrawRect(ByteImage& target, int x, int y, int w, int h,
-	      ByteImage::BYTE v) {
+inline static double getValue(const Matrix& rgb) {return (rgb.at(0) + rgb.at(1) + rgb.at(2)) / 3.0;}
+inline static ByteImage::BYTE getR(const Matrix& rgb) {return ByteImage::clip(rgb.at(0));}
+inline static ByteImage::BYTE getG(const Matrix& rgb) {return ByteImage::clip(rgb.at(1));}
+inline static ByteImage::BYTE getB(const Matrix& rgb) {return ByteImage::clip(rgb.at(2));}
+
+void byteimage::DrawRect(ByteImage& target, int x, int y, int w, int h,
+			 ByteImage::BYTE v) {
   if (x < 0) {
     w += x;
     x = 0;
@@ -31,8 +33,8 @@ void DrawRect(ByteImage& target, int x, int y, int w, int h,
       memset(target.pixels + ch * target.nr * target.nc + r * target.nc + x, v, w);
 }
 
-void DrawRect(ByteImage& target, int x, int y, int w, int h,
-	      ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B) {
+void byteimage::DrawRect(ByteImage& target, int x, int y, int w, int h,
+			 ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B) {
   if (x < 0) {
     w += x;
     x = 0;
@@ -56,7 +58,7 @@ void DrawRect(ByteImage& target, int x, int y, int w, int h,
   }
 }
 
-void DrawRect(ByteImage& target, const Matrix& ul, const Matrix& lr, const Matrix& rgb) {
+void byteimage::DrawRect(ByteImage& target, const Matrix& ul, const Matrix& lr, const Matrix& rgb) {
   int x = (int)(getX(ul) + 0.5);
   int y = (int)(getY(ul) + 0.5);
   int w = (int)(getX(lr) + 0.5);
@@ -73,23 +75,23 @@ void DrawRect(ByteImage& target, const Matrix& ul, const Matrix& lr, const Matri
     DrawRect(target, x, y, w, h, getR(rgb), getG(rgb), getB(rgb));
 }
 
-void DrawPoint(ByteImage& target, int x, int y,
-	       ByteImage::BYTE v, int sz) {
+void byteimage::DrawPoint(ByteImage& target, int x, int y,
+			  ByteImage::BYTE v, int sz) {
   x = x - (sz >> 1);
   y = y - (sz >> 1);
   int w = sz, h = sz;
   DrawRect(target, x, y, w, h, v);  
 }
 
-void DrawPoint(ByteImage& target, int x, int y,
-	       ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B, int sz) {
+void byteimage::DrawPoint(ByteImage& target, int x, int y,
+			  ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B, int sz) {
   x = x - (sz >> 1);
   y = y - (sz >> 1);
   int w = sz, h = sz;
   DrawRect(target, x, y, w, h, R, G, B);
 }
 
-void DrawPoint(ByteImage& target, const Matrix& v, const Matrix& rgb, int sz) {
+void byteimage::DrawPoint(ByteImage& target, const Matrix& v, const Matrix& rgb, int sz) {
   int x = (int)(getX(v) + 0.5);
   int y = (int)(getY(v) + 0.5);
 
@@ -99,8 +101,8 @@ void DrawPoint(ByteImage& target, const Matrix& v, const Matrix& rgb, int sz) {
     DrawPoint(target, x, y, getR(rgb), getG(rgb), getB(rgb), sz);
 }
 
-void DrawLine(ByteImage& target, int ax, int ay, int bx, int by,
-	      ByteImage::BYTE v, int sz) {
+void byteimage::DrawLine(ByteImage& target, int ax, int ay, int bx, int by,
+			 ByteImage::BYTE v, int sz) {
   float slope, tx, ty;
 
   if (fabs(by - ay) <= fabs(bx - ax)) {
@@ -134,8 +136,8 @@ void DrawLine(ByteImage& target, int ax, int ay, int bx, int by,
   }
 }
 
-void DrawLine(ByteImage& target, int ax, int ay, int bx, int by,
-	      ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B, int sz) {
+void byteimage::DrawLine(ByteImage& target, int ax, int ay, int bx, int by,
+			 ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B, int sz) {
   float slope, tx, ty;
 
   if (fabs(by - ay) <= fabs(bx - ax)) {
@@ -168,7 +170,7 @@ void DrawLine(ByteImage& target, int ax, int ay, int bx, int by,
   }
 }
 
-void DrawLine(ByteImage& target, const Matrix& a, const Matrix& b, const Matrix& rgb, int sz) {
+void byteimage::DrawLine(ByteImage& target, const Matrix& a, const Matrix& b, const Matrix& rgb, int sz) {
   int ax = (int)(getX(a) + 0.5);
   int ay = (int)(getY(a) + 0.5);
   int bx = (int)(getX(b) + 0.5);
@@ -180,19 +182,19 @@ void DrawLine(ByteImage& target, const Matrix& a, const Matrix& b, const Matrix&
     DrawLine(target, ax, ay, bx, by, getR(rgb), getG(rgb), getB(rgb), sz);
 }
 
-void DrawCross(ByteImage& target, int x, int y, 
-	       ByteImage::BYTE r, ByteImage::BYTE g, ByteImage::BYTE b,
-	       int radius, int line_size) {
+void byteimage::DrawCross(ByteImage& target, int x, int y, 
+			  ByteImage::BYTE r, ByteImage::BYTE g, ByteImage::BYTE b,
+			  int radius, int line_size) {
   DrawLine(target, x, y - radius, x, y + radius, r, g, b, line_size);
   DrawLine(target, x - radius, y, x + radius, y, r, g, b, line_size);
 }
 
-void DrawCross(ByteImage& target, const Matrix& v, const Matrix& rgb, 
-	       int radius, int line_size) {
+void byteimage::DrawCross(ByteImage& target, const Matrix& v, const Matrix& rgb, 
+			  int radius, int line_size) {
   DrawCross(target, getX(v), getY(v), getR(rgb), getG(rgb), getB(rgb), radius, line_size);
 }
 
-void DrawBezier(ByteImage& target, const std::vector<Matrix>& pts, const Matrix& rgb, int sz, int n) {
+void byteimage::DrawBezier(ByteImage& target, const std::vector<Matrix>& pts, const Matrix& rgb, int sz, int n) {
   std::vector<Matrix> interp(pts.size());
 
   Matrix v0 = pts[0], v1;
@@ -209,7 +211,7 @@ void DrawBezier(ByteImage& target, const std::vector<Matrix>& pts, const Matrix&
   }
 }
 
-void DrawCircle(ByteImage& target, const Matrix& v, const Matrix& rgb, double radius) {
+void byteimage::DrawCircle(ByteImage& target, const Matrix& v, const Matrix& rgb, double radius) {
   double r2 = radius * radius;
   int r = (int)(getY(v) + 0.5), c = (int)(getX(v) + 0.5);
   for (int i = (int)(radius + 1); i >= 0; i--)
@@ -220,10 +222,10 @@ void DrawCircle(ByteImage& target, const Matrix& v, const Matrix& rgb, double ra
       }
 }
 
-inline int ifloor(double d) {return (int)d;}
-inline int iceil(double d) {return (int)d + (d != (int)d);}
+inline static int ifloor(double d) {return (int)d;}
+inline static int iceil(double d) {return (int)d + (d != (int)d);}
 
-void DrawTriangle(ByteImage& target, const Matrix& v0, const Matrix& v1, const Matrix& v2, const Matrix& rgb) {
+void byteimage::DrawTriangle(ByteImage& target, const Matrix& v0, const Matrix& v1, const Matrix& v2, const Matrix& rgb) {
   Matrix u, l, r, d;
   u = v0;
   l = v1;

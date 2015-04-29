@@ -3,6 +3,8 @@
 #include <cstring>
 #include <cmath>
 
+using namespace byteimage;
+
 #define EPS 0.01
 
 double* Entropy::pdf(const ByteImage& img, const Window& w) const {
