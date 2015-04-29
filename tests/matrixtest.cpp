@@ -5,7 +5,7 @@
 
 using namespace byteimage;
 
-class Transformer : public ByteImageDisplay {
+class Transformer : public Display {
 protected:
   Matrix T, R, X, Y;
   ByteImage ref;
@@ -46,7 +46,7 @@ protected:
       }
     }
 
-    ByteImageDisplay::handleEvent(event);
+    Display::handleEvent(event);
   }
 
   virtual void update() {
@@ -55,7 +55,7 @@ protected:
       resample = 0;
     }
 
-    ByteImageDisplay::update();
+    Display::update();
   }
 
   ByteImage transformedImage() {
@@ -84,7 +84,7 @@ protected:
   }
 
 public:
-  Transformer() : ByteImageDisplay(256, 256, "Matrix Test") {
+  Transformer() : Display(256, 256, "Matrix Test") {
     T = R = X = Y = Matrix::identity(3);
 
     double d = 2.0;

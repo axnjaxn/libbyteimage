@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
   DrawTriangle(img, makePoint(10, 10), makePoint(30, 20), makePoint(0, 40), makeColor(0, 0, 255));
   DrawTriangle(img, makePoint(10, 50), makePoint(30, 20), makePoint(0, 40), makeColor(0, 255, 0));
 
-  ByteImageDisplay(img).main();  
+  Display(img).main();  
   
   return 0;
 }

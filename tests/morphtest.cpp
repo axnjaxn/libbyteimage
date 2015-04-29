@@ -5,7 +5,7 @@
 
 using namespace byteimage;
 
-class MorphDisplay : public ByteImageDisplay {
+class MorphDisplay : public Display {
 protected:
   BitImage img;
 
@@ -20,11 +20,11 @@ protected:
       }
       updateImage(img.toByteImage());
     }
-    ByteImageDisplay::handleEvent(event);
+    Display::handleEvent(event);
   }
   
 public:
-  MorphDisplay(const BitImage& img) : ByteImageDisplay(img.toByteImage()) {
+  MorphDisplay(const BitImage& img) : Display(img.toByteImage()) {
     this->img = img;
   }
 };

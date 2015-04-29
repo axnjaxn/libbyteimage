@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
   ByteImage graph = plotter.render(480, 640);
 
 #ifndef _BYTEIMAGE_NO_SDL2
-  display(graph);
+  Display(graph).main();
 #else
   const char* fn = "graph.png";
   graph.save_filename(fn);

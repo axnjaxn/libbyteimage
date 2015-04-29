@@ -7,7 +7,7 @@ using namespace byteimage;
 
 int main(int argc, char* argv[]) {
   ByteImage img(128, 600, 3);
-  ByteImageDisplay disp(img);
+  Display disp(img);
   
   //Draw background gradient
   double t;

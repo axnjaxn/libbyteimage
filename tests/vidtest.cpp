@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
   printf("Video reports %d frames, with size %d x %d and %lf fps\n", video.count(), video.width(), video.height(), video.FPS());
   video.nextFrame(img);
 
-  ByteImageDisplay disp(img, "Video output");
+  Display disp(img, "Video output");
   disp.frameDelay = 0;
 
   Uint32 ticks = SDL_GetTicks(), dt;

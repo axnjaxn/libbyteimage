@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
   text.drawUnkerned(img, str, img.nr - 12, 0, 255, 0, 0);
   text.draw(img, str, img.nr - 12, 0, 255, 192, 0);
   
-  display(img);
+  Display(img).main();
 
   return 0;
 }

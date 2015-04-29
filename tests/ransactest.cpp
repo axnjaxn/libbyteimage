@@ -94,7 +94,7 @@ int main(int argc, char* argv[]) {
   for (int i = 0; i < nbad; i += 2)
     std::swap(tarp[i], tarp[i + 1]);
   
-  display(drawPointPair(refp, tarp));
+  Display(drawPointPair(refp, tarp)).main();
 
   std::vector<int> inliers;
   T = MyRansac().findInliers(refp, tarp, inliers);
@@ -103,7 +103,7 @@ int main(int argc, char* argv[]) {
   for (int i = 0; i < n; i++)
     refp[i] = T * refp[i];
 
-  display(drawPointPair(refp, tarp));
+  Display(drawPointPair(refp, tarp)).main();
   
   return 0;
 }

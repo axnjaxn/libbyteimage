@@ -2,17 +2,17 @@
 
 using namespace byteimage;
 
-class ImageFlicker : public ByteImageDisplay {
+class ImageFlicker : public Display {
 protected:
   void update() {
     for (int i = 0 ; i < img.size(); i++)
       img[i] = !img[i] * 255;
     updateImage(img);
-    ByteImageDisplay::update();
+    Display::update();
   }
 
 public:
-  ImageFlicker(const ByteImage& img) : ByteImageDisplay(img, "ByteImage SDL2 Test") {
+  ImageFlicker(const ByteImage& img) : Display(img, "ByteImage SDL2 Test") {
     this->img = img;
     frameDelay = 500;
   }

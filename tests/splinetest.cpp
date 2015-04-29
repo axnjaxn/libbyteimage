@@ -4,7 +4,7 @@
 
 using namespace byteimage;
 
-class SplineDisplay : public ByteImageDisplay {
+class SplineDisplay : public Display {
 protected:
   ByteImage canvas;
   Spline spline;
@@ -40,7 +40,7 @@ protected:
 	break;
       }
     }
-    ByteImageDisplay::handleEvent(event);
+    Display::handleEvent(event);
   }
   void render() {
     if (!drawflag) return;
@@ -75,11 +75,11 @@ protected:
   }
   void update() {
     render();
-    ByteImageDisplay::update();
+    Display::update();
   }
 
 public:
-  SplineDisplay() : ByteImageDisplay(512, 512), canvas(512, 512, 3) {
+  SplineDisplay() : Display(512, 512), canvas(512, 512, 3) {
     spline = Spline::makeSpline(3, {
 	{20, 256}, {100, 256}, {180, 256}, {260, 192}, {340, 256}, {420, 256}, {500, 256}
       });

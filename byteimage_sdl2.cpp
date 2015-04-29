@@ -1,16 +1,12 @@
-/*
- * byteimage_sdl2
- * Updated 4 December 2014
- * Written by Brian Jackson
- */
-
 #include "byteimage_sdl2.h"
 
-ByteImageDisplay::ByteImageDisplay(int nr, int nc, const char* title) {init(ByteImage(nr, nc), title);}
+using namespace byteimage;
 
-ByteImageDisplay::ByteImageDisplay(const ByteImage& img, const char* title) {init(img, title);}
+Display::Display(int nr, int nc, const char* title) {init(ByteImage(nr, nc), title);}
 
-ByteImageDisplay::ByteImageDisplay(ByteImageDisplay&& disp) 
+Display::Display(const ByteImage& img, const char* title) {init(img, title);}
+
+Display::Display(Display&& disp) 
   : window(disp.window), texture(disp.texture), renderer(disp.renderer), 
     px(disp.px), exitflag(disp.exitflag), drawflag(disp.drawflag), frameDelay(disp.frameDelay)  {
   disp.window = nullptr;
@@ -19,14 +15,14 @@ ByteImageDisplay::ByteImageDisplay(ByteImageDisplay&& disp)
   disp.px = nullptr;
 }
 
-ByteImageDisplay::~ByteImageDisplay() {
+Display::~Display() {
   if (window) SDL_DestroyWindow(window);
   if (texture) SDL_DestroyTexture(texture);
   if (renderer) SDL_DestroyRenderer(renderer);
   delete [] px;
 }
 
-void ByteImageDisplay::init(const ByteImage& img, const char* title) {
+void Display::init(const ByteImage& img, const char* title) {
   if (!SDL_WasInit(SDL_INIT_VIDEO)) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
       printf("Error: Could not initialize SDL.\n");
@@ -54,7 +50,7 @@ void ByteImageDisplay::init(const ByteImage& img, const char* title) {
   updateImage(img);
 }
 
-void ByteImageDisplay::handleEvent(SDL_Event event) {
+void Display::handleEvent(SDL_Event event) {
   if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE) {
     if (event.window.windowID == SDL_GetWindowID(window))
       exitflag = 1;
@@ -62,13 +58,13 @@ void ByteImageDisplay::handleEvent(SDL_Event event) {
   else if (event.type == SDL_QUIT) exitflag = 1;
 }
 
-void ByteImageDisplay::updateImage(const ByteImage& img) {
+void Display::updateImage(const ByteImage& img) {
   writePixelArray(px, img);
   SDL_UpdateTexture(texture, NULL, px, img.nc * sizeof (Uint32));
   drawflag = 1;
 }
 
-void ByteImageDisplay::update() {
+void Display::update() {
   if (drawflag) {
     SDL_RenderCopy(renderer, texture, NULL, NULL);
     SDL_RenderPresent(renderer);
@@ -79,7 +75,7 @@ void ByteImageDisplay::update() {
     SDL_Delay(frameDelay);
 }
 
-void ByteImageDisplay::main() {
+void Display::main() {
   exitflag = 0;
   SDL_Event event;
   while (!exitflag) {
@@ -90,7 +86,7 @@ void ByteImageDisplay::main() {
   }
 }
 
-int ByteImageDisplay::show(const ByteImage& img) {
+int Display::show(const ByteImage& img) {
   exitflag = 0;
   
   SDL_Event event;
@@ -103,7 +99,7 @@ int ByteImageDisplay::show(const ByteImage& img) {
   return exitflag;
 }
 
-void writePixelArray(Uint32* dest, const ByteImage& img) {
+void byteimage::writePixelArray(Uint32* dest, const ByteImage& img) {
   const ByteImage::BYTE *r, *g, *b;
 
   if (img.nchannels == 3) {
@@ -117,7 +113,7 @@ void writePixelArray(Uint32* dest, const ByteImage& img) {
     dest[i] = 0xFF000000 | (r[i] << 16) | (g[i] << 8) | b[i];
 }
 
-SDL_Texture* toTexture(SDL_Renderer* renderer, const ByteImage& img) {
+SDL_Texture* byteimage::toTexture(SDL_Renderer* renderer, const ByteImage& img) {
   if (img.nchannels == 1) return toTexture(renderer, img.toColor());
   SDL_Texture* texture = SDL_CreateTexture(renderer,
 					   SDL_PIXELFORMAT_ARGB8888,
@@ -131,10 +127,3 @@ SDL_Texture* toTexture(SDL_Renderer* renderer, const ByteImage& img) {
   delete [] px;
   return texture;
 }
-
-void display(const ByteImage& img) {
-  ByteImageDisplay display(img);
-  display.frameDelay = 100;
-  display.main();
-}
-

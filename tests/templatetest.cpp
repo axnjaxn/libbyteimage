@@ -32,7 +32,7 @@ int main(int argc, char* argv[]) {
   for (int r, c, i = 0; T.next(r, c); i++)
     img.at(r, c, 0) = (i / 5) & 0xFF;
 
-  display(img);
+  Display(img).main();
     
   return 0;
 }

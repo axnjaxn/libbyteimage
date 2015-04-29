@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
   result.blit(img, 0, 0);
   result.blit(G, 0, 256);
 
-  display(result);
+  Display(result).main();
     
   return 0;
 }

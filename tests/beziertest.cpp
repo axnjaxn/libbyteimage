@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
   path.push_back(d);
   DrawBezier(canvas, path, makeColor(64, 64 ,64));
 
-  ByteImageDisplay disp(canvas);
+  Display disp(canvas);
   disp.frameDelay = 10;
 
   ByteImage img(canvas);

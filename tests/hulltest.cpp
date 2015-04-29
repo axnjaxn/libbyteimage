@@ -4,7 +4,7 @@
 
 using namespace byteimage;
 
-class HullDisplay : public ByteImageDisplay {
+class HullDisplay : public Display {
 protected:
   ByteImage img;
   BitImage bimg;
@@ -81,11 +81,11 @@ protected:
 	updateImage(bimg.toByteImage());
 	break;
       }
-    ByteImageDisplay::handleEvent(event);
+    Display::handleEvent(event);
   }
 
 public:
-  HullDisplay(const ByteImage& img) : ByteImageDisplay(img), img(img) {
+  HullDisplay(const ByteImage& img) : Display(img), img(img) {
     bimg = BitImage::threshold(img, threshold);
     updateImage(bimg.toByteImage());
     frameDelay = 100;
