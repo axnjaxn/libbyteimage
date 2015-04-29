@@ -2,6 +2,8 @@
 #include <byteimage/byteimage_sdl2.h>
 #include <cstdio>
 
+using namespace byteimage;
+
 int main(int argc, char* argv[]) {
   ByteImage img(256, 256, 1);
   

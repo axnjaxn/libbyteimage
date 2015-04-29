@@ -2,6 +2,8 @@
 #include <byteimage/ransac.h>
 #include <algorithm>
 
+using namespace byteimage;
+
 class MyRansac : public RANSAC {
 protected:
   Matrix solve(const std::vector<Matrix>& refp, 

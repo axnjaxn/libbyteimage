@@ -2,6 +2,8 @@
 #include <byteimage/render.h>
 #include <byteimage/font.h>
 
+using namespace byteimage;
+
 int main(int argc, char* argv[]) {
   ByteImage img(96, 600, 3);
   

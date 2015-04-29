@@ -10,8 +10,10 @@ using namespace Magick;
 #include <Magick++.h>
 #endif
 
+using namespace byteimage;
+
 template <typename tn>
-inline tn min(tn a, tn b) {return (a <= b)? a : b;}
+inline static tn min(tn a, tn b) {return (a <= b)? a : b;}
 
 ByteImage::ByteImage() : nr(0), nc(0), nchannels(0), pixels(nullptr) { }
 
@@ -189,23 +191,6 @@ ByteImage ByteImage::toLightness() const {
 	if (at(r, c, ch) < min) min = at(r, c, ch);
       }
       img.at(r, c) = (BYTE)((min + max) >> 1);
-    }
-
-  return img;
-}
-
-ByteImage ByteImage::toValue() const {
-  if (nchannels == 1) return *this;
-
-  ByteImage img(nr, nc);
-
-  BYTE max;
-  for (int r = 0; r < nr; r++)
-    for (int c = 0; c < nc; c++) {
-      max = 0;
-      for (int ch = 0; ch < nchannels; ch++)
-	if (at(r, c, ch) > max) max = at(r, c, ch);
-      img.at(r, c) = max;
     }
 
   return img;
@@ -595,17 +580,19 @@ ByteImage ByteImage::combineChannels(const ByteImage& r, const ByteImage& g, con
 }
 
 void ByteImage::setLightness(int r, int c, BYTE l) {
-  double R = at(r, c, 0) / 255.0;
-  double G = at(r, c, 1) / 255.0;
-  double B = at(r, c, 2) / 255.0;
-  double h, s, l0;
+  ByteImage::BYTE R, G, B;
+  float h, s, l0;
+  
+  R = at(r, c, 0);
+  G = at(r, c, 1);
+  B = at(r, c, 2);
 
   rgb2hsl(R, G, B, h, s, l0);
   hsl2rgb(h, s, l / 255.0, R, G, B);
 
-  at(r, c, 0) = (BYTE)(255.0 * R);
-  at(r, c, 1) = (BYTE)(255.0 * G);
-  at(r, c, 2) = (BYTE)(255.0 * B);  
+  at(r, c, 0) = R;
+  at(r, c, 1) = G;
+  at(r, c, 2) = B;
 }
 
 ByteImage ByteImage::getLightness() const {
@@ -643,106 +630,8 @@ ByteImage ByteImage::setLightness(const ByteImage& L) const {
   return result;
 }
 
-void rgb2hsv(double r, double g, double b,
-	     double& h, double& s, double& v) {
-  //Get max and min of the rgb values
-  double max = r;
-  if (g > max) max = g; 
-  if (b > max) max = b;
-
-  double min = r;
-  if (g < min) min = g; 
-  if (b < min) min = b;
-  
-  double c = max - min;
-
-  //Find hue in degrees
-  if (c == 0) h = 0;
-  else if (max == r) h = fmod((g - b) / c + 6, 6);
-  else if (max == g) h = (b - r) / c + 2;
-  else h = (r - g) / c + 4;
-
-  h = 60 * h;
-  
-  //Find lightness
-  v = max;
-  
-  //Find saturation
-  if (max - min == 0) s = 0;
-  else s = c / v;
-}
-
-void hsv2rgb(double h, double s, double v,
-	     double& r, double& g, double& b) {
-
-  double c = v * s;
-
-  double _h = h / 60.0;
-  double x = c * (1 - fabs(fmod(_h, 2) - 1));
-
-  switch ((int)_h) {
-  default: r = 0; g = 0; b = 0; break;
-  case 0: r = c; g = x; b = 0; break;
-  case 1: r = x; g = c; b = 0; break;
-  case 2: r = 0; g = c; b = x; break;
-  case 3: r = 0; g = x; b = c; break;
-  case 4: r = x; g = 0; b = c; break;
-  case 5: r = c; g = 0; b = x; break;
-  }    
-
-  double m = v - c;
-  r += m;
-  g += m;
-  b += m;
-}
-
-ByteImage ByteImage::getValue() const {
-  if (nchannels != 3) return *this;
-
-  ByteImage result(nr, nc);
-  
-  const ByteImage::BYTE *R = this->R(), *G = this->G(), *B = this->B();
-  for (int i = 0; i < nr * nc; i++) {
-    //Get max of the rgb values
-    ByteImage::BYTE max = R[i];
-    if (G[i] > max) max = G[i]; 
-    if (B[i] > max) max = B[i];
-    
-    //Find lightness
-    result[i] = max;
-  }
-
-  return result;
-}
-
-void ByteImage::setValue(int r, int c, BYTE v) {
-  double R = at(r, c, 0) / 255.0;
-  double G = at(r, c, 1) / 255.0;
-  double B = at(r, c, 2) / 255.0;
-  double h, s, v0;
-
-  rgb2hsv(R, G, B, h, s, v0);
-  hsv2rgb(h, s, v / 255.0, R, G, B);
-
-  at(r, c, 0) = (BYTE)(255.0 * R);
-  at(r, c, 1) = (BYTE)(255.0 * G);
-  at(r, c, 2) = (BYTE)(255.0 * B);  
-}
-
-ByteImage ByteImage::setValue(const ByteImage& V) const {
-  if (nchannels == 1) return *this;
-  
-  ByteImage result(*this);
-  int nr = (this->nr < V.nr)? this->nr : V.nr;
-  int nc = (this->nc < V.nc)? this->nc : V.nc;
-  for (int r = 0; r < nr; r++)
-    for (int c = 0; c < nc; c++)
-      result.setValue(r, c, V.at(r, c));
-  return result;
-}
-
-void rgb2hsl_fast(ByteImage::BYTE r, ByteImage::BYTE g, ByteImage::BYTE b,
-		  float &h, float &s, float &l) {
+void byteimage::rgb2hsl(ByteImage::BYTE r, ByteImage::BYTE g, ByteImage::BYTE b,
+			float &h, float &s, float &l) {
   ByteImage::BYTE min, max;
   float c;
 
@@ -780,8 +669,8 @@ void rgb2hsl_fast(ByteImage::BYTE r, ByteImage::BYTE g, ByteImage::BYTE b,
     s = 0.0;
 }
 
-void hsl2rgb_fast(float h, float s, float l,
-		  ByteImage::BYTE &R, ByteImage::BYTE &G, ByteImage::BYTE &B) {
+void byteimage::hsl2rgb(float h, float s, float l,
+			ByteImage::BYTE &R, ByteImage::BYTE &G, ByteImage::BYTE &B) {
   float c = (l <= 0.5)? c = 2 * l * s : (2 - 2 * l) * s;
 
   const float d60 = 1.0 / 60.0;

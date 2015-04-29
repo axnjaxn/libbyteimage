@@ -4,6 +4,8 @@
 #include "byteimage.h"
 #include <vector>
 
+using namespace byteimage;//TODO
+
 class Template {
 protected:
   class Pt {

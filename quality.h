@@ -3,6 +3,8 @@
 
 #include "byteimage.h"
 
+using namespace byteimage;//TODO
+
 class Window {
 public:
   int r, c, nr, nc;

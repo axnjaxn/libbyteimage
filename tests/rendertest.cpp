@@ -1,6 +1,8 @@
 #include <byteimage/render.h>
 #include <byteimage/byteimage_sdl2.h>
 
+using namespace byteimage;
+
 int main(int argc, char* argv[]) {
   ByteImage img(256, 256, 3);
   DrawLine(img, 0, 0, 255, 255, 255); //White line from top left to bottom right

@@ -1,6 +1,8 @@
 #include <byteimage/byteimage.h>
 #include <cstdio>
 
+using namespace byteimage;
+
 int main(int argc, char* argv[]) {
 #ifndef _BYTEIMAGE_NO_MAGICK
   ByteImage img(256, 256, 3);

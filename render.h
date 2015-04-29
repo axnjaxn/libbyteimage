@@ -5,6 +5,8 @@
 #include "matrix.h"
 #include <vector>
 
+using namespace byteimage;//TODO
+
 Matrix makeColor(double r, double g, double b);//On a [0 - 255] scale
 
 void DrawRect(ByteImage& target, int x, int y, int w, int h, ByteImage::BYTE v);

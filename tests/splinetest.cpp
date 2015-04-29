@@ -2,6 +2,8 @@
 #include <byteimage/byteimage_sdl2.h>
 #include <byteimage/render.h>
 
+using namespace byteimage;
+
 class SplineDisplay : public ByteImageDisplay {
 protected:
   ByteImage canvas;

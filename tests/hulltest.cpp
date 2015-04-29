@@ -2,6 +2,8 @@
 #include <byteimage/byteimage_sdl2.h>
 #include <cstdio>
 
+using namespace byteimage;
+
 class HullDisplay : public ByteImageDisplay {
 protected:
   ByteImage img;

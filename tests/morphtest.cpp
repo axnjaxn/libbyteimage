@@ -3,6 +3,8 @@
 #include <byteimage/font.h>
 #include <byteimage/bitimage.h>
 
+using namespace byteimage;
+
 class MorphDisplay : public ByteImageDisplay {
 protected:
   BitImage img;

@@ -3,6 +3,8 @@
 
 #include "byteimage.h"
 
+using namespace byteimage;//TODO
+
 class Palette {
 public:
   class Color {

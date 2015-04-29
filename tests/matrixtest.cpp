@@ -3,6 +3,8 @@
 #include <cmath>
 #include <cstdio>
 
+using namespace byteimage;
+
 class Transformer : public ByteImageDisplay {
 protected:
   Matrix T, R, X, Y;

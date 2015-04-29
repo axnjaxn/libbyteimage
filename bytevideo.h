@@ -4,6 +4,8 @@
 #include "byteimage.h"
 #include <opencv2/opencv.hpp>
 
+using namespace byteimage;//TODO
+
 class ByteVideo {
 protected:
   std::string src;

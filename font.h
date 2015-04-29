@@ -5,6 +5,8 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
+using namespace byteimage;//TODO
+
 class TextRenderer {
 protected:
   static FT_Library library;

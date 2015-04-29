@@ -3,6 +3,8 @@
 #include <ctime>
 #include <cstdlib>
 
+using namespace byteimage;
+
 int main(int argc, char* argv[]) {
   srand(time(NULL));
 
@@ -59,15 +61,15 @@ int main(int argc, char* argv[]) {
     t += step;
     if (t > 1.0 && step > 0) {
       step = -step;
-      double R, G, B;
-      hsv2rgb(rand() % 360, 1.0, 1.0, R, G, B);
-      color = makeColor(255 * R, 255 * G, 255 * B);
+      ByteImage::BYTE R, G, B;
+      hsl2rgb(rand() % 360, 1.0, 0.5, R, G, B);
+      color = makeColor(R, G, B);
     }
     if (t < 0.0 && step < 0) {
       step = -step;
-      double R, G, B;
-      hsv2rgb(rand() % 360, 1.0, 1.0, R, G, B);
-      color = makeColor(255 * R, 255 * G, 255 * B);
+      ByteImage::BYTE R, G, B;
+      hsl2rgb(rand() % 360, 1.0, 0.5, R, G, B);
+      color = makeColor(R, G, B);
     }
   }  
 }

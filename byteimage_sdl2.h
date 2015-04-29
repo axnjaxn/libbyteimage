@@ -10,6 +10,8 @@
 #include "byteimage.h"
 #include <SDL2/SDL.h>
 
+using namespace byteimage;//TODO
+
 //An extensible image viewer
 class ByteImageDisplay {
 protected:

@@ -1,5 +1,7 @@
 #include <byteimage/byteimage_sdl2.h>
 
+using namespace byteimage;
+
 class ImageFlicker : public ByteImageDisplay {
 protected:
   void update() {

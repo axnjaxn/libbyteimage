@@ -3,6 +3,8 @@
 #endif
 #include <byteimage/plotter.h>
 
+using namespace byteimage;
+
 int main(int argc, char* argv[]) {
   Plotter plotter;
 

@@ -3,6 +3,8 @@
 
 #include "byteimage.h"
 
+using namespace byteimage;//TODO
+
 class BitImage {
 protected:
   int nstride;//In blocks

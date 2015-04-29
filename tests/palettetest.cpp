@@ -2,6 +2,8 @@
 #include <byteimage/render.h>
 #include <byteimage/palette.h>
 
+using namespace byteimage;
+
 int main(int argc, char* argv[]) {
   ByteImageDisplay disp(512, 512, "Palette Test");
 

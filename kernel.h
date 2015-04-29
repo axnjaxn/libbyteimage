@@ -3,6 +3,8 @@
 
 #include "byteimage.h"
 
+using namespace byteimage;//TODO
+
 class Kernel {
 public:
   int nr, nc;

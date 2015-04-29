@@ -3,6 +3,8 @@
 #include <byteimage/font.h>
 #include <byteimage/component.h>
 
+using namespace byteimage;
+
 int main(int argc, char* argv[]) {
   ByteImage img(128, 600, 3);
   ByteImageDisplay disp(img);
