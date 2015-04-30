@@ -511,66 +511,6 @@ void ByteImage::blend(const ByteImage& color, const ByteImage& alpha, int destr,
 				      alpha.at(r + y - destr, c + x - destc) / 255.0);
 }
 
-#include <cmath>
-
-void rgb2hsl(double r, double g, double b,
-	     double &h, double &s, double &l) {
-  //Get max and min of the rgb values
-  double max = r;
-  if (g > max) max = g; 
-  if (b > max) max = b;
-
-  double min = r;
-  if (g < min) min = g; 
-  if (b < min) min = b;
-  
-  double c = max - min;
-
-  //Find hue in degrees
-  if (c == 0) h = 0;
-  else if (max == r) h = fmod((g - b) / c + 6, 6);
-  else if (max == g) h = (b - r) / c + 2;
-  else h = (r - g) / c + 4;
-
-  h = 60 * h;
-  
-  //Find lightness
-  l = 0.5 * (max + min);
-  
-  //Find saturation
-  if (l > 0.0 && l < 1.0)
-    s = c / (1 - fabs(2 * l - 1));
-  else
-    s = 0.0;
-}
-
-void hsl2rgb(double h, double s, double l,
-	     double &r, double &g, double &b) {
-  double c;
-  if (l <= 0.5) c = 2 * l * s;
-  else c = (2 - 2 * l) * s;
-
-  double _h = h / 60.0;
-  double x = c * (1 - fabs(fmod(_h, 2) - 1));
-
-  switch ((int)_h) {
-  default: r = 0; g = 0; b = 0; break;
-  case 0: r = c; g = x; b = 0; break;
-  case 1: r = x; g = c; b = 0; break;
-  case 2: r = 0; g = c; b = x; break;
-  case 3: r = 0; g = x; b = c; break;
-  case 4: r = x; g = 0; b = c; break;
-  case 5: r = c; g = 0; b = x; break;
-  }    
-
-  double m = l - 0.5 * c;
-  r += m;
-  g += m;
-  b += m;
-}
-
-
-
 ByteImage ByteImage::combineChannels(const ByteImage& r, const ByteImage& g, const ByteImage& b) {
   ByteImage result(r.nr, r.nc, 3);
   memcpy(result.R(), r.pixels, result.nr * result.nc);
