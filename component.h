@@ -35,6 +35,11 @@ namespace byteimage {
     inline Pt& operator[](int i) {return points[i];}
     inline const Pt& operator[](int i) const {return points[i];}
 
+    inline std::vector<Pt>::iterator begin() {return points.begin();}
+    inline std::vector<Pt>::const_iterator begin() const {return points.begin();}
+    inline std::vector<Pt>::iterator end() {return points.end();}
+    inline std::vector<Pt>::const_iterator end() const {return points.end();}
+    
     inline int size() const {return points.size();}
 
     void getCenter(double& x, double& y) const;
