@@ -49,6 +49,11 @@ Template Template::makeSerialCircle(int radius) {
   return T;
 }
 
+void Template::getCenter(int& r, int& c) {
+  r = center.r;
+  c = center.c;
+}
+
 void Template::centerAt(int r, int c) {
   center = Pt(r, c);
   rewind();

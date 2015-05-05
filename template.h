@@ -32,10 +32,11 @@ namespace byteimage {
     static Template makeSerialBox(int radius); //Rectangular template with width (2 * radius + 1), with increasing index
     static Template makeCircle(int radius); //Circular template with width (2 * radius + 1), prioritizing center locations
     static Template makeSerialCircle(int radius); //Circular template with width (2 * radius + 1), with increasing index
-  
+
+    void getCenter(int& r, int& c);
     void centerAt(int r, int c);//Shifts template center
     void rewind();//Resets state
-    bool next(int&r, int& c);//Next r, c in image bounds; returns false if none left
+    bool next(int& r, int& c);//Next r, c in image bounds; returns false if none left
   };
 }
 
