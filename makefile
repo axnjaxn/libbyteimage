@@ -1,5 +1,5 @@
-BIN = byteimage.o bitimage.o component.o matrix.o spline.o ransac.o quality.o kernel.o template.o render.o palette.o
-INC = byteimage.h bitimage.h component.h matrix.h spline.h ransac.h quality.h kernel.h template.h render.h palette.h
+BIN = byteimage.o bitimage.o component.o hslimage.o matrix.o spline.o ransac.o quality.o kernel.o template.o render.o palette.o
+INC = byteimage.h bitimage.h component.h hslimage.h matrix.h spline.h ransac.h quality.h kernel.h template.h render.h palette.h
 TESTS = tests/imgtest tests/cholestest tests/svdtest tests/nulltest
 
 CFG_CFLAGS = -std=c++11
@@ -71,6 +71,9 @@ bitimage.o: byteimage.h bitimage.h bitimage.cpp
 
 component.o: bitimage.h component.h component.cpp
 	$(CXX) -c component.cpp $(CFLAGS)
+
+hslimage.o: byteimage.h hslimage.h hslimage.cpp
+	$(CXX) -c hslimage.cpp $(CFLAGS)
 
 matrix.o: matrix.h matrix.cpp
 	$(CXX) -c matrix.cpp $(CFLAGS) 
