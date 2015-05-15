@@ -17,6 +17,7 @@ namespace byteimage {
     constexpr Color() : r(0), g(0), b(0) { }
     constexpr Color(Byte v) : r(v), g(v), b(v) { }
     constexpr Color(Byte r, Byte g, Byte b) : r(r), g(g), b(b) { }
+    constexpr Byte toGray() const {return (r + g + b) / 3;}
   };
 
   class Pt {
@@ -31,11 +32,15 @@ namespace byteimage {
     float x, y;
     
     constexpr Pt2f(float x = 0.0, float y = 0.0) : x(x), y(y) { }
+    constexpr Pt2f(const Pt& pt) : x(pt.c), y(pt.r) { }
+    
     constexpr Pt2f operator+(const Pt2f& a) const {return Pt2f(x + a.x, y + a.y);}
     constexpr Pt2f operator-(const Pt2f& a) const {return Pt2f(x - a.x, y - a.y);}
     constexpr Pt2f operator*(float f) const {return Pt2f(x * f, y * f);}
     constexpr Pt2f operator/(float f) const {return Pt2f(x / f, y / f);}
     constexpr friend Pt2f operator*(float f, const Pt2f& pt) {return pt * f;}
+
+    constexpr Pt toPt() const {return Pt((int)(y + 0.5), (int)(x + 0.5));}
     
     constexpr float sqLength() const {return x * x + y * y;}
     inline float length() const {return sqrt(sqLength());}
