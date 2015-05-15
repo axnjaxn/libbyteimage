@@ -7,14 +7,8 @@
 namespace byteimage {
   class Template {
   protected:
-    //TODO: Fold with types.h
-    class Pt {
-    public:
-      int r, c;
-      constexpr Pt() : r(0), c(0) { }
-      constexpr Pt(int r, int c) : r(r), c(c) { }
-      bool operator<(const Pt& p) const {return r * r + c * c < p.r * p.r + p.c * p.c;}
-    };
+    //TODO: Deprecated
+    typedef byteimage::Pt Pt;
 
     const ByteImage* img;
     std::vector<Pt> points;

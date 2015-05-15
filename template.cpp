@@ -10,9 +10,11 @@ void Template::setImage(const ByteImage& img) {
   rewind();
 }
 
+static bool comparePt(const Pt& a, const Pt& b) {return a.r * a.r + a.c * a.c < b.r * b.r + b.c * b.c;}
+
 Template Template::makeBox(int radius) {
   Template T = makeSerialBox(radius);
-  std::stable_sort(T.points.begin(), T.points.end());
+  std::stable_sort(T.points.begin(), T.points.end(), comparePt);
   return T;
 }
 
@@ -31,7 +33,7 @@ Template Template::makeSerialBox(int radius) {
 
 Template Template::makeCircle(int radius) {
   Template T = makeSerialCircle(radius);
-  std::stable_sort(T.points.begin(), T.points.end());
+  std::stable_sort(T.points.begin(), T.points.end(), comparePt);
   return T;
 }
 
