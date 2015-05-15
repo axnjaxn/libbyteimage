@@ -7,12 +7,8 @@
 namespace byteimage {
   class Component {
   public:
-    class Pt {
-    public:
-      int r, c;
-      constexpr Pt() : r(0), c(0) { }
-      constexpr Pt(int r, int c) : r(r), c(c) { }
-    };
+    //TODO: Deprecated
+    typedef byteimage::Pt Pt;
     
     typedef unsigned char Flags;
     static constexpr Flags STATIC_ALLOC = 0;

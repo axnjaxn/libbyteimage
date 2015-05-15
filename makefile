@@ -1,5 +1,5 @@
-BIN = byteimage.o bitimage.o component.o hslimage.o matrix.o spline.o ransac.o quality.o kernel.o template.o render.o palette.o
-INC = byteimage.h bitimage.h component.h hslimage.h matrix.h spline.h ransac.h quality.h kernel.h template.h render.h palette.h
+BIN = types.o byteimage.o bitimage.o component.o hslimage.o matrix.o spline.o ransac.o quality.o kernel.o template.o render.o palette.o
+INC = types.h byteimage.h bitimage.h component.h hslimage.h matrix.h spline.h ransac.h quality.h kernel.h template.h render.h palette.h
 TESTS = tests/imgtest tests/cholestest tests/svdtest tests/nulltest
 
 CFG_CFLAGS = -std=c++11
@@ -57,7 +57,10 @@ byteimage-config:
 libbyteimage.a: $(BIN)
 	ar rcs libbyteimage.a $(BIN)
 
-byteimage.o: byteimage.h byteimage.cpp
+types.o: types.h types.cpp
+	$(CXX) -c types.cpp $(CFLAGS)
+
+byteimage.o: types.h byteimage.h byteimage.cpp
 	$(CXX) -c byteimage.cpp $(CFLAGS)
 
 byteimage_sdl2.o: byteimage.h byteimage_sdl2.h byteimage_sdl2.cpp

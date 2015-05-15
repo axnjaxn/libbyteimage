@@ -7,6 +7,7 @@
 namespace byteimage {
   class Template {
   protected:
+    //TODO: Fold with types.h
     class Pt {
     public:
       int r, c;

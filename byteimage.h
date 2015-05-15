@@ -5,6 +5,7 @@
 #ifndef _BPJ_BYTEIMAGE_H
 #define _BPJ_BYTEIMAGE_H
 
+#include "types.h"
 #include <string>
 #ifndef _BYTEIMAGE_NO_MAGICK
 #include <Magick++.h>
@@ -13,20 +14,12 @@
 namespace byteimage {
   class ByteImage {
   public:
-    typedef unsigned char BYTE;
-    inline static BYTE clip(double d) {
-      return (d > 255)? 255 : (d < 0)? 0 : (BYTE)(d + 0.5);
-    }
-    inline static BYTE avg(BYTE a, BYTE b) {
-      return (a >> 1) + (b >> 1) + ((a & 1) & (b & 1));
-    }
-    inline static BYTE diff(BYTE a, BYTE b) {
-      return (a > b)? a - b : b - a;
-    }
-    inline static BYTE interp(BYTE a, BYTE b, float t) {
-      t = (t < 0)? 0 : (t > 1)? 1 : t;
-      return clip((1 - t) * a + t * b);
-    }
+    //TODO: Deprecated
+    typedef Byte BYTE;
+    inline static BYTE clip(double d) {return byteimage::clip(d);}
+    inline static BYTE avg(BYTE a, BYTE b) {return byteimage::avg(a, b);}
+    inline static BYTE diff(BYTE a, BYTE b) {return byteimage::diff(a, b);}
+    inline static BYTE interp(BYTE a, BYTE b, float t) {return byteimage::interp(a, b, t);}
 
     BYTE* pixels;
     int nr, nc, nchannels;
@@ -108,11 +101,9 @@ namespace byteimage {
     ByteImage setLightness(const ByteImage& I) const;
   };
 
-  void rgb2hsl(ByteImage::BYTE r, ByteImage::BYTE g, ByteImage::BYTE b,
-	       float &h, float &s, float &l);
-
-  void hsl2rgb(float h, float s, float l,
-	       ByteImage::BYTE &r, ByteImage::BYTE &g, ByteImage::BYTE &b);
+  //TODO: Deprecated
+  void rgb2hsl(ByteImage::BYTE r, ByteImage::BYTE g, ByteImage::BYTE b, float &h, float &s, float &l);
+  void hsl2rgb(float h, float s, float l, ByteImage::BYTE &r, ByteImage::BYTE &g, ByteImage::BYTE &b);
 }
 		  
 

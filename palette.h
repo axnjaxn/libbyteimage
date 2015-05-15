@@ -6,12 +6,8 @@
 namespace byteimage {
   class Palette {
   public:
-    class Color {
-    public:
-      ByteImage::BYTE r, g, b;
-      constexpr Color() : r(0), g(0), b(0) { }
-      constexpr Color(ByteImage::BYTE r, ByteImage::BYTE g, ByteImage::BYTE b) : r(r), g(g), b(b) { }
-    };
+    //TODO: Deprecated
+    typedef byteimage::Color Color;
   
     //These functions *must* ensure range safety.
     inline virtual Color inRange(float v) const {return inUnit(0.5 * (v + 1));}//in [-1, 1]
