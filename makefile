@@ -60,19 +60,19 @@ libbyteimage.a: $(BIN)
 byteimage.o: types.h byteimage.h byteimage.cpp
 	$(CXX) -c byteimage.cpp $(CFLAGS)
 
-byteimage_sdl2.o: byteimage.h byteimage_sdl2.h byteimage_sdl2.cpp
+byteimage_sdl2.o: types.h byteimage.h byteimage_sdl2.h byteimage_sdl2.cpp
 	$(CXX) -c byteimage_sdl2.cpp $(CFLAGS)
 
-video.o: byteimage.h video.h video.cpp
+video.o: types.h byteimage.h video.h video.cpp
 	$(CXX) -c video.cpp $(CFLAGS)
 
-bitimage.o: byteimage.h bitimage.h bitimage.cpp
+bitimage.o: types.h byteimage.h bitimage.h bitimage.cpp
 	$(CXX) -c bitimage.cpp $(CFLAGS)
 
 component.o: types.h bitimage.h component.h component.cpp
 	$(CXX) -c component.cpp $(CFLAGS)
 
-hslimage.o: byteimage.h hslimage.h hslimage.cpp
+hslimage.o: types.h byteimage.h hslimage.h hslimage.cpp
 	$(CXX) -c hslimage.cpp $(CFLAGS)
 
 matrix.o: types.h matrix.h matrix.cpp
@@ -81,25 +81,25 @@ matrix.o: types.h matrix.h matrix.cpp
 spline.o: matrix.h spline.h spline.cpp
 	$(CXX) -c spline.cpp $(CFLAGS) 
 
-ransac.o: matrix.h ransac.h ransac.cpp
+ransac.o: types.h matrix.h ransac.h ransac.cpp
 	$(CXX) -c ransac.cpp $(CFLAGS)
 
-quality.o: byteimage.h quality.h quality.cpp
+quality.o: types.h byteimage.h quality.h quality.cpp
 	$(CXX) -c quality.cpp $(CFLAGS) 
 
-kernel.o: byteimage.h kernel.h kernel.cpp
+kernel.o: types.h byteimage.h kernel.h kernel.cpp
 	$(CXX) -c kernel.cpp $(CFLAGS) 
 
-template.o: types.h byteimage.h template.h template.cpp
+template.o: types.h types.h byteimage.h template.h template.cpp
 	$(CXX) -c template.cpp $(CFLAGS) 
 
 render.o: types.h byteimage.h matrix.h render.h render.cpp
 	$(CXX) -c render.cpp $(CFLAGS) 
 
-font.o: byteimage.h font.h font.cpp
+font.o: types.h byteimage.h font.h font.cpp
 	$(CXX) -c font.cpp $(CFLAGS) -Wno-parentheses
 
-plotter.o: byteimage.h matrix.h font.h render.h plotter.h plotter.cpp
+plotter.o: types.h byteimage.h matrix.h font.h render.h plotter.h plotter.cpp
 	$(CXX) -c plotter.cpp $(CFLAGS)
 
 palette.o: types.h byteimage.h palette.h palette.cpp

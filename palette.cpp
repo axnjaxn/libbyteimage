@@ -42,9 +42,9 @@ CachedPalette CachedPalette::fromFloats(std::initializer_list<float>v) {
   CachedPalette pal(v.size() / 3);
   auto it = v.begin();
   for (int i = 0; i < pal.levels(); i++) {
-    pal[i].r = ByteImage::clip(255.0 * *(it++));
-    pal[i].g = ByteImage::clip(255.0 * *(it++));
-    pal[i].b = ByteImage::clip(255.0 * *(it++));
+    pal[i].r = clip(255.0 * *(it++));
+    pal[i].g = clip(255.0 * *(it++));
+    pal[i].b = clip(255.0 * *(it++));
   }
   return pal;
 }
@@ -120,9 +120,9 @@ Color LinearPalette::inUnit(float v) const {
 
   Color c = source[ind], c1 = source[ind + 1];
 
-  c.r = ByteImage::interp(c.r, c1.r, v);
-  c.g = ByteImage::interp(c.g, c1.g, v);
-  c.b = ByteImage::interp(c.b, c1.b, v);
+  c.r = interp(c.r, c1.r, v);
+  c.g = interp(c.g, c1.g, v);
+  c.b = interp(c.b, c1.b, v);
 
   return c;
 }

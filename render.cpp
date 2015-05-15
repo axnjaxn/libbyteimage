@@ -3,15 +3,14 @@
 
 using namespace byteimage;
 
+//TODO: Deprecated
 Matrix byteimage::makeColor(double r, double g, double b) {return makePoint(r, g, b);}
-
 inline static double getValue(const Matrix& rgb) {return (rgb.at(0) + rgb.at(1) + rgb.at(2)) / 3.0;}
-inline static ByteImage::BYTE getR(const Matrix& rgb) {return ByteImage::clip(rgb.at(0));}
-inline static ByteImage::BYTE getG(const Matrix& rgb) {return ByteImage::clip(rgb.at(1));}
-inline static ByteImage::BYTE getB(const Matrix& rgb) {return ByteImage::clip(rgb.at(2));}
+inline static Byte getR(const Matrix& rgb) {return clip(rgb.at(0));}
+inline static Byte getG(const Matrix& rgb) {return clip(rgb.at(1));}
+inline static Byte getB(const Matrix& rgb) {return clip(rgb.at(2));}
 
-void byteimage::DrawRect(ByteImage& target, int x, int y, int w, int h,
-			 ByteImage::BYTE v) {
+void byteimage::DrawRect(ByteImage& target, int x, int y, int w, int h, Byte v) {
   if (x < 0) {
     w += x;
     x = 0;
@@ -33,8 +32,7 @@ void byteimage::DrawRect(ByteImage& target, int x, int y, int w, int h,
       memset(target.pixels + ch * target.nr * target.nc + r * target.nc + x, v, w);
 }
 
-void byteimage::DrawRect(ByteImage& target, int x, int y, int w, int h,
-			 ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B) {
+void byteimage::DrawRect(ByteImage& target, int x, int y, int w, int h, Byte R, Byte G, Byte B) {
   if (x < 0) {
     w += x;
     x = 0;
@@ -77,16 +75,14 @@ void byteimage::DrawRect(ByteImage& target, const Matrix& ul, const Matrix& lr, 
   DrawRect(target, ul.toPt2f(), lr.toPt2f(), rgb.toColor());
 }
 
-void byteimage::DrawPoint(ByteImage& target, int x, int y,
-			  ByteImage::BYTE v, int sz) {
+void byteimage::DrawPoint(ByteImage& target, int x, int y, Byte v, int sz) {
   x = x - (sz >> 1);
   y = y - (sz >> 1);
   int w = sz, h = sz;
   DrawRect(target, x, y, w, h, v);  
 }
 
-void byteimage::DrawPoint(ByteImage& target, int x, int y,
-			  ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B, int sz) {
+void byteimage::DrawPoint(ByteImage& target, int x, int y, Byte R, Byte G, Byte B, int sz) {
   x = x - (sz >> 1);
   y = y - (sz >> 1);
   int w = sz, h = sz;
@@ -105,8 +101,7 @@ void byteimage::DrawPoint(ByteImage& target, const Matrix& v, const Matrix& rgb,
   DrawPoint(target, v.toPt2f(), rgb.toColor(), sz);
 }
 
-void byteimage::DrawLine(ByteImage& target, int ax, int ay, int bx, int by,
-			 ByteImage::BYTE v, int sz) {
+void byteimage::DrawLine(ByteImage& target, int ax, int ay, int bx, int by, Byte v, int sz) {
   float slope, tx, ty;
 
   if (fabs(by - ay) <= fabs(bx - ax)) {
@@ -141,7 +136,7 @@ void byteimage::DrawLine(ByteImage& target, int ax, int ay, int bx, int by,
 }
 
 void byteimage::DrawLine(ByteImage& target, int ax, int ay, int bx, int by,
-			 ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B, int sz) {
+			 Byte R, Byte G, Byte B, int sz) {
   float slope, tx, ty;
 
   if (fabs(by - ay) <= fabs(bx - ax)) {
@@ -188,8 +183,7 @@ void byteimage::DrawLine(ByteImage& target, const Matrix& a, const Matrix& b, co
   DrawLine(target, a.toPt2f(), b.toPt2f(), rgb.toColor());
 }
 
-void byteimage::DrawCross(ByteImage& target, int x, int y, 
-			  ByteImage::BYTE r, ByteImage::BYTE g, ByteImage::BYTE b,
+void byteimage::DrawCross(ByteImage& target, int x, int y, Byte r, Byte g, Byte b,
 			  int radius, int line_size) {
   DrawLine(target, x, y - radius, x, y + radius, r, g, b, line_size);
   DrawLine(target, x - radius, y, x + radius, y, r, g, b, line_size);

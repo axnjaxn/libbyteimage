@@ -21,27 +21,27 @@ namespace byteimage {
     inline static BYTE diff(BYTE a, BYTE b) {return byteimage::diff(a, b);}
     inline static BYTE interp(BYTE a, BYTE b, float t) {return byteimage::interp(a, b, t);}
 
-    BYTE* pixels;
+    Byte* pixels;
     int nr, nc, nchannels;
 
-    inline BYTE* R() {return pixels;}
-    inline BYTE* G() {return pixels + nr * nc;}
-    inline BYTE* B() {return pixels + 2 * nr * nc;}
-    inline const BYTE* R() const {return pixels;}
-    inline const BYTE* G() const {return pixels + nr * nc;}
-    inline const BYTE* B() const {return pixels + 2 * nr * nc;}
+    inline Byte* R() {return pixels;}
+    inline Byte* G() {return pixels + nr * nc;}
+    inline Byte* B() {return pixels + 2 * nr * nc;}
+    inline const Byte* R() const {return pixels;}
+    inline const Byte* G() const {return pixels + nr * nc;}
+    inline const Byte* B() const {return pixels + 2 * nr * nc;}
     static ByteImage combineChannels(const ByteImage& r, const ByteImage& g, const ByteImage& b);
 
   protected:
-    void setLightness(int r, int c, BYTE l); //Assumes RGB, 3 channel encoding
+    void setLightness(int r, int c, Byte l); //Assumes RGB, 3 channel encoding
   
   public:
     ByteImage();
 #ifndef _BYTEIMAGE_NO_MAGICK
     ByteImage(std::string fn);
 #endif
-    ByteImage(int nr, int nc, int nchannels = 1, BYTE val = 0);
-    ByteImage(const BYTE* pixels, int nr, int nc, int nchannels = 1);
+    ByteImage(int nr, int nc, int nchannels = 1, Byte val = 0);
+    ByteImage(const Byte* pixels, int nr, int nc, int nchannels = 1);
 #ifndef _BYTEIMAGE_NO_MAGICK
     ByteImage(Magick::Image& img);
 #endif
@@ -55,13 +55,13 @@ namespace byteimage {
 
     inline int inBounds(int r, int c) const {return (r >= 0 && r < nr && c >= 0 && c <= nc);}
     inline int size() const {return nr * nc * nchannels;}
-    inline BYTE& operator[](int i) {return pixels[i];}
-    inline BYTE operator[](int i) const {return pixels[i];}
-    inline BYTE& at(int r, int c, int ch = 0) {return pixels[nr * nc * ch + r * nc + c];}
-    inline BYTE at(int r, int c, int ch = 0) const {return pixels[nr * nc * ch + r * nc + c];};
-    BYTE atBounded(int r, int c, int ch = 0) const;
+    inline Byte& operator[](int i) {return pixels[i];}
+    inline Byte operator[](int i) const {return pixels[i];}
+    inline Byte& at(int r, int c, int ch = 0) {return pixels[nr * nc * ch + r * nc + c];}
+    inline Byte at(int r, int c, int ch = 0) const {return pixels[nr * nc * ch + r * nc + c];};
+    Byte atBounded(int r, int c, int ch = 0) const;
 
-    void fill(BYTE b);
+    void fill(Byte b);
 
     void resize(int nr, int nc);
     ByteImage resized(int nr, int nc) const;
@@ -79,7 +79,7 @@ namespace byteimage {
     ByteImage u2() const;
     ByteImage d2() const;
 
-    BYTE bilin(double r, double c, int ch = 0) const;
+    Byte bilin(double r, double c, int ch = 0) const;
     ByteImage sampled(double factor) const;
     ByteImage scaled(int nr, int nc) const;
     ByteImage aspectScaled(int nr, int nc) const;//Guarantees returned image has bounds less than or equal to given dimensions

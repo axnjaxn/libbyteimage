@@ -154,7 +154,7 @@ BitImage BitImage::XOR(const BitImage& img1, const BitImage& img2) {
   return img;
 }
 
-BitImage BitImage::threshold(const ByteImage& img, ByteImage::BYTE t) {
+BitImage BitImage::threshold(const ByteImage& img, Byte t) {
   if (img.nchannels != 1) return threshold(img.toGrayscale(), t);
   BitImage out(img.nr, img.nc);
   for (int r = 0; r < img.nr; r++)

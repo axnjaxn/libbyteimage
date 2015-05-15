@@ -100,7 +100,7 @@ int Display::show(const ByteImage& img) {
 }
 
 void byteimage::writePixelArray(Uint32* dest, const ByteImage& img) {
-  const ByteImage::BYTE *r, *g, *b;
+  const Byte *r, *g, *b;
 
   if (img.nchannels == 3) {
     r = img.R();

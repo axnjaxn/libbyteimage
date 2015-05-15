@@ -96,18 +96,18 @@ class SparseArray {
 public:
   class Count {
   public:
-    ByteImage::BYTE x, y, z;
+    Byte x, y, z;
     unsigned count;
 
-    Count(ByteImage::BYTE x, ByteImage::BYTE y, ByteImage::BYTE z) {
+    Count(Byte x, Byte y, Byte z) {
       this->x = x; this->y = y; this->z = z;
       count = 1;
     }
   };
   std::vector<Count> v[256];
   
-  void inc(ByteImage::BYTE x, ByteImage::BYTE y, ByteImage::BYTE z) {
-    ByteImage::BYTE addr = x & y & z;
+  void inc(Byte x, Byte y, Byte z) {
+    Byte addr = x & y & z;
     int ind;
     for (ind = 0; ind < v[addr].size(); ind++)
       if (v[addr][ind].x == x && v[addr][ind].y == y && v[addr][ind].z == z) break;
@@ -122,7 +122,7 @@ double Entropy::operator()(const ByteImage& img0, const ByteImage& img1, const B
   if (img0.nchannels > 1 || img1.nchannels > 1 || img2.nchannels > 1) return (*this)(img0.toGrayscale(), img1.toGrayscale(), img2.toGrayscale(), w);
 
   SparseArray array;
-  ByteImage::BYTE x, y, z;
+  Byte x, y, z;
   for (int r = w.r; r < w.r + w.nr; r++)
     for (int c = w.c; c < w.c + w.nc; c++) {
       x = img0.at(r, c) >> nshifts;
@@ -248,7 +248,7 @@ ByteImage QualityMeasure::visualizeQuality(const ByteImage& a, const ByteImage& 
   /* Compute final quality measure map */
   ByteImage result(f.nr, f.nc);
   double Q, lambda;
-  ByteImage::BYTE v;
+  Byte v;
   for (int i = 0; i < windows.size(); i++) {
     lambda = Sa[i] / (Sa[i] + Sb[i]);
     if (Sa[i] == 0.0 && Sb[i] == 0.0) lambda = 0.5;

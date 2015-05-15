@@ -24,19 +24,19 @@ ByteImage::ByteImage(std::string fn) {
 }
 #endif
 
-ByteImage::ByteImage(int nr, int nc, int nchannels, BYTE val) : nr(nr), nc(nc), nchannels(nchannels) {
-  pixels = new BYTE [size()];
+ByteImage::ByteImage(int nr, int nc, int nchannels, Byte val) : nr(nr), nc(nc), nchannels(nchannels) {
+  pixels = new Byte [size()];
   memset(pixels, val, size());
 }
 
-ByteImage::ByteImage(const BYTE* pixels, int nr, int nc, int nchannels) : nr(nr), nc(nc), nchannels(nchannels) {
-  this->pixels = new BYTE [size()];
+ByteImage::ByteImage(const Byte* pixels, int nr, int nc, int nchannels) : nr(nr), nc(nc), nchannels(nchannels) {
+  this->pixels = new Byte [size()];
   memcpy(this->pixels, pixels, size());
 }
 
 #ifndef _BYTEIMAGE_NO_MAGICK
 ByteImage::ByteImage(Magick::Image& img) : nr(img.rows()), nc(img.columns()), nchannels(3) {
-  pixels = new BYTE [size()];
+  pixels = new Byte [size()];
 
   Magick::Pixels cache(img);
   Magick::PixelPacket* packet = cache.get(0, 0, nc, nr);
@@ -47,9 +47,9 @@ ByteImage::ByteImage(Magick::Image& img) : nr(img.rows()), nc(img.columns()), nc
   
   for (int r = 0; r < nr; r++)
     for (int c = 0; c < nc; c++) {
-      at(r, c, 0) = (BYTE)(packet[r * nc + c].red >> nshifts);
-      at(r, c, 1) = (BYTE)(packet[r * nc + c].green >> nshifts);
-      at(r, c, 2) = (BYTE)(packet[r * nc + c].blue >> nshifts);
+      at(r, c, 0) = (Byte)(packet[r * nc + c].red >> nshifts);
+      at(r, c, 1) = (Byte)(packet[r * nc + c].green >> nshifts);
+      at(r, c, 2) = (Byte)(packet[r * nc + c].blue >> nshifts);
     }	
 
   cache.sync();
@@ -57,7 +57,7 @@ ByteImage::ByteImage(Magick::Image& img) : nr(img.rows()), nc(img.columns()), nc
 #endif
 
 ByteImage::ByteImage(FILE* fp, int nr, int nc, int nchannels) : nr(nr), nc(nc), nchannels(nchannels) {
-  pixels = new BYTE [nr * nc * nchannels];
+  pixels = new Byte [nr * nc * nchannels];
   fread(pixels, 1, nr * nc * nchannels, fp);
 }
 
@@ -72,7 +72,7 @@ ByteImage::~ByteImage() {
 ByteImage& ByteImage::operator=(const ByteImage& img) {
   if (size() != img.size()) {
     delete [] pixels;
-    pixels = new BYTE [img.size()];
+    pixels = new Byte [img.size()];
   }
 
   nr = img.nr;
@@ -93,7 +93,7 @@ ByteImage& ByteImage::operator=(ByteImage&& img) {
   return *this;
 }
 
-ByteImage::BYTE ByteImage::atBounded(int r, int c, int ch) const {
+Byte ByteImage::atBounded(int r, int c, int ch) const {
   if (r < 0) r = 0;
   else if (r >= nr) r = nr - 1;
   
@@ -103,7 +103,7 @@ ByteImage::BYTE ByteImage::atBounded(int r, int c, int ch) const {
   return at(r, c, ch);
 }
 
-void ByteImage::fill(ByteImage::BYTE b) {
+void ByteImage::fill(Byte b) {
   memset(pixels, b, nr * nc * nchannels);
 }
 
@@ -111,7 +111,7 @@ void ByteImage::resize(int nr, int nc) {
   int mr = (nr < this->nr)? nr : this->nr;
   int mc = (nc < this->nc)? nc : this->nc;
 
-  BYTE* pixels = new BYTE [nr * nc * nchannels];
+  Byte* pixels = new Byte [nr * nc * nchannels];
 
   memset(pixels, 0, nr * nc * nchannels);
   for (int ch = 0; ch < nchannels; ch++)
@@ -142,7 +142,7 @@ ByteImage ByteImage::avg(const ByteImage& img1, const ByteImage& img2) {
   for (int ch = 0; ch < result.nchannels; ch++)
     for (int r = 0; r < result.nr; r++)
       for (int c = 0; c < result.nc; c++)
-	result.at(r, c, ch) = avg(img1.at(r, c, ch), img2.at(r, c, ch));
+	result.at(r, c, ch) = byteimage::avg(img1.at(r, c, ch), img2.at(r, c, ch));
 
   return result;
 }
@@ -157,7 +157,7 @@ ByteImage ByteImage::diff(const ByteImage& img1, const ByteImage& img2) {
   for (int ch = 0; ch < result.nchannels; ch++)
     for (int r = 0; r < result.nr; r++)
       for (int c = 0; c < result.nc; c++)
-	result.at(r, c, ch) = diff(img1.at(r, c, ch), img2.at(r, c, ch));
+	result.at(r, c, ch) = byteimage::diff(img1.at(r, c, ch), img2.at(r, c, ch));
 
   return result;
 }
@@ -172,7 +172,7 @@ ByteImage ByteImage::interp(const ByteImage& img1, const ByteImage& img2, float 
   for (int ch = 0; ch < result.nchannels; ch++)
     for (int r = 0; r < result.nr; r++)
       for (int c = 0; c < result.nc; c++)
-	result.at(r, c, ch) = interp(img1.at(r, c, ch), img2.at(r, c, ch), t);
+	result.at(r, c, ch) = byteimage::interp(img1.at(r, c, ch), img2.at(r, c, ch), t);
 
   return result;
 }
@@ -190,7 +190,7 @@ ByteImage ByteImage::toLightness() const {
 	if (at(r, c, ch) > max) max = at(r, c, ch);
 	if (at(r, c, ch) < min) min = at(r, c, ch);
       }
-      img.at(r, c) = (BYTE)((min + max) >> 1);
+      img.at(r, c) = (Byte)((min + max) >> 1);
     }
 
   return img;
@@ -199,11 +199,11 @@ ByteImage ByteImage::toLightness() const {
 ByteImage ByteImage::toGrayscale() const {
   if (nchannels == 1) return *this;
 
-  const BYTE *r = R(), *g = G(), *b = B();
+  const Byte *r = R(), *g = G(), *b = B();
   ByteImage img(nr, nc);
 
   for (int i = 0; i < nr * nc; i++)
-    img.pixels[i] = (BYTE)((r[i] + g[i] + b[i]) / 3);
+    img.pixels[i] = (Byte)((r[i] + g[i] + b[i]) / 3);
 
   return img;
 }
@@ -261,13 +261,13 @@ ByteImage ByteImage::d2() const {
 	  + at(r << 1 | 1, c << 1, ch)
 	  + at(r << 1 | 1, c << 1 | 1, ch)
 	  + at(r << 1, c << 1 | 1, ch);
-	img.at(r, c, ch) = (BYTE)(val >> 2);
+	img.at(r, c, ch) = (Byte)(val >> 2);
       }	
 
   return img;
 }
 
-ByteImage::BYTE ByteImage::bilin(double r, double c, int ch) const {
+Byte ByteImage::bilin(double r, double c, int ch) const {
   const double eps = 0.0001;
 
 #ifdef BYTEIMAGE_SMEAR_EDGES
@@ -292,7 +292,7 @@ ByteImage::BYTE ByteImage::bilin(double r, double c, int ch) const {
   sum += at(R + 1, C + 1, ch) * r * c;
   if (sum > 255) sum = 255;
 
-  return (ByteImage::BYTE)(sum + 0.5);
+  return (Byte)(sum + 0.5);
 }
 
 ByteImage ByteImage::sampled(double factor) const {
@@ -340,7 +340,7 @@ ByteImage ByteImage::scaled(int nr, int nc) const {
       }
       
       for (int ch = 0; ch < scaled.nchannels; ch++)
-	scaled.at(r, c, ch) = ByteImage::clip(colors[ch] / (xfact * yfact));
+	scaled.at(r, c, ch) = clip(colors[ch] / (xfact * yfact));
     }
   }
   delete [] colors;
@@ -390,7 +390,7 @@ void ByteImage::load_filename(std::string fn) {
   nr = img.rows();
   nc = img.columns();
   nchannels = 3;
-  pixels = new BYTE [size()];
+  pixels = new Byte [size()];
 
   Magick::Pixels cache(img);
   Magick::PixelPacket* packet = cache.get(0, 0, nc, nr);
@@ -401,9 +401,9 @@ void ByteImage::load_filename(std::string fn) {
   
   for (int r = 0; r < nr; r++)
     for (int c = 0; c < nc; c++) {
-      at(r, c, 0) = (BYTE)(packet[r * nc + c].red >> nshifts);
-      at(r, c, 1) = (BYTE)(packet[r * nc + c].green >> nshifts);
-      at(r, c, 2) = (BYTE)(packet[r * nc + c].blue >> nshifts);
+      at(r, c, 0) = (Byte)(packet[r * nc + c].red >> nshifts);
+      at(r, c, 1) = (Byte)(packet[r * nc + c].green >> nshifts);
+      at(r, c, 2) = (Byte)(packet[r * nc + c].blue >> nshifts);
     }	
 
   cache.sync();
@@ -506,9 +506,9 @@ void ByteImage::blend(const ByteImage& color, const ByteImage& alpha, int destr,
   for (int ch = 0; ch < nchannels; ch++)
     for (int r = 0; r < h; r++)
       for (int c = 0; c < w; c++)
-	at(r + y, c + x, ch) = interp(at(r + y, c + x, ch), 
-				      color.at(r + y - destr, c + x - destc, ch), 
-				      alpha.at(r + y - destr, c + x - destc) / 255.0);
+	at(r + y, c + x, ch) = byteimage::interp(at(r + y, c + x, ch), 
+						 color.at(r + y - destr, c + x - destc, ch), 
+						 alpha.at(r + y - destr, c + x - destc) / 255.0);
 }
 
 ByteImage ByteImage::combineChannels(const ByteImage& r, const ByteImage& g, const ByteImage& b) {
@@ -519,8 +519,8 @@ ByteImage ByteImage::combineChannels(const ByteImage& r, const ByteImage& g, con
   return result;
 }
 
-void ByteImage::setLightness(int r, int c, BYTE l) {
-  ByteImage::BYTE R, G, B;
+void ByteImage::setLightness(int r, int c, Byte l) {
+  Byte R, G, B;
   float h, s, l0;
   
   R = at(r, c, 0);
@@ -540,19 +540,19 @@ ByteImage ByteImage::getLightness() const {
 
   ByteImage result(nr, nc);
   
-  const ByteImage::BYTE *R = this->R(), *G = this->G(), *B = this->B();
+  const Byte *R = this->R(), *G = this->G(), *B = this->B();
   for (int i = 0; i < nr * nc; i++) {
     //Get max and min of the rgb values
-    ByteImage::BYTE max = R[i];
+    Byte max = R[i];
     if (G[i] > max) max = G[i]; 
     if (B[i] > max) max = B[i];
     
-    ByteImage::BYTE min = R[i];
+    Byte min = R[i];
     if (G[i] < min) min = G[i]; 
     if (B[i] < min) min = B[i];
     
     //Find lightness
-    result[i] = ByteImage::avg(max, min);
+    result[i] = byteimage::avg(max, min);
   }
 
   return result;

@@ -61,7 +61,7 @@ ByteImage Kernel::convolve(const ByteImage& I, double factor) const{
   for (int ch = 0; ch < O.nchannels; ch++)
     for (int r = 0; r < O.nr; r++)
       for (int c = 0; c < O.nc; c++) {
-	O.at(r, c, ch) = ByteImage::clip(convolveAt(I, r, c, ch) * factor);
+	O.at(r, c, ch) = clip(convolveAt(I, r, c, ch) * factor);
       }
 
   return O;

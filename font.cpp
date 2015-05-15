@@ -36,7 +36,7 @@ TextRenderer::~TextRenderer() {
   FT_Done_Face(face);
 }
 
-void TextRenderer::drawGlyph(int pen_y, int pen_x, ByteImage& target, int r, int c, ByteImage::BYTE rgb[3]) const {
+void TextRenderer::drawGlyph(int pen_y, int pen_x, ByteImage& target, int r, int c, Byte rgb[3]) const {
   FT_GlyphSlot slot = face->glyph;
   unsigned char* px = (unsigned char*)slot->bitmap.buffer;
   float v;
@@ -48,22 +48,22 @@ void TextRenderer::drawGlyph(int pen_y, int pen_x, ByteImage& target, int r, int
 	if (!target.inBounds(y, x)) continue;
 	
 	v = px[r1 * slot->bitmap.pitch + c1] / 255.0;
-	target.at(y, x, ch) = ByteImage::clip(rgb[ch] * v + target.at(y, x, ch) * (1 - v));
+	target.at(y, x, ch) = clip(rgb[ch] * v + target.at(y, x, ch) * (1 - v));
       }
 }
 
-void TextRenderer::drawUnkerned(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE v) const {
+void TextRenderer::drawUnkerned(ByteImage& target, const char* str, int r, int c, Byte v) const {
   drawUnkerned(target, str, r, c, v, v, v);
 }
 
 void TextRenderer::drawUnkerned(ByteImage& target, const char* str, int r, int c, 
-			ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B) const {
+			Byte R, Byte G, Byte B) const {
   if (!library || !face) return;
 
   FT_GlyphSlot slot = face->glyph;
   int pen_x = c, pen_y = r;
   
-  ByteImage::BYTE rgb[3];
+  Byte rgb[3];
   rgb[0] = R; rgb[1] = G; rgb[2] = B;
 
   for (; *str; str++) {
@@ -76,11 +76,11 @@ void TextRenderer::drawUnkerned(ByteImage& target, const char* str, int r, int c
   }
 }
 
-void TextRenderer::draw(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE v) const {
+void TextRenderer::draw(ByteImage& target, const char* str, int r, int c, Byte v) const {
   draw(target, str, r, c, v, v, v);
 }
 
-void TextRenderer::draw(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B) const {
+void TextRenderer::draw(ByteImage& target, const char* str, int r, int c, Byte R, Byte G, Byte B) const {
   if (!library || !face) return;
 
   if (!FT_HAS_KERNING(face)) {
@@ -91,7 +91,7 @@ void TextRenderer::draw(ByteImage& target, const char* str, int r, int c, ByteIm
   FT_GlyphSlot slot = face->glyph;
   int pen_x = c, pen_y = r;
   
-  ByteImage::BYTE rgb[3];
+  Byte rgb[3];
   rgb[0] = R; rgb[1] = G; rgb[2] = B;
 
   FT_UInt glyph_index, previous = 0;
@@ -114,12 +114,12 @@ void TextRenderer::draw(ByteImage& target, const char* str, int r, int c, ByteIm
   }
 }
 
-void TextRenderer::drawCentered(ByteImage& target, const char* str, int r, int c, ByteImage::BYTE v) const {
+void TextRenderer::drawCentered(ByteImage& target, const char* str, int r, int c, Byte v) const {
   drawCentered(target, str, r, c, v, v, v);
 }
 
 void TextRenderer::drawCentered(ByteImage& target, const char* str, int r, int c, 
-				ByteImage::BYTE R, ByteImage::BYTE G, ByteImage::BYTE B) const {
+				Byte R, Byte G, Byte B) const {
   int x, y, w, h;
   getBox(str, x, y, w, h);
   

@@ -8,7 +8,7 @@ HSLImage::HSLImage() : nr(0), nc(0), hsl(nullptr) { }
 HSLImage::HSLImage(int nr, int nc) : nr(nr), nc(nc) {hsl = new float [3 * nr * nc];}
 
 HSLImage::HSLImage(const ByteImage& img) : HSLImage(img.nr, img.nc) {
-  const ByteImage::BYTE *R = img.R(), *G = img.G(), *B = img.B();
+  const Byte *R = img.R(), *G = img.G(), *B = img.B();
   for (int i = 0, j = 0; i < nr * nc; i++, j += 3)
     rgb2hsl(R[i], G[i], B[i], hsl[j], hsl[j + 1], hsl[j + 2]);
 }
@@ -42,7 +42,7 @@ HSLImage& HSLImage::operator=(HSLImage&& img) {
 
 ByteImage HSLImage::toHue() {
   ByteImage img(nr, nc, 3);
-  ByteImage::BYTE *R = img.R(), *G = img.G(), *B = img.B();
+  Byte *R = img.R(), *G = img.G(), *B = img.B();
   for (int i = 0, j = 0; i < nr * nc; i++, j += 3)
     hsl2rgb(hsl[j], 1.0, 0.5, R[i], G[i], B[i]);
   return img;
@@ -51,20 +51,20 @@ ByteImage HSLImage::toHue() {
 ByteImage HSLImage::toSaturation() const {
   ByteImage img(nr, nc);
   for (int i = 0, j = 1; i < nr * nc; i++, j += 3)
-    img[i] = (ByteImage::BYTE)(255.0 * hsl[j]);
+    img[i] = (Byte)(255.0 * hsl[j]);
   return img;
 }
 
 ByteImage HSLImage::toLightness() const {
   ByteImage img(nr, nc);
   for (int i = 0, j = 2; i < nr * nc; i++, j += 3)
-    img[i] = (ByteImage::BYTE)(255.0 * hsl[j]);
+    img[i] = (Byte)(255.0 * hsl[j]);
   return img;
 }
 
 ByteImage HSLImage::toByteImage() const {
   ByteImage img(nr, nc, 3);
-  ByteImage::BYTE *R = img.R(), *G = img.G(), *B = img.B();
+  Byte *R = img.R(), *G = img.G(), *B = img.B();
   for (int i = 0, j = 0; i < nr * nc; i++, j += 3)
     hsl2rgb(hsl[j], hsl[j + 1], hsl[j + 2], R[i], G[i], B[i]);
   return img;
