@@ -1,6 +1,7 @@
 #ifndef _BPJ_MATRIX_H
 #define _BPJ_MATRIX_H
 
+#include "types.h"
 #include <initializer_list>
 
 namespace byteimage {
@@ -16,6 +17,10 @@ namespace byteimage {
     Matrix(int n);
     Matrix(int nr, int nc);
     Matrix(const double* ary, int nr, int nc);
+    Matrix(const Pt& pt);
+    Matrix(const Pt2f& pt);
+    Matrix(const Pt3f& pt);
+    Matrix(const Color& color);
     Matrix(std::initializer_list<double> v);//Creates a column vector
     Matrix(const Matrix& mat);
     Matrix(Matrix&& mat);
@@ -47,6 +52,11 @@ namespace byteimage {
     inline double* getArray() {return data;}
     inline const double* getArray() const {return data;}
 
+    inline Pt toPt() const {return Pt((int)(at(1, 0) + 0.5), (int)(at(0, 0) + 0.5));}
+    inline Pt2f toPt2f() const {return Pt2f(at(0, 0), at(1, 0));}
+    inline Pt3f toPt3f() const {return Pt3f(at(0, 0), at(1, 0), at(2, 0));}
+    inline Color toColor() const {return Color(clip(at(0, 0)), clip(at(1, 0)), clip(at(2, 0)));}
+    
     Matrix slice(int r0, int r1, int c0, int c1) const;
     inline Matrix sliceRows(int r0, int r1) const {return slice(r0, r1, 0, nc - 1);}
     inline Matrix sliceRow(int r) const {return slice(r, r, 0, nc - 1);}
@@ -67,7 +77,7 @@ namespace byteimage {
     inline friend double getY(const Matrix& v) {return v.data[1] / v.data[2];}
   };
 
-  Matrix makePoint(double x, double y, double w = 1.0);//Deprecated: use initializer lists
+  Matrix makePoint(double x, double y, double w = 1.0);//Deprecated: use initializer lists or Pt3f
   Matrix normalize(const Matrix& v);//Assumes homogeneous 3-vector
   double sqLength(const Matrix& v);//Assumes inhomogeneous n-vector
   double length(const Matrix& v);//Assumes inhomogeneous n-vector

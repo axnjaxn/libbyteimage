@@ -75,7 +75,7 @@ component.o: bitimage.h component.h component.cpp
 hslimage.o: byteimage.h hslimage.h hslimage.cpp
 	$(CXX) -c hslimage.cpp $(CFLAGS)
 
-matrix.o: matrix.h matrix.cpp
+matrix.o: types.h matrix.h matrix.cpp
 	$(CXX) -c matrix.cpp $(CFLAGS) 
 
 spline.o: matrix.h spline.h spline.cpp

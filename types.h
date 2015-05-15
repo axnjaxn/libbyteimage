@@ -15,10 +15,9 @@ namespace byteimage {
   public:
     Byte r, g, b;
     constexpr Color() : r(0), g(0), b(0) { }
+    constexpr Color(Byte v) : r(v), g(v), b(v) { }
     constexpr Color(Byte r, Byte g, Byte b) : r(r), g(g), b(b) { }
   };
-  void rgb2hsl(Byte r, Byte g, Byte b, float &h, float &s, float &l);
-  void hsl2rgb(float h, float s, float l, Byte &r, Byte &g, Byte &b);
 
   class Pt {
   public:

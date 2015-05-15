@@ -22,6 +22,14 @@ Matrix::Matrix(const double* ary, int nr, int nc) : nr(nr), nc(nc) {
   memcpy(data, ary, nr * nc * sizeof(double));
 }
 
+Matrix::Matrix(const Pt& pt) : Matrix(2, 1) {data[0] = pt.c; data[1] = pt.r;}
+
+Matrix::Matrix(const Pt2f& pt) : Matrix(2, 1) {data[0] = pt.x; data[1] = pt.y;}
+
+Matrix::Matrix(const Pt3f& pt) : Matrix(3, 1) {data[0] = pt.x; data[1] = pt.y; data[2] = pt.z;}
+
+Matrix::Matrix(const Color& color) : Matrix(3, 1) {data[0] = color.r; data[1] = color.g; data[2] = color.b;}
+
 Matrix::Matrix(std::initializer_list<double> v) : nr(v.size()), nc(1) {
   data = new double [nr];
 
