@@ -101,9 +101,8 @@ namespace byteimage {
     ByteImage setLightness(const ByteImage& I) const;
   };
 
-  //TODO: Deprecated
-  void rgb2hsl(ByteImage::BYTE r, ByteImage::BYTE g, ByteImage::BYTE b, float &h, float &s, float &l);
-  void hsl2rgb(float h, float s, float l, ByteImage::BYTE &r, ByteImage::BYTE &g, ByteImage::BYTE &b);
+  void rgb2hsl(Byte r, Byte g, Byte b, float &h, float &s, float &l);
+  void hsl2rgb(float h, float s, float l, Byte &r, Byte &g, Byte &b);
 }
 		  
 

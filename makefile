@@ -1,4 +1,4 @@
-BIN = types.o byteimage.o bitimage.o component.o hslimage.o matrix.o spline.o ransac.o quality.o kernel.o template.o render.o palette.o
+BIN = byteimage.o bitimage.o component.o hslimage.o matrix.o spline.o ransac.o quality.o kernel.o template.o render.o palette.o
 INC = types.h byteimage.h bitimage.h component.h hslimage.h matrix.h spline.h ransac.h quality.h kernel.h template.h render.h palette.h
 TESTS = tests/imgtest tests/cholestest tests/svdtest tests/nulltest
 
@@ -56,9 +56,6 @@ byteimage-config:
 
 libbyteimage.a: $(BIN)
 	ar rcs libbyteimage.a $(BIN)
-
-types.o: types.h types.cpp
-	$(CXX) -c types.cpp $(CFLAGS)
 
 byteimage.o: types.h byteimage.h byteimage.cpp
 	$(CXX) -c byteimage.cpp $(CFLAGS)
