@@ -30,7 +30,7 @@ namespace byteimage {
     static CachedPalette fromBytes(std::initializer_list<int> v);
     static CachedPalette fromHex(std::initializer_list<int> v);
     static CachedPalette fromFloats(std::initializer_list<float> v);
-    static CachedPalette fromColors(std::initializer_list<Palette::Color> v);
+    static CachedPalette fromColors(std::initializer_list<Color> v);
 
     CachedPalette& operator=(const CachedPalette& pal);
     CachedPalette& operator=(CachedPalette&& pal);

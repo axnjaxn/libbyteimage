@@ -29,10 +29,10 @@ void Component::getBounds(int& x, int& y, int& w, int &h) const {
 }
 
 template <bool eight_connected>
-Component Component::getComponentAt(BitImage& marking, const Component::Pt& initial_point) {
+Component Component::getComponentAt(BitImage& marking, const Pt& initial_point) {
   Component component;
-  Component::Pt pt;
-  std::queue<Component::Pt> q;
+  Pt pt;
+  std::queue<Pt> q;
   q.push(initial_point);
 
   while (!q.empty()) {
@@ -45,27 +45,27 @@ Component Component::getComponentAt(BitImage& marking, const Component::Pt& init
     component.add(pt);
     if (eight_connected) {
       if (pt.r > 0) {
-	if (pt.c > 0) q.push(Component::Pt(pt.r - 1, pt.c - 1));
-	q.push(Component::Pt(pt.r - 1, pt.c));
-	if (pt.c < marking.nc - 1) q.push(Component::Pt(pt.r - 1, pt.c + 1));
+	if (pt.c > 0) q.push(Pt(pt.r - 1, pt.c - 1));
+	q.push(Pt(pt.r - 1, pt.c));
+	if (pt.c < marking.nc - 1) q.push(Pt(pt.r - 1, pt.c + 1));
       }
-      if (pt.c > 0) q.push(Component::Pt(pt.r, pt.c - 1));
-      if (pt.c < marking.nc - 1) q.push(Component::Pt(pt.r, pt.c + 1));
+      if (pt.c > 0) q.push(Pt(pt.r, pt.c - 1));
+      if (pt.c < marking.nc - 1) q.push(Pt(pt.r, pt.c + 1));
       if (pt.r < marking.nr - 1) {
-	if (pt.c > 0) q.push(Component::Pt(pt.r + 1, pt.c - 1));
-	q.push(Component::Pt(pt.r + 1, pt.c));
-	if (pt.c < marking.nc - 1) q.push(Component::Pt(pt.r + 1, pt.c + 1));
+	if (pt.c > 0) q.push(Pt(pt.r + 1, pt.c - 1));
+	q.push(Pt(pt.r + 1, pt.c));
+	if (pt.c < marking.nc - 1) q.push(Pt(pt.r + 1, pt.c + 1));
       }
     }
     else {
       if (pt.r > 0)
-	q.push(Component::Pt(pt.r - 1, pt.c));
+	q.push(Pt(pt.r - 1, pt.c));
       if (pt.r < marking.nr - 1)
-	q.push(Component::Pt(pt.r + 1, pt.c));
+	q.push(Pt(pt.r + 1, pt.c));
       if (pt.c > 0)
-	q.push(Component::Pt(pt.r, pt.c - 1));
+	q.push(Pt(pt.r, pt.c - 1));
       if (pt.c < marking.nc - 1)
-	q.push(Component::Pt(pt.r, pt.c + 1));
+	q.push(Pt(pt.r, pt.c + 1));
     }
   }
 
@@ -136,5 +136,5 @@ void Component::fillHull() {
   for (int r = 0; r < img.nr; r++)
     for (int c = 0; c < img.nc; c++)
       if (img.at(r, c))
-	points.push_back(Component::Pt(r + y, c + x));  
+	points.push_back(Pt(r + y, c + x));  
 }

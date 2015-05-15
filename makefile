@@ -69,7 +69,7 @@ video.o: byteimage.h video.h video.cpp
 bitimage.o: byteimage.h bitimage.h bitimage.cpp
 	$(CXX) -c bitimage.cpp $(CFLAGS)
 
-component.o: bitimage.h component.h component.cpp
+component.o: types.h bitimage.h component.h component.cpp
 	$(CXX) -c component.cpp $(CFLAGS)
 
 hslimage.o: byteimage.h hslimage.h hslimage.cpp
@@ -93,7 +93,7 @@ kernel.o: byteimage.h kernel.h kernel.cpp
 template.o: types.h byteimage.h template.h template.cpp
 	$(CXX) -c template.cpp $(CFLAGS) 
 
-render.o: byteimage.h matrix.h render.h render.cpp
+render.o: types.h byteimage.h matrix.h render.h render.cpp
 	$(CXX) -c render.cpp $(CFLAGS) 
 
 font.o: byteimage.h font.h font.cpp
@@ -102,7 +102,7 @@ font.o: byteimage.h font.h font.cpp
 plotter.o: byteimage.h matrix.h font.h render.h plotter.h plotter.cpp
 	$(CXX) -c plotter.cpp $(CFLAGS)
 
-palette.o: byteimage.h palette.h palette.cpp
+palette.o: types.h byteimage.h palette.h palette.cpp
 	$(CXX) -c palette.cpp $(CFLAGS)
 
 clean: clean-tests

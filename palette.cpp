@@ -49,7 +49,7 @@ CachedPalette CachedPalette::fromFloats(std::initializer_list<float>v) {
   return pal;
 }
 
-CachedPalette CachedPalette::fromColors(std::initializer_list<Palette::Color>v) {
+CachedPalette CachedPalette::fromColors(std::initializer_list<Color>v) {
   CachedPalette pal(v.size());
   auto it = v.begin();
   for (int i = 0; i < pal.levels(); i++)
@@ -74,7 +74,7 @@ CachedPalette& CachedPalette::operator=(CachedPalette&& pal) {
   return *this;
 }
 
-Palette::Color CachedPalette::inUnit(float v) const {
+Color CachedPalette::inUnit(float v) const {
   int ind = (int)(v * nlevels);
   if (ind < 0) ind = 0;
   else if (ind >= nlevels) ind = nlevels - 1;
@@ -94,7 +94,7 @@ CachedPalette PaletteGenerator::cache(int levels) const {
 
 LinearPalette::LinearPalette() { }
 
-LinearPalette::LinearPalette(const Palette::Color& c0, const Palette::Color& c1) {
+LinearPalette::LinearPalette(const Color& c0, const Color& c1) {
   source = CachedPalette(2);
   source[0] = c0;
   source[1] = c1;
@@ -108,7 +108,7 @@ LinearPalette::LinearPalette(int ncolors) {
   source = CachedPalette(ncolors);
 }
 
-Palette::Color LinearPalette::inUnit(float v) const {
+Color LinearPalette::inUnit(float v) const {
   const float max = 1.0 - FLT_EPSILON;
 
   if (v < 0.0) v = 0.0;
