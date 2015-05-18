@@ -10,25 +10,25 @@ int main(int argc, char* argv[]) {
 
   ByteImage canvas(384, 512, 3);
 
-  double step = 0.001;
+  float step = 0.001;
 
-  Matrix a = makePoint(64, 383), b = makePoint(128, 128), c = makePoint(384, 128), d = makePoint(448, 383);
-  Matrix e, f, g, h, i, j;
-  double t = 0.0;
+  Pt2f a = Pt2f(64, 383), b = Pt2f(128, 128), c = Pt2f(384, 128), d = Pt2f(448, 383);
+  Pt2f e, f, g, h, i, j;
+  float t = 0.0;
   
-  std::vector<Matrix> path;
+  std::vector<Pt2f> path;
   path.push_back(a);
   path.push_back(b);
   path.push_back(c);
   path.push_back(d);
-  DrawBezier(canvas, path, makeColor(64, 64 ,64));
+  DrawBezier(canvas, path, Color(64, 64 ,64));
 
   Display disp(canvas);
   disp.frameDelay = 10;
 
   ByteImage img(canvas);
-  Matrix color = makeColor(255, 0, 0);
-  Matrix white = makeColor(255, 255, 255);
+  Color color(255, 0, 0);
+  Color white(255, 255, 255);
   
   while (!disp.show(img)) {
     img = canvas;
@@ -63,13 +63,13 @@ int main(int argc, char* argv[]) {
       step = -step;
       ByteImage::BYTE R, G, B;
       hsl2rgb(rand() % 360, 1.0, 0.5, R, G, B);
-      color = makeColor(R, G, B);
+      color = Color(R, G, B);
     }
     if (t < 0.0 && step < 0) {
       step = -step;
       ByteImage::BYTE R, G, B;
       hsl2rgb(rand() % 360, 1.0, 0.5, R, G, B);
-      color = makeColor(R, G, B);
+      color = Color(R, G, B);
     }
   }  
 }

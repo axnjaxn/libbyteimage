@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
   CachedPalette pal = LinearPalette::jet().cache(16);
   
   ByteImage canvas(512, 512, 3);
-  Palette::Color color;
+  Color color;
   double v;
   for (int i = 0; i < canvas.nc; i++) {
     v = (i - 256.0) / 128.0;

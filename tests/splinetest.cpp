@@ -47,28 +47,26 @@ protected:
     canvas.fill(0);
     for (int i = 0; i < spline.countPoints(); i++)
       DrawPoint(canvas,
-		{spline[i].at(0), spline[i].at(1), 1}, 
-		{192, 192, 192}, 5);
-
+		spline[i].toPt2f(),
+		Color(192, 192, 192), 5);
+    
     for (int i = 1; i < spline.countPoints(); i++)
       DrawLine(canvas,
-	       {spline[i - 1].at(0), spline[i - 1].at(1), 1},
-	       {spline[i].at(0), spline[i].at(1), 1},
-	       {192, 192, 192}, 1);
-    
+	       spline[i - 1].toPt2f(),
+	       spline[i].toPt2f(),
+	       Color(192, 192, 192), 1);
+
     double scale = (spline.domainEnd() - spline.domainStart()) / (nsteps - 1);
     Matrix x0, x1 = spline.at(spline.domainStart());
     for (int i = 0; i < nsteps; i++) {
       x0 = x1;
       x1 = spline.at(spline.domainStart() + i * scale);
-      DrawLine(canvas, {x0.at(0), x0.at(1), 1}, {x1.at(0), x1.at(1), 1}, {255.0, 255.0, 255.0});
+      DrawLine(canvas, x0.toPt2f(), x1.toPt2f(), Color(255, 255, 255));
     }
     
     for (int i = spline.degree() - 1; i < spline.countKnots() - spline.degree() + 1; i++) {
       x0 = spline.at(spline.getKnot(i));
-      DrawPoint(canvas,
-		{x0.at(0), x0.at(1), 1},
-		{255, 255, 255}, 3);
+      DrawPoint(canvas, x0.toPt2f(), Color(255, 255, 255), 3);
     }
 
     updateImage(canvas);
