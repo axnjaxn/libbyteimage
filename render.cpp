@@ -3,13 +3,6 @@
 
 using namespace byteimage;
 
-//TODO: Deprecated
-Matrix byteimage::makeColor(double r, double g, double b) {return makePoint(r, g, b);}
-inline static double getValue(const Matrix& rgb) {return (rgb.at(0) + rgb.at(1) + rgb.at(2)) / 3.0;}
-inline static Byte getR(const Matrix& rgb) {return clip(rgb.at(0));}
-inline static Byte getG(const Matrix& rgb) {return clip(rgb.at(1));}
-inline static Byte getB(const Matrix& rgb) {return clip(rgb.at(2));}
-
 void byteimage::DrawRect(ByteImage& target, int x, int y, int w, int h, Byte v) {
   if (x < 0) {
     w += x;
@@ -71,10 +64,6 @@ void byteimage::DrawRect(ByteImage& target, const Pt2f& ul, const Pt2f& lr, cons
   else DrawRect(target, x, y, w, h, color.r, color.g, color.b);
 }
 
-void byteimage::DrawRect(ByteImage& target, const Matrix& ul, const Matrix& lr, const Matrix& rgb) {
-  DrawRect(target, ul.toPt2f(), lr.toPt2f(), rgb.toColor());
-}
-
 void byteimage::DrawPoint(ByteImage& target, int x, int y, Byte v, int sz) {
   x = x - (sz >> 1);
   y = y - (sz >> 1);
@@ -95,10 +84,6 @@ void byteimage::DrawPoint(ByteImage& target, const Pt2f& v, const Color& color, 
 
   if (target.nchannels == 1) DrawPoint(target, x, y, color.toGray(), sz);
   else DrawPoint(target, x, y, color.r, color.g, color.b, sz);
-}
-
-void byteimage::DrawPoint(ByteImage& target, const Matrix& v, const Matrix& rgb, int sz) {
-  DrawPoint(target, v.toPt2f(), rgb.toColor(), sz);
 }
 
 void byteimage::DrawLine(ByteImage& target, int ax, int ay, int bx, int by, Byte v, int sz) {
@@ -179,10 +164,6 @@ void byteimage::DrawLine(ByteImage& target, const Pt2f& a, const Pt2f& b, const 
   else DrawLine(target, ax, ay, bx, by, color.r, color.g, color.b, sz);
 }
 
-void byteimage::DrawLine(ByteImage& target, const Matrix& a, const Matrix& b, const Matrix& rgb, int sz) {
-  DrawLine(target, a.toPt2f(), b.toPt2f(), rgb.toColor());
-}
-
 void byteimage::DrawCross(ByteImage& target, int x, int y, Byte r, Byte g, Byte b,
 			  int radius, int line_size) {
   DrawLine(target, x, y - radius, x, y + radius, r, g, b, line_size);
@@ -193,11 +174,6 @@ void byteimage::DrawCross(ByteImage& target, const Pt2f& v, const Color& color,
 			  int radius, int line_size) {
   DrawLine(target, Pt2f(v.x, v.y - radius), Pt2f(v.x, v.y + radius), color, line_size);
   DrawLine(target, Pt2f(v.x - radius, v.y), Pt2f(v.x + radius, v.y), color, line_size);
-}
-
-void byteimage::DrawCross(ByteImage& target, const Matrix& v, const Matrix& rgb, 
-			  int radius, int line_size) {
-  DrawCross(target, getX(v), getY(v), getR(rgb), getG(rgb), getB(rgb), radius, line_size);
 }
 
 void byteimage::DrawBezier(ByteImage& target, const std::vector<Pt2f>& pts, const Color& color, int sz, int n) {
@@ -217,23 +193,6 @@ void byteimage::DrawBezier(ByteImage& target, const std::vector<Pt2f>& pts, cons
   }
 }
 
-void byteimage::DrawBezier(ByteImage& target, const std::vector<Matrix>& pts, const Matrix& rgb, int sz, int n) {
-  std::vector<Matrix> interp(pts.size());
-
-  Matrix v0 = pts[0], v1;
-  double t;
-  for (int i = 1; i <= n; i++) {
-    t = (double)i / n;
-    interp.assign(pts.begin(), pts.end());
-    for (int order = pts.size() - 1; order >= 1; order--)
-      for (int j = 0; j < order; j++)
-	interp[j] = (1.0 - t) * interp[j] + t * interp[j + 1];
-    v1 = interp[0];
-    DrawLine(target, v0, v1, rgb, sz);
-    v0 = v1;
-  }
-}
-
 void byteimage::DrawCircle(ByteImage& target, const Pt2f& v, const Color& color, float radius) {
   float r2 = radius * radius;
   int r = (int)(v.y + 0.5), c = (int)(v.x + 0.5);
@@ -242,17 +201,6 @@ void byteimage::DrawCircle(ByteImage& target, const Pt2f& v, const Color& color,
       if (i * i + j * j <= r2) {
 	DrawRect(target, c - j, r - i, 2 * j + 1, 1, color.r, color.g, color.b);
 	DrawRect(target, c - j, r + i, 2 * j + 1, 1, color.r, color.g, color.b);
-      }
-}
-
-void byteimage::DrawCircle(ByteImage& target, const Matrix& v, const Matrix& rgb, double radius) {
-  double r2 = radius * radius;
-  int r = (int)(getY(v) + 0.5), c = (int)(getX(v) + 0.5);
-  for (int i = (int)(radius + 1); i >= 0; i--)
-    for (int j = (int)(radius + 1); j >= 0; j--)
-      if (i * i + j * j <= r2) {
-	DrawRect(target, c - j, r - i, 2 * j + 1, 1, getR(rgb), getG(rgb), getB(rgb));
-	DrawRect(target, c - j, r + i, 2 * j + 1, 1, getR(rgb), getG(rgb), getB(rgb));
       }
 }
 
@@ -307,8 +255,4 @@ void byteimage::DrawTriangle(ByteImage& target, const Pt2f& v0, const Pt2f& v1, 
     lpos += lslope;
     rpos += rslope;
   }
-}
-
-void byteimage::DrawTriangle(ByteImage& target, const Matrix& v0, const Matrix& v1, const Matrix& v2, const Matrix& rgb) {
-  DrawTriangle(target, v0.toPt2f(), v1.toPt2f(), v2.toPt2f(), rgb.toColor());
 }

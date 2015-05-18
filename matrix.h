@@ -77,7 +77,6 @@ namespace byteimage {
     inline friend double getY(const Matrix& v) {return v.data[1] / v.data[2];}
   };
 
-  Matrix makePoint(double x, double y, double w = 1.0);//Deprecated: use initializer lists or Pt3f
   Matrix normalize(const Matrix& v);//Assumes homogeneous 3-vector
   double sqLength(const Matrix& v);//Assumes inhomogeneous n-vector
   double length(const Matrix& v);//Assumes inhomogeneous n-vector

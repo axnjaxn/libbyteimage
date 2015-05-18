@@ -8,7 +8,7 @@ class HullDisplay : public Display {
 protected:
   ByteImage img;
   BitImage bimg;
-  ByteImage::BYTE threshold = 0x80;
+  Byte threshold = 0x80;
   int minsize = 10;
 
   void art(bool inverse = false) {

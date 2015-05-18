@@ -122,6 +122,14 @@ void Plotter::setAxisOffset(int px) {
   axis_offset = px;
 }
 
+static Pt2f transformPoint(const Matrix& T, const Pt2f& pt) {
+  const double* d = T.getArray();
+  double x = d[0] * pt.x + d[1] * pt.y + d[2];
+  double y = d[3] * pt.x + d[4] * pt.y + d[5];
+  double w = d[6] * pt.x + d[7] * pt.y + d[8];
+  return Pt2f(x / w, y / w);
+}
+
 ByteImage Plotter::render(int nr, int nc) const {
   ByteImage img(nr, nc, 3);
   memset(img.pixels, 0xFF, img.size());
@@ -219,11 +227,16 @@ ByteImage Plotter::render(int nr, int nc) const {
   for (int i = 0; i < plots.size(); i++) {
     if (plots[i].line_size)
       for (int j = 1; j < plots[i].points.size(); j++)
-	DrawLine(graph, T * plots[i].points[j - 1], T * plots[i].points[j], plots[i].color, plots[i].line_size);
+	DrawLine(graph,
+		 transformPoint(T, plots[i].points[j - 1]),
+		 transformPoint(T, plots[i].points[j]),
+		 plots[i].color, plots[i].line_size);
 
     if (plots[i].point_size)
       for (int j = 0; j < plots[i].points.size(); j++)
-	DrawPoint(graph, T * plots[i].points[j], plots[i].color, plots[i].point_size);
+	DrawPoint(graph,
+		  transformPoint(T, plots[i].points[j]),
+		  plots[i].color, plots[i].point_size);
   }
   //TODO
 

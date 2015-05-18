@@ -316,13 +316,6 @@ Matrix Matrix::bidiag(Matrix& P, Matrix& Q) const {
   return J;
 }
 
-
-Matrix byteimage::makePoint(double x, double y, double w) {
-  Matrix v(3, 1); 
-  v.at(0) = x; v.at(1) = y; v.at(2) = w;
-  return v;
-}
-
 Matrix byteimage::normalize(const Matrix& v) {
   Matrix u(v);
   u.at(0) /= u.at(2);

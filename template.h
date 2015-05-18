@@ -7,9 +7,6 @@
 namespace byteimage {
   class Template {
   protected:
-    //TODO: Deprecated
-    typedef byteimage::Pt Pt;
-
     const ByteImage* img;
     std::vector<Pt> points;
     Pt center;
@@ -20,7 +17,7 @@ namespace byteimage {
 
     inline int getWidth() const {return width;}
 
-    void setImage(const ByteImage& img);
+    void setImage(const ByteImage& img); //This is for boundary purposes
     const ByteImage& getImage() const {return *img;}
 
     static Template makeBox(int radius); //Rectangular template with width (2 * radius + 1), prioritizing center locations

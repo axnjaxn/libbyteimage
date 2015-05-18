@@ -6,9 +6,6 @@
 namespace byteimage {
   class Palette {
   public:
-    //TODO: Deprecated
-    typedef byteimage::Color Color;
-  
     //These functions *must* ensure range safety.
     inline virtual Color inRange(float v) const {return inUnit(0.5 * (v + 1));}//in [-1, 1]
     virtual Color inUnit(float v) const = 0;//in [0, 1]

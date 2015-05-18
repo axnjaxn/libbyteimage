@@ -14,13 +14,6 @@
 namespace byteimage {
   class ByteImage {
   public:
-    //TODO: Deprecated
-    typedef Byte BYTE;
-    inline static BYTE clip(double d) {return byteimage::clip(d);}
-    inline static BYTE avg(BYTE a, BYTE b) {return byteimage::avg(a, b);}
-    inline static BYTE diff(BYTE a, BYTE b) {return byteimage::diff(a, b);}
-    inline static BYTE interp(BYTE a, BYTE b, float t) {return byteimage::interp(a, b, t);}
-
     Byte* pixels;
     int nr, nc, nchannels;
 

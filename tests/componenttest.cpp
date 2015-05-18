@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
   double t;
   for (int c = 0; c < img.nc; c++) {
     t = (double)c / (img.nc - 1); 
-    img.at(0, c, 2) = ByteImage::clip(255.0 * t);
+    img.at(0, c, 2) = clip(255.0 * t);
   }
   for (int r = 1; r < img.nr; r++) {
     memcpy(img.R() + r * img.nc, img.R(), img.nc);
@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
   ticks = SDL_GetTicks() - ticks;
   printf("Eight-connected: finished after %dms\n", ticks);
 
-  ByteImage::BYTE R, G, B;
+  Byte R, G, B;
   for (int i = 0; i < components.size(); i++) {
     R = (rand() & 0xBF) | 0x40;
     G = (rand() & 0xBF) | 0x40;

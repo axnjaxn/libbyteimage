@@ -11,7 +11,7 @@ int main(int argc, char* argv[]) {
   double t;
   for (int c = 0; c < img.nc; c++) {
     t = (double)c / (img.nc - 1); 
-    img.at(0, c, 2) = ByteImage::clip(255.0 * t);
+    img.at(0, c, 2) = clip(255.0 * t);
   }
   for (int r = 1; r < img.nr; r++) {
     memcpy(img.R() + r * img.nc, img.R(), img.nc);

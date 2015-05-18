@@ -61,13 +61,13 @@ int main(int argc, char* argv[]) {
     t += step;
     if (t > 1.0 && step > 0) {
       step = -step;
-      ByteImage::BYTE R, G, B;
+      Byte R, G, B;
       hsl2rgb(rand() % 360, 1.0, 0.5, R, G, B);
       color = Color(R, G, B);
     }
     if (t < 0.0 && step < 0) {
       step = -step;
-      ByteImage::BYTE R, G, B;
+      Byte R, G, B;
       hsl2rgb(rand() % 360, 1.0, 0.5, R, G, B);
       color = Color(R, G, B);
     }
