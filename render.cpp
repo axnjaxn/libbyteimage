@@ -200,7 +200,7 @@ void byteimage::DrawCross(ByteImage& target, const Matrix& v, const Matrix& rgb,
   DrawCross(target, getX(v), getY(v), getR(rgb), getG(rgb), getB(rgb), radius, line_size);
 }
 
-void DrawBezier(ByteImage& target, const std::vector<Pt2f>& pts, const Color& color, int sz, int n) {
+void byteimage::DrawBezier(ByteImage& target, const std::vector<Pt2f>& pts, const Color& color, int sz, int n) {
   std::vector<Pt2f> interp(pts.size());
 
   Pt2f v0 = pts[0], v1;
