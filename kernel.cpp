@@ -47,24 +47,26 @@ double Kernel::boundedAt(int i, int j) const {
   else return at(i, j);
 }
 
+double Kernel::min() const {
+  double sum = 0.0;
+  for (int i = 0; i < nr * nc; i++)
+    if (values[i] < 0.0) sum += values[i];
+  return sum;
+}
+
+double Kernel::max() const {
+  double sum = 0.0;
+  for (int i = 0; i < nr * nc; i++)
+    if (values[i] > 0.0) sum += values[i];
+  return sum;  
+}
+
 Kernel Kernel::transpose() const {
   Kernel k(nc, nr);
   for (int r = 0; r < nr; r++)
     for (int c = 0; c < nc; c++)
       k.values[c * nr + r] = values[r * nc + c];
   return k;
-}
-
-ByteImage Kernel::convolve(const ByteImage& I, double factor) const{
-  ByteImage O(I.nr, I.nc, I.nchannels);
-
-  for (int ch = 0; ch < O.nchannels; ch++)
-    for (int r = 0; r < O.nr; r++)
-      for (int c = 0; c < O.nc; c++) {
-	O.at(r, c, ch) = clip(convolveAt(I, r, c, ch) * factor);
-      }
-
-  return O;
 }
 
 double Kernel::convolveAt(const ByteImage& I, int r, int c, int ch) const {
@@ -90,6 +92,56 @@ double Kernel::convolveAt(const ByteImage& I, int r, int c, int ch) const {
     }
   }
   return sum;
+}
+
+ByteImage Kernel::convolve(const ByteImage& I) const {
+  ByteImage O(I.nr, I.nc, I.nchannels);
+
+  double min = this->min();
+  double scale = this->max() - min;
+  
+  for (int ch = 0; ch < O.nchannels; ch++)
+    for (int r = 0; r < O.nr; r++)
+      for (int c = 0; c < O.nc; c++)
+	O.at(r, c, ch) = clip((convolveAt(I, r, c, ch) - min) / scale);
+
+  return O;
+}
+
+ByteImage Kernel::convolve(const ByteImage& I, double factor) const{
+  ByteImage O(I.nr, I.nc, I.nchannels);
+
+  for (int ch = 0; ch < O.nchannels; ch++)
+    for (int r = 0; r < O.nr; r++)
+      for (int c = 0; c < O.nc; c++)
+	O.at(r, c, ch) = clip(convolveAt(I, r, c, ch) * factor);
+
+  return O;
+}
+
+ByteImage Kernel::convolveSeparable(const ByteImage& I) const {
+  return convolve(transpose().convolve(I));
+}
+
+ByteImage Kernel::convolveMagnitude(const ByteImage& I) const {
+  ByteImage O(I.nr, I.nc, I.nchannels);
+
+  Kernel T = transpose();
+  
+  const double C = 1.0 / sqrt(2);
+  double min = this->min();
+  double scale = this->max() - min;
+  double X, Y;
+  
+  for (int ch = 0; ch < O.nchannels; ch++)
+    for (int r = 0; r < O.nr; r++)
+      for (int c = 0; c < O.nc; c++) {
+	X = (convolveAt(I, r, c, ch) - min) / scale;
+	Y = (T.convolveAt(I, r, c, ch) - min) / scale;
+	O.at(r, c, ch) = clip(C * sqrt(X * X + Y * Y));
+      }
+
+  return O;
 }
 
 void Kernel::print() {
@@ -128,15 +180,38 @@ Kernel Kernel::SobelY() {
 
 Kernel Kernel::Gaussian(double sigma) {
   const double pi = 3.14159265358979;
-  int radius = ceil(3 * sigma);
+  int radius = (int)ceil(2 * sigma * sqrt(2.0 * log(10)));
   int diameter = 2 * radius + 1;
   double s2 = sigma * sigma;
+  double s2inv = 1.0 / s2;
   double fact = pow(2 * pi * s2, -0.5);
 
   Kernel k(1, diameter);
-  for (int x = 0; x < radius; x++)
-    k.at(0, x) = k.at(0, -x) = fact * exp(-0.5 * x * x / s2);
+  for (int x = 0; x <= radius; x++)
+    k.at(0, x) = k.at(0, -x) = fact * exp(-0.5 * x * x * s2inv);
   return k;
+}
+
+Kernel Kernel::Gradient(double sigma) {
+  Kernel k = Gaussian(sigma);
+  int radius = k.nc / 2;
+  double s2inv = 1.0 / (sigma * sigma);
+
+  for (int x = -radius; x <= radius; x++)
+    k.at(0, x) = -x * s2inv * k.at(0, x);
+
+  return k;
+}
+
+Kernel Kernel::LoG(double sigma) {
+  Kernel k = Gaussian(sigma);
+  int radius = k.nc / 2;
+  double s2inv = 1.0 / (sigma * sigma);
+
+  for (int x = 0; x <= radius; x++)
+    k.at(0, -x) = k.at(0, x) = s2inv * (x * x * s2inv - 1) * k.at(0, x);
+
+  return k;  
 }
 
 Kernel Kernel::LoG2D(double sigma) {

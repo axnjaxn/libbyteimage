@@ -19,13 +19,30 @@ int main(int argc, char* argv[]) {
 	img.at(r + y, c + x) = !img.at(r + y, c + x) * 255;
   }
 
-  Kernel K = Kernel::Gaussian(3.0);
-
-  ByteImage G = K.convolve(K.transpose().convolve(img));
-
-  ByteImage result(256, 512, 1);
+  ByteImage result(256 * 2, 256 * 3, 1);
   result.blit(img, 0, 0);
-  result.blit(G, 0, 256);
+  
+  Kernel K = Kernel::Gaussian(2.0);
+  printf("Gaussian with sigma = 2.0\n");
+  printf("Min: %lf\n", K.min());
+  printf("Max: %lf\n", K.max());
+  result.blit(K.convolve(K.transpose().convolve(img)), 0, 256);
+  result.blit(K.convolveSeparable(img), 0, 512);
+
+  K = Kernel::Gradient(2.0);
+  printf("Gradient with sigma = 2.0\n");
+  printf("Min: %lf\n", K.min());
+  printf("Max: %lf\n", K.max());
+  result.blit(K.convolveMagnitude(img), 256, 0);
+
+  K = Kernel::LoG(2.0);
+  printf("LoG with sigma = 2.0\n");
+  printf("Min: %lf\n", K.min());
+  printf("Max: %lf\n", K.max());
+  result.blit(K.convolveMagnitude(img), 256, 256);
+  
+  K = Kernel::LoG2D(2.0);
+  result.blit(K.convolve(img), 256, 512);
 
   Display(result).main();
     
