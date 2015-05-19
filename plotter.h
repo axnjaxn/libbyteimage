@@ -1,7 +1,6 @@
 #ifndef _BPJ_BYTEIMAGE_PLOTTER_H
 #define _BPJ_BYTEIMAGE_PLOTTER_H
 
-#include "matrix.h"
 #include "font.h"
 
 #include <string>
@@ -13,15 +12,15 @@ namespace byteimage {
     //Defaults to black points, size 3, no line
     class Plot {
     public:
-      std::vector<Matrix> points;//xyw
-      Matrix color;//rgb
+      std::vector<Pt2f> points;
+      Color color;
       int point_size, line_size;
       bool has_bar;
 
       Plot();
 
       void addPoint(double x, double y);
-      void setColor(double r, double g, double b);
+      void setColor(Byte r, Byte g, Byte b);
       void setPointSize(int size);
       void setLineSize(int size);
       void setBar(bool enabled);
@@ -31,8 +30,7 @@ namespace byteimage {
     int label_margin, title_margin, number_margin, border_margin;
     std::string xlabel, ylabel, title, xformat, yformat;
 
-    Matrix mn, mx;//xy
-    Matrix ticks, tick_offset;//xy
+    Pt2f mn, mx, ticks, tick_offset;
     bool draw_ticks, draw_grid;
     int axis_thickness, axis_offset;
 

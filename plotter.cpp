@@ -6,15 +6,14 @@ using namespace byteimage;
 Plotter::Plot::Plot() {
   setPointSize(3);
   setLineSize(0);
-  setColor(0, 0, 0);
 }
 
 void Plotter::Plot::addPoint(double x, double y) {
-  points.push_back(makePoint(x, y));
+  points.push_back(Pt2f(x, y));
 }
 
-void Plotter::Plot::setColor(double r, double g, double b) {
-  color = makeColor(r, g, b);
+void Plotter::Plot::setColor(Byte r, Byte g, Byte b) {
+  color = Color(r, g, b);
 }
 
 void Plotter::Plot::setPointSize(int size) {
@@ -54,11 +53,8 @@ void Plotter::addPlot(const Plot& plot) {
 }
 
 void Plotter::setScale(double xmin, double ymin, double xmax, double ymax) {
-  mn = mx = Matrix(2, 1);
-  mn.at(0) = xmin;
-  mn.at(1) = ymin;
-  mx.at(0) = xmax;
-  mx.at(1) = ymax;
+  mn = Pt2f(xmin, ymin);
+  mx = Pt2f(xmax, ymax);
 }
 
 void Plotter::hideTicks() {
@@ -67,11 +63,8 @@ void Plotter::hideTicks() {
 
 void Plotter::setTicks(double xticks, double yticks, double xoffset, double yoffset) {
   draw_ticks = 1;
-  ticks = tick_offset = Matrix(2, 1);
-  ticks.at(0) = xticks;
-  ticks.at(1) = yticks;
-  tick_offset.at(0) = xoffset;
-  tick_offset.at(1) = yoffset;
+  ticks = Pt2f(xticks, yticks);
+  tick_offset = Pt2f(xoffset, yoffset);
 }
 
 void Plotter::enableGrid(bool enabled) {
@@ -202,13 +195,13 @@ ByteImage Plotter::render(int nr, int nc) const {
   //Compute value-to-graph matrix
   Matrix T = Matrix::identity(3);
   double a = axis_offset + axis_thickness * 0.5;
-  double f = (w - a) / (mx.at(0) - mn.at(0));
+  double f = (w - a) / (mx.x - mn.x);
   T.at(0, 0) = f;
-  T.at(0, 2) = a - f * mn.at(0);
+  T.at(0, 2) = a - f * mn.x;
   a = h - a;
-  f = -a / (mx.at(1) - mn.at(1));
+  f = -a / (mx.y - mn.y);
   T.at(1, 1) = f;
-  T.at(1, 2) = a - f * mn.at(1);
+  T.at(1, 2) = a - f * mn.y;
 
   //Draw ticks
   std::vector<int> xticks, yticks;

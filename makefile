@@ -99,7 +99,7 @@ render.o: types.h byteimage.h matrix.h render.h render.cpp
 font.o: types.h byteimage.h font.h font.cpp
 	$(CXX) -c font.cpp $(CFLAGS) -Wno-parentheses
 
-plotter.o: types.h byteimage.h matrix.h font.h render.h plotter.h plotter.cpp
+plotter.o: types.h byteimage.h font.h render.h plotter.h plotter.cpp
 	$(CXX) -c plotter.cpp $(CFLAGS)
 
 palette.o: types.h byteimage.h palette.h palette.cpp
