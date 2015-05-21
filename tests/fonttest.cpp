@@ -1,8 +1,44 @@
 #include <byteimage/byteimage_sdl2.h>
+#include <byteimage/bitimage.h>
 #include <byteimage/render.h>
 #include <byteimage/font.h>
 
 using namespace byteimage;
+
+void drawStroked(const TextRenderer& font,
+		 ByteImage& target, const char* str, int r, int c,
+		 Color fill, Color stroke = Color()) {
+  int x, y, w, h;
+  font.getBox(str, x, y, w, h);
+
+  ByteImage temp(h + 2, w + 2);
+  font.draw(temp, str, 1 - y, 1 - x, 255);
+
+  BitImage mask(temp.nr, temp.nc);
+  for (int r = 0, i = 0; r < mask.nr; r++)
+    for (int c = 0; c < mask.nc; c++, i++)
+      if (temp[i] > 128) mask.set(r, c);
+      else temp[i] = 0;
+    
+  mask.dilate();
+
+  Byte *R = target.R(), *G = target.G(), *B = target.B();
+  
+  for (int y1 = 0; y1 < mask.nr; y1++)
+    for (int x1 = 0; x1 < mask.nc; x1++) {
+      w = (y + y1 + r) * target.nc + (x + x1 + c);
+      if (temp.at(y1, x1)) {
+	R[w] = temp.at(y1, x1) * fill.r / 255;
+	G[w] = temp.at(y1, x1) * fill.g / 255;
+	B[w] = temp.at(y1, x1) * fill.b / 255;
+      }
+      else if (mask.at(y1, x1)) {
+	R[w] = stroke.r;
+	G[w] = stroke.g;
+	B[w] = stroke.b;
+      }
+    }
+}
 
 int main(int argc, char* argv[]) {
   ByteImage img(96, 600, 3);
@@ -23,8 +59,8 @@ int main(int argc, char* argv[]) {
 
   //Render font
   TextRenderer text("/usr/share/fonts/truetype/freefont/FreeSerif.ttf", 24);
-
-  text.drawUnkerned(img, str, img.nr - 60, 0, 255, 0, 0);
+  
+  drawStroked(text, img, str, img.nr - 60, 0, Color(255, 0, 0), Color(255));
   
   int x, y, w, h;
   text.getBox(str, x, y, w, h);
