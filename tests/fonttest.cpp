@@ -14,29 +14,23 @@ void drawStroked(const TextRenderer& font,
   ByteImage temp(h + 2, w + 2);
   font.draw(temp, str, 1 - y, 1 - x, 255);
 
-  BitImage mask(temp.nr, temp.nc);
-  for (int r = 0, i = 0; r < mask.nr; r++)
-    for (int c = 0; c < mask.nc; c++, i++)
-      if (temp[i] > 128) mask.set(r, c);
-      else temp[i] = 0;
-    
+  BitImage mask = BitImage::threshold(temp, 128);    
   mask.dilate();
 
   Byte *R = target.R(), *G = target.G(), *B = target.B();
-  
   for (int y1 = 0; y1 < mask.nr; y1++)
     for (int x1 = 0; x1 < mask.nc; x1++) {
       w = (y + y1 + r) * target.nc + (x + x1 + c);
-      if (temp.at(y1, x1)) {
-	R[w] = temp.at(y1, x1) * fill.r / 255;
-	G[w] = temp.at(y1, x1) * fill.g / 255;
-	B[w] = temp.at(y1, x1) * fill.b / 255;
-      }
-      else if (mask.at(y1, x1)) {
+      if (mask.at(y1, x1)) {
 	R[w] = stroke.r;
 	G[w] = stroke.g;
 	B[w] = stroke.b;
       }
+      if (temp.at(y1, x1)) {
+	R[w] = interp(R[w], fill.r, temp.at(y1, x1) / 255.0);
+	G[w] = interp(G[w], fill.g, temp.at(y1, x1) / 255.0);
+	B[w] = interp(B[w], fill.b, temp.at(y1, x1) / 255.0);
+      }      
     }
 }
 
