@@ -14,8 +14,7 @@ namespace byteimage {
   class Color {
   public:
     Byte r, g, b;
-    constexpr Color() : r(0), g(0), b(0) { }
-    constexpr Color(Byte v) : r(v), g(v), b(v) { }
+    constexpr Color(Byte v = 0) : r(v), g(v), b(v) { }
     constexpr Color(Byte r, Byte g, Byte b) : r(r), g(g), b(b) { }
     constexpr Byte toGray() const {return (r + g + b) / 3;}
   };
@@ -30,8 +29,9 @@ namespace byteimage {
   class Pt2f {
   public:
     float x, y;
-    
-    constexpr Pt2f(float x = 0.0, float y = 0.0) : x(x), y(y) { }
+
+    constexpr Pt2f() : x(0.0), y(0.0) { }
+    constexpr Pt2f(float x, float y) : x(x), y(y) { }
     constexpr Pt2f(const Pt& pt) : x(pt.c), y(pt.r) { }
     
     constexpr Pt2f operator+(const Pt2f& a) const {return Pt2f(x + a.x, y + a.y);}
@@ -50,8 +50,9 @@ namespace byteimage {
   class Pt3f {
   public:
     float x, y, z;
-    
-    constexpr Pt3f(float x = 0.0, float y = 0.0, float z = 0.0) : x(x), y(y), z(z) { }
+
+    constexpr Pt3f() : x(0.0), y(0.0), z(0.0) { }
+    constexpr Pt3f(float x, float y, float z = 0.0) : x(x), y(y), z(z) { }
     constexpr Pt3f operator+(const Pt3f& a) const {return Pt3f(x + a.x, y + a.y, z + a.z);}
     constexpr Pt3f operator-(const Pt3f& a) const {return Pt3f(x - a.x, y - a.y, z - a.z);}
     constexpr Pt3f operator*(float f) const {return Pt3f(x * f, y * f, z * f);}
