@@ -4,6 +4,8 @@ using namespace byteimage;
 
 Video::Video() : src("") { }
 
+Video::Video(int deviceid) {open_device(deviceid);}
+
 Video::Video(std::string fn) {load_filename(fn);}
 
 Video::Video(const Video& vid) {load_filename(vid.src);}
@@ -21,6 +23,15 @@ void Video::load_filename(std::string fn) {
   pos = (int)cap.get(CV_CAP_PROP_POS_FRAMES);
   frames = (int)cap.get(CV_CAP_PROP_FRAME_COUNT);
   fps = cap.get(CV_CAP_PROP_FPS);
+}
+
+void Video::open_device(int deviceid) {
+  src = "";
+  cap.open(deviceid);
+  nc = cap.get(CV_CAP_PROP_FRAME_WIDTH);
+  nr = cap.get(CV_CAP_PROP_FRAME_HEIGHT);
+  pos = frames = 0;
+  fps = 30;
 }
 
 bool Video::nextFrame(ByteImage& I) {

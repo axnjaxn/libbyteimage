@@ -14,12 +14,14 @@ namespace byteimage {
   
   public:
     Video();
+    Video(int deviceid);
     Video(std::string fn);
     Video(const Video& vid);
   
     Video& operator=(const Video& vid);
 
     void load_filename(std::string fn);
+    void open_device(int deviceid);
 
     inline int width() const {return nc;}
     inline int height() const {return nr;}
