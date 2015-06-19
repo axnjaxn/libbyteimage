@@ -38,13 +38,7 @@ bool Video::nextFrame(ByteImage& I) {
   cv::Mat frame;
   if (!cap.read(frame)) return false;
 
-  I = ByteImage(nr, nc, 3);
-  cv::Mat channels[3];
-  cv::split(frame, channels);
-  for (int ch = 0; ch < 3; ch++)
-    for (int r = 0; r < I.nr; r++)
-      for (int c = 0; c < I.nc; c++)
-	I.at(r, c, ch) = channels[2 - ch].at<unsigned char>(r, c);
+  I = toByteImage(frame);
 
   return true;
 }
@@ -66,17 +60,5 @@ void VideoWriter::open(std::string fn, int nr, int nc, double fps) {
 void VideoWriter::write(const ByteImage& image) {
   if (!writer.isOpened()) return;
 
-  std::vector<cv::Mat> mat(3);
-
-  for (int ch = 0; ch < 3; ch++) {
-    mat[2 - ch] = cv::Mat(image.nr, image.nc, CV_8UC1);
-    for (int r = 0; r < image.nr; r++)
-      for (int c = 0; c < image.nc; c++)
-	mat[2 - ch].at<unsigned char>(r, c) = image.at(r, c, ch);
-  }
-
-  cv::Mat mimg;
-  merge(mat, mimg);
-
-  writer.write(mimg);
+  writer.write(toMat(image));
 }

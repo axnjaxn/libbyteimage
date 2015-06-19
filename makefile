@@ -16,8 +16,8 @@ CFG_CFLAGS += -D_BYTEIMAGE_NO_SDL2
 endif
 
 ifneq (, $(shell pkg-config opencv --modversion))
-BIN += video.o
-INC += video.h
+BIN += opencv2.o video.o
+INC += opencv2.h video.h
 CFG_CFLAGS += `pkg-config opencv --cflags`
 CFG_LIBS += `pkg-config opencv --libs`
 TESTS += tests/vidtest
@@ -63,7 +63,10 @@ byteimage.o: types.h byteimage.h byteimage.cpp
 byteimage_sdl2.o: types.h byteimage.h byteimage_sdl2.h byteimage_sdl2.cpp
 	$(CXX) -c byteimage_sdl2.cpp $(CFLAGS)
 
-video.o: types.h byteimage.h video.h video.cpp
+opencv2.o: types.h byteimage.h opencv2.h
+	$(CXX) -c opencv2.cpp $(CFLAGS)
+
+video.o: types.h byteimage.h opencv2.h video.h video.cpp
 	$(CXX) -c video.cpp $(CFLAGS)
 
 bitimage.o: types.h byteimage.h bitimage.h bitimage.cpp

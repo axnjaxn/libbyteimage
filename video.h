@@ -1,8 +1,7 @@
 #ifndef _BPJ_BYTEIMAGE_BYTEVIDEO_H
 #define _BPJ_BYTEIMAGE_BYTEVIDEO_H
 
-#include "byteimage.h"
-#include <opencv2/opencv.hpp>
+#include "opencv2.h"
 
 namespace byteimage {
   class Video {
