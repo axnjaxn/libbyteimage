@@ -91,7 +91,7 @@ int Display::show(const ByteImage& img) {
   
   SDL_Event event;
   while (SDL_PollEvent(&event))
-    handleEvent(event);
+    Display::handleEvent(event);
 
   updateImage(img);
   update();

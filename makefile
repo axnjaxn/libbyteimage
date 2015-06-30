@@ -33,11 +33,11 @@ CFG_CFLAGS += -D_BYTEIMAGE_NO_MAGICK
 endif
 
 ifneq (, $(shell freetype-config --version))
-BIN += font.o plotter.o
-INC += font.h plotter.h
+BIN += font.o plotter.o osd.o
+INC += font.h plotter.h osd.h
 CFG_CFLAGS += `freetype-config --cflags`
 CFG_LIBS += `freetype-config --libs`
-TESTS += tests/fonttest tests/graphtest tests/morphtest tests/componenttest
+TESTS += tests/fonttest tests/graphtest tests/morphtest tests/componenttest tests/osdtest
 else
 CFG_CFLAGS += -D_BYTEIMAGE_NO_FREETYPE
 endif
@@ -101,6 +101,9 @@ render.o: types.h byteimage.h matrix.h render.h render.cpp
 
 font.o: types.h byteimage.h font.h font.cpp
 	$(CXX) -c font.cpp $(CFLAGS) -Wno-parentheses
+
+osd.o: types.h byteimage.h byteimage_sdl2.h font.h osd.h osd.cpp
+	$(CXX) -c osd.cpp $(CFLAGS)
 
 plotter.o: types.h byteimage.h font.h render.h plotter.h plotter.cpp
 	$(CXX) -c plotter.cpp $(CFLAGS)
@@ -178,6 +181,9 @@ tests/hulltest: tests/hulltest.cpp
 
 tests/listenertest: tests/listenertest.cpp
 	$(CXX) tests/listenertest.cpp -o tests/listenertest -g `byteimage-config --cflags --libs`
+
+tests/osdtest: tests/osdtest.cpp
+	$(CXX) tests/osdtest.cpp -o tests/osdtest -g `byteimage-config --cflags --libs`
 
 clean-tests:
 	rm -f tests/*~ $(TESTS)

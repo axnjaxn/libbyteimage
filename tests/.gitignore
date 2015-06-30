@@ -1,4 +1,4 @@
-imgtest
+\imgtest
 sdl2test
 vidtest
 kerneltest
@@ -18,3 +18,4 @@ componenttest
 palettetest
 hulltest
 listenertest
+osdtest
