@@ -10,6 +10,9 @@ namespace byteimage {
   void DrawRect(ByteImage& target, int x, int y, int w, int h, Byte R, Byte G, Byte B);
   void DrawRect(ByteImage& target, const Pt2f& ul, const Pt2f& lr, const Color& color);
 
+  void DrawRect(ByteImage& target, int x, int y, int w, int h, Byte R, Byte G, Byte B, Byte A);
+  void DrawRect(ByteImage& target, const Pt2f& ul, const Pt2f& lr, const Color& color, float alpha);
+
   void DrawPoint(ByteImage& target, int x, int y, Byte v, int sz = 1);
   void DrawPoint(ByteImage& target, int x, int y, Byte R, Byte G, Byte B, int sz = 1);
   void DrawPoint(ByteImage& target, const Pt2f& v, const Color& color, int sz = 1);

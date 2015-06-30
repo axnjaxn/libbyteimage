@@ -64,6 +64,50 @@ void byteimage::DrawRect(ByteImage& target, const Pt2f& ul, const Pt2f& lr, cons
   else DrawRect(target, x, y, w, h, color.r, color.g, color.b);
 }
 
+void byteimage::DrawRect(ByteImage& target, int x, int y, int w, int h, Byte R, Byte G, Byte B, Byte A) {
+  float alpha = A / 255.0;
+
+  if (x < 0) {
+    w += x;
+    x = 0;
+  }
+  if (x + w > target.nc)
+    w = target.nc - x;
+  if (w <= 0) return;
+  
+  if (y < 0) {
+    h += y;
+    y = 0;
+  }
+  if (y + h > target.nr)
+    h = target.nr - y;  
+  if (h <= 0) return;
+
+  Byte *Rp = target.R(), *Gp = target.G(), *Bp = target.B();
+  for (int r = y; r < y + h; r++)
+    for (int c = 0, i = r * target.nc + x; c < w; c++, i++) {
+      Rp[i] = interp(Rp[i], R, alpha);
+      if (target.nchannels == 3) {
+	Gp[i] = interp(Gp[i], G, alpha);
+	Bp[i] = interp(Bp[i], B, alpha);
+      }	
+    }
+}
+
+void byteimage::DrawRect(ByteImage& target, const Pt2f& ul, const Pt2f& lr, const Color& color, float alpha) {
+  int x = (int)(ul.x + 0.5);
+  int y = (int)(ul.y + 0.5);
+  int w = (int)(lr.x + 0.5);
+  int h = (int)(lr.y + 0.5);
+
+  if (x > w) std::swap(x, w);
+  if (y > h) std::swap(y, h);
+  w -= x;
+  h -= y;
+
+  DrawRect(target, x, y, w, h, color.r, color.g, color.b, clip(255.0 * alpha));
+}
+
 void byteimage::DrawPoint(ByteImage& target, int x, int y, Byte v, int sz) {
   x = x - (sz >> 1);
   y = y - (sz >> 1);

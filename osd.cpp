@@ -83,8 +83,8 @@ bool OSD_Scanner::getString(const std::string& prompt, std::string& v) {
 	
       canvas = bg;
       if (draw_bg)
-	DrawRect(canvas, -x, canvas.nr - h - 3, w, h + 2, bgcolor.r, bgcolor.g, bgcolor.b);
-      font->draw(canvas, print_str.c_str(), canvas.nr - h - y - 2, -x, color.r, color.g, color.b);
+	DrawRect(canvas, -x, canvas.nr - h - 3, w + 2, h + 2, bgcolor.r, bgcolor.g, bgcolor.b, 0x80);
+      font->draw(canvas, print_str.c_str(), canvas.nr - h - y - 2, -x + 1, color.r, color.g, color.b);
 
       drawflag = false;
     }
@@ -136,7 +136,7 @@ void OSD_Printer::draw(ByteImage& target, Color color, Color bgcolor) {
     int x, y, w, h;
     font->getBox(print_buf.c_str(), x, y, w, h);
     if (color.r != bgcolor.r || color.g != bgcolor.g || color.b != bgcolor.b)
-      DrawRect(target, -x, 0, w, h + 2, bgcolor.r, bgcolor.g, bgcolor.b);
-    font->draw(target, print_buf.c_str(), -y + 1, -x, color.r, color.g, color.b);
+      DrawRect(target, -x, 0, w + 2, h + 2, bgcolor.r, bgcolor.g, bgcolor.b, 0x80);
+    font->draw(target, print_buf.c_str(), -y + 1, -x + 1, color.r, color.g, color.b);
   }
 }
