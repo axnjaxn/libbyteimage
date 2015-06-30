@@ -8,11 +8,13 @@ namespace byteimage {
   
     Display* display;
     ByteImage bg, canvas;
-    Color color;
+    Color color, bgcolor;
+    bool draw_bg;
 
     //Normally, you'll instantiate this class each time you want to scan for input.
     //Note: this will require the program to have a static background while scanning.
     OSD_Scanner(Display& display, const ByteImage& bg, Color color = Color(255));
+    OSD_Scanner(Display& display, const ByteImage& bg, Color color, Color bgcolor);
 
     //Only one global font is allowed with this class
     static void setFont(TextRenderer* font);
@@ -39,6 +41,7 @@ namespace byteimage {
     bool shouldDraw() const;//True if visible, or on first frame after turning invisible
 
     void hide();
-    void draw(ByteImage& target);//Note: if no printing required, this is a no-op.
+    void draw(ByteImage& target, Color color = Color(255));//Note: if no printing required, this is a no-op.
+    void draw(ByteImage& target, Color color, Color bgcolor);
   };
 }

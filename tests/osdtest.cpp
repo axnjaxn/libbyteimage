@@ -20,7 +20,7 @@ protected:
       switch (event.key.keysym.sym) {
       case SDLK_i:
 	osd.hide();
-	if (OSD_Scanner(*this, canvas).getInt("Enter an int:", i)) 
+	if (OSD_Scanner(*this, canvas, Color(0), Color(255)).getInt("Enter an int:", i)) 
 	  osd.print(OSD_Printer::string("Test: %d", i), 2000);
 	break;
       case SDLK_f:
@@ -49,7 +49,7 @@ protected:
   virtual void update() {
     if (osd.shouldDraw()) {
       canvas = img;
-      osd.draw(canvas);
+      osd.draw(canvas, Color(255, 255, 0), Color(0));
       updateImage(canvas);
     }
     

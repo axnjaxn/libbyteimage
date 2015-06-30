@@ -1,11 +1,16 @@
 #include "osd.h"
+#include "render.h"
 
 using namespace byteimage;
 
 TextRenderer* OSD_Scanner::font = nullptr;
 TextRenderer* OSD_Printer::font = nullptr;
 
-OSD_Scanner::OSD_Scanner(Display& display, const ByteImage& bg, Color color) : display(&display), bg(bg), color(color) { }
+OSD_Scanner::OSD_Scanner(Display& display, const ByteImage& bg, Color color)
+  : display(&display), bg(bg), color(color), draw_bg(false) { }
+
+OSD_Scanner::OSD_Scanner(Display& display, const ByteImage& bg, Color color, Color bgcolor)
+  : display(&display), bg(bg), color(color), bgcolor(bgcolor), draw_bg(true) { }
 
 void OSD_Scanner::setFont(TextRenderer* font) {OSD_Scanner::font = font;}
   
@@ -77,7 +82,9 @@ bool OSD_Scanner::getString(const std::string& prompt, std::string& v) {
       font->getBox(print_str.c_str(), x, y, w, h);
 	
       canvas = bg;
-      font->draw(canvas, print_str.c_str(), canvas.nr - h - y - 1, -x, color.r, color.g, color.b);
+      if (draw_bg)
+	DrawRect(canvas, -x, canvas.nr - h - 3, w, h + 2, bgcolor.r, bgcolor.g, bgcolor.b);
+      font->draw(canvas, print_str.c_str(), canvas.nr - h - y - 2, -x, color.r, color.g, color.b);
 
       drawflag = false;
     }
@@ -118,12 +125,18 @@ void OSD_Printer::hide() {
   print_end = 0;
 }
 
-void OSD_Printer::draw(ByteImage& target) {
+void OSD_Printer::draw(ByteImage& target, Color color) {
+  draw(target, color, color);
+}
+
+void OSD_Printer::draw(ByteImage& target, Color color, Color bgcolor) {
   isHidden = isPrinting && SDL_GetTicks() > print_end;
   isPrinting = isPrinting && !isHidden;
   if (isPrinting) {
     int x, y, w, h;
     font->getBox(print_buf.c_str(), x, y, w, h);
-    font->draw(target, print_buf.c_str(), -y, -x, 255);
+    if (color.r != bgcolor.r || color.g != bgcolor.g || color.b != bgcolor.b)
+      DrawRect(target, -x, 0, w, h + 2, bgcolor.r, bgcolor.g, bgcolor.b);
+    font->draw(target, print_buf.c_str(), -y + 1, -x, color.r, color.g, color.b);
   }
 }
