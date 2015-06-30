@@ -5,6 +5,7 @@ using namespace byteimage;
 class MyDisplay : public Display {
 protected:
   OSD_Printer osd;
+  OSD_Scanner scanner;
   ByteImage img, canvas;
   
   void printHelp() {
@@ -20,22 +21,22 @@ protected:
       switch (event.key.keysym.sym) {
       case SDLK_i:
 	osd.hide();
-	if (OSD_Scanner(*this, canvas, Color(0), Color(255)).getInt("Enter an int:", i)) 
+	if (scanner.getInt(canvas, "Enter an int:", i)) 
 	  osd.print(OSD_Printer::string("Test: %d", i), 2000);
 	break;
       case SDLK_f:
 	osd.hide();
-	if (OSD_Scanner(*this, canvas).getFloat("Enter a float:", f)) 
+	if (scanner.getFloat(canvas, "Enter a float:", f)) 
 	  osd.print(OSD_Printer::string("Test: %f", f), 2000);
 	break;
       case SDLK_d:
 	osd.hide();
-	if (OSD_Scanner(*this, canvas).getDouble("Enter a double:", d)) 
+	if (scanner.getDouble(canvas, "Enter a double:", d)) 
 	  osd.print(OSD_Printer::string("Test: %lf", d), 2000);
 	break;
       case SDLK_s:
 	osd.hide();
-	if (OSD_Scanner(*this, canvas).getString("Enter a string:", s)) 
+	if (scanner.getString(canvas, "Enter a string:", s)) 
 	  osd.print(OSD_Printer::string("Test: %s", s.c_str()), 2000);
 	break;
       case SDLK_h:
@@ -49,7 +50,7 @@ protected:
   virtual void update() {
     if (osd.shouldDraw()) {
       canvas = img;
-      osd.draw(canvas, Color(255, 255, 0), Color(0));
+      osd.draw(canvas);
       updateImage(canvas);
     }
     
@@ -66,6 +67,10 @@ public:
     canvas = img = img.toColor();
     updateImage(img);
 
+    osd.setColors(Color(255, 255, 0), Color(0));
+    scanner.setColors(Color(0), Color(255));
+    scanner.setDisplay(this);
+    
     printHelp();
   }
 };
