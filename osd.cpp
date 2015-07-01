@@ -88,8 +88,8 @@ bool OSD_Scanner::getString(const ByteImage& target, const std::string& prompt, 
 	
       canvas = target;
       if (draw_bg)
-	DrawRect(canvas, -x, canvas.nr - h - 3, w + 2, h + 2, bgcolor.r, bgcolor.g, bgcolor.b, 0x80);
-      font->draw(canvas, print_str.c_str(), canvas.nr - h - y - 2, -x + 1, color.r, color.g, color.b);
+	DrawRect(canvas, -x, canvas.nr - h - 2, w + 2, h + 2, bgcolor.r, bgcolor.g, bgcolor.b, 0x80);
+      font->draw(canvas, print_str.c_str(), canvas.nr - h - y - 1, -x + 1, color.r, color.g, color.b);
 
       drawflag = false;
     }
