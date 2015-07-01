@@ -1,3 +1,6 @@
+#ifndef _BPJ_BYTEIMAGE_OSD_H
+#define _BPJ_BYTEIMAGE_OSD_H
+
 #include "byteimage_sdl2.h"
 #include "font.h"
 
@@ -49,3 +52,5 @@ namespace byteimage {
     void draw(ByteImage& target);//Note: if no printing required, this is a no-op.
   };
 }
+
+#endif
