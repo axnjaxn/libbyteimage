@@ -124,7 +124,7 @@ void TextRenderer::drawCentered(ByteImage& target, const char* str, int r, int c
   getBox(str, x, y, w, h);
   
   r = r + h / 2 - (y + h);
-  c = c + w / 2 - (x + w);
+  c = c + x - w / 2;
   
   draw(target, str, r, c, R, G, B);
 }

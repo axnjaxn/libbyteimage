@@ -63,6 +63,8 @@ int main(int argc, char* argv[]) {
 
   text.drawUnkerned(img, str, img.nr - 12, 0, 255, 0, 0);
   text.draw(img, str, img.nr - 12, 0, 255, 192, 0);
+
+  text.drawCentered(img, "Centered text should fill this space - test test test", img.nr / 2, img.nc / 2, 255, 255, 255);
   
   Display(img).main();
 
