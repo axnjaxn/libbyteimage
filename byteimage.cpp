@@ -511,6 +511,39 @@ void ByteImage::blend(const ByteImage& color, const ByteImage& alpha, int destr,
 						 alpha.at(r + y - destr, c + x - destc) / 255.0);
 }
 
+void ByteImage::blitSampled(const ByteImage& src, float sx, float sy, int dr, int dc) {
+  if (nchannels == 1 && src.nchannels == 3) {
+    blitSampled(src.toGrayscale(), sx, sy, dr, dc);
+    return;
+  }
+  else if (nchannels == 3 && src.nchannels == 1) {
+    blitSampled(src.toColor(), sx, sy, dr, dc);
+    return;
+  }
+  
+  int r0 = dr;
+  int c0 = dc;
+
+  int r1 = (int)(dr + sy * (src.nr - 1));
+  int c1 = (int)(dc + sx * (src.nc - 1));
+
+  if (r0 < 0) r0 = 0;
+  if (c0 < 0) c0 = 0;
+  if (r1 >= nr) r1 = nr - 1;
+  if (c1 >= nc) c1 = nc - 1;
+
+  for (int r = r0, sr, sc; r <= r1; r++)
+    for (int c = c0; c <= c1; c++) {
+      sr = (int)((r - dr) / sy);
+      sc = (int)((c - dc) / sx);
+      at(r, c, 0) = src.at(sr, sc, 0);
+      if (nchannels == 3) {
+	at(r, c, 1) = src.at(sr, sc, 1);
+	at(r, c, 2) = src.at(sr, sc, 2);
+      }
+    }
+}
+
 ByteImage ByteImage::combineChannels(const ByteImage& r, const ByteImage& g, const ByteImage& b) {
   ByteImage result(r.nr, r.nc, 3);
   memcpy(result.R(), r.pixels, result.nr * result.nc);
