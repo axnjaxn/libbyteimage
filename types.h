@@ -19,6 +19,9 @@ namespace byteimage {
     constexpr Byte toGray() const {return (r + g + b) / 3;}
   };
 
+  constexpr Color avg(const Color& a, const Color& b) {return Color(avg(a.r, b.r), avg(a.g, b.g), avg(a.b, b.b));}
+  constexpr Color interp(const Color& a, const Color& b, float t) {return Color(interp(a.r, b.r, t), interp(a.g, b.g, t), interp(a.b, b.b, t));}
+  
   class Pt {
   public:
     int r, c;
