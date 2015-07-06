@@ -6,11 +6,12 @@ CFG_CFLAGS = -std=c++11
 CFG_LIBS =
 
 ifneq (, $(shell sdl2-config --version))
-BIN += byteimage_sdl2.o
-INC += byteimage_sdl2.h
+BIN += byteimage_sdl2.o widget.o
+INC += byteimage_sdl2.h widget.h
 CFG_CFLAGS += `sdl2-config --cflags`
 CFG_LIBS += `sdl2-config --libs`
-TESTS += tests/sdl2test tests/kerneltest tests/templatetest tests/matrixtest tests/splinetest tests/ransactest tests/rendertest tests/beziertest tests/palettetest tests/hulltest tests/listenertest
+TESTS += tests/sdl2test tests/widgettest tests/kerneltest tests/templatetest tests/matrixtest
+TESTS += tests/splinetest tests/ransactest tests/rendertest tests/beziertest tests/palettetest tests/hulltest tests/listenertest
 else
 CFG_CFLAGS += -D_BYTEIMAGE_NO_SDL2
 endif
@@ -62,6 +63,9 @@ byteimage.o: types.h byteimage.h byteimage.cpp
 
 byteimage_sdl2.o: types.h byteimage.h byteimage_sdl2.h byteimage_sdl2.cpp
 	$(CXX) -c byteimage_sdl2.cpp $(CFLAGS)
+
+widget.o: types.h byteimage.h byteimage_sdl2.h widget.h widget.cpp
+	$(CXX) -c widget.cpp $(CFLAGS)
 
 opencv2.o: types.h byteimage.h opencv2.h
 	$(CXX) -c opencv2.cpp $(CFLAGS)
@@ -127,6 +131,9 @@ tests/imgtest: tests/imgtest.cpp
 
 tests/sdl2test: tests/sdl2test.cpp
 	$(CXX) tests/sdl2test.cpp -o tests/sdl2test -g `byteimage-config --cflags --libs`
+
+tests/widgettest: tests/widgettest.cpp
+	$(CXX) tests/widgettest.cpp -o tests/widgettest -g `byteimage-config --cflags --libs`
 
 tests/vidtest: tests/vidtest.cpp
 	$(CXX) tests/vidtest.cpp -o tests/vidtest -g `byteimage-config --cflags --libs`
