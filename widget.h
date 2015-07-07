@@ -66,6 +66,7 @@ namespace byteimage {
     virtual ~WidgetLayout();
 
     void attach(Widget* widget, int x, int y, int w, int h, bool autorelease = true);
+    void remove(Widget* widget);
     void clear();
   
     virtual void setDisplay(WidgetDisplay* display);

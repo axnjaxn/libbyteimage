@@ -18,6 +18,16 @@ void WidgetLayout::attach(Widget* widget, int x, int y, int w, int h, bool autor
   widgets.push_back(attach);
 }
 
+void WidgetLayout::remove(Widget* widget) {
+  bool releaseflag = false;
+  for (int i = 0; i < widgets.size(); i++)
+    if (widgets[i].widget == widget) {
+      if (widgets[i].autorelease) releaseflag = true;
+      widgets.erase(widgets.begin() + i--);
+    }
+  if (releaseflag) delete widget;
+}
+
 void WidgetLayout::clear() {
   for (auto& attach : widgets)
     if (attach.autorelease)
