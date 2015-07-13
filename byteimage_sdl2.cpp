@@ -75,6 +75,10 @@ void Display::update() {
     SDL_Delay(frameDelay);
 }
 
+void Display::setTitle(const char* title) {
+  SDL_SetWindowTitle(window, title);
+}
+
 void Display::main() {
   exitflag = 0;
   SDL_Event event;

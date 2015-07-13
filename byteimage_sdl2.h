@@ -39,6 +39,8 @@ namespace byteimage {
     Display& operator=(const Display&) = delete;
     Display& operator=(Display&&);
 
+    void setTitle(const char* title);
+    
     void main();
     int show(const ByteImage& img);//Returns nonzero if exit event is caught
   };

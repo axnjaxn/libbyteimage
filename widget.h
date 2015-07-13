@@ -25,6 +25,7 @@ namespace byteimage {
   public:
     inline Widget(WidgetDisplay* display = nullptr) {w = h = 0; setDisplay(display);}
 
+    inline WidgetDisplay* getDisplay() const {return this->display;}
     inline virtual void setDisplay(WidgetDisplay* display) {this->display = display;}
     inline virtual void updateSize(int w, int h) {this->w = w; this->h = h;}
 
