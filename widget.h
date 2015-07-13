@@ -1,7 +1,7 @@
 #ifndef _BPJ_BYTEIMAGE_WIDGET_H
 #define _BPJ_BYTEIMAGE_WIDGET_H
 
-#include <byteimage/byteimage_sdl2.h>
+#include "byteimage_sdl2.h"
 #include <vector>
 
 using byteimage::ByteImage;
