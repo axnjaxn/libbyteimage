@@ -88,6 +88,7 @@ namespace byteimage {
     void write(FILE* fp) const;
 
     void blit(const ByteImage& src, int destr, int destc);
+    void blend(const ByteImage& color, float alpha, int destr, int destc);
     void blend(const ByteImage& color, const ByteImage& alpha, int destr, int destc);
     void blitSampled(const ByteImage& src, float sx, float sy, int dr, int dc);
   

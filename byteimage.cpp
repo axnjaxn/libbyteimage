@@ -478,6 +478,39 @@ void ByteImage::blit(const ByteImage& src, int destr, int destc) {
 	     w);
 }
 
+void ByteImage::blend(const ByteImage& color, float alpha, int destr, int destc) {
+  if (color.nchannels != nchannels) {
+    if (nchannels == 1) blend(color.toGrayscale(), alpha, destr, destc);
+    else if (nchannels == 3) blend(color.toColor(), alpha, destr, destc);
+    return;
+  }
+
+  int x = destc, y = destr, w = color.nc, h = color.nr;
+
+  if (x < 0) {
+    w += x;
+    x = 0;
+  }
+  if (x + w > nc)
+    w = nc - x;
+  if (w <= 0) return;
+
+  if (y < 0) {
+    h += y;
+    y = 0;
+  }
+  if (y + h > nr)
+    h = nr - y;  
+  if (h <= 0) return;
+
+  for (int ch = 0; ch < nchannels; ch++)
+    for (int r = 0; r < h; r++)
+      for (int c = 0; c < w; c++)
+	at(r + y, c + x, ch) = byteimage::interp(at(r + y, c + x, ch), 
+						 color.at(r + y - destr, c + x - destc, ch), 
+						 alpha);
+}
+
 void ByteImage::blend(const ByteImage& color, const ByteImage& alpha, int destr, int destc) {
   if (color.nchannels != nchannels) {
     if (nchannels == 1) blend(color.toGrayscale(), alpha, destr, destc);
