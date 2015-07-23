@@ -14,7 +14,7 @@ Contents
 
 Please see LICENSE.md for licensing terms of this package.
 
-This library optionally makes use of SDL, OpenCV, and FreeType packages. Please consult their distribution packages for any additional restriction on this library's use in software.
+This library optionally makes use of Magick++, SDL, OpenCV, and FreeType packages. Please consult their distribution packages for any additional restriction on this library's use in software.
 
 2. Installation
 ---------------
@@ -25,7 +25,7 @@ cd into the libbyteimage directory and execute ` make &&& sudo make install`
 
 Then type `byteimage-config` to verify that the package is correctly installed.
 
-If SDL2 is installed on your system, a suite of basic UI tools will be installed. If OpenCV is installed, video read/write tools and conversion routines to OpenCV2 structures will be installed, and if FreeType is supported, text rendering and on-screen display tools will be installed.
+If SDL2 is installed on your system, a suite of basic UI tools will be installed. If OpenCV is installed, video read/write tools and conversion routines to OpenCV2 structures will be installed, and if FreeType is supported, text rendering and on-screen display tools will be installed. Additionally, you'll need libMagick++ to use the built-in save and load routines for most image formats.
 
 Execute `make tests` after installing libbyteimage to build a series of tests showing off installed functionality.
 
